@@ -7,6 +7,23 @@ import { Button } from "@/components/ui/button";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
+const navLinks = [
+    { href: "/", label: "Home" },
+    { href: "/homilies", label: "Homilies" },
+    { href: "/articles", label: "Articles" },
+    { href: "/about", label: "About" },
+    { href: "/contact", label: "Contact" },
+];
+
+const moreLinks = [
+    { href: "/prayers", label: "Prayers & Devotionals" },
+    { href: "/music", label: "Music & Worship" },
+    { href: "/news", label: "News / Events" },
+    { href: "/radio", label: "Online Radio" },
+    { href: "/newsletter", label: "Newsletter" },
+    { href: "/publications", label: "Publications" },
+];
+
 export default function MobileNav() {
 	return (
 		<Sheet>
@@ -17,89 +34,43 @@ export default function MobileNav() {
 				</Button>
 			</SheetTrigger>
 
-			<SheetContent side="right" className="p-6 space-y-2 bg-popover text-popover-foreground">
-				{/* Accessible title (hidden visually) */}
+			<SheetContent side="right" className="w-full max-w-sm p-6 bg-background text-foreground">
 				<VisuallyHidden>
 					<DialogTitle>Mobile Navigation</DialogTitle>
 				</VisuallyHidden>
 
-				<SheetClose asChild>
-					<Link href="/" className="block font-semibold hover:text-primary transition-colors py-2">
-						Home
-					</Link>
-				</SheetClose>
+                <div className="flex flex-col h-full">
+                    <div className="space-y-4">
+                        {navLinks.map((link) => (
+                            <SheetClose key={link.href} asChild>
+                                <Link href={link.href} className="block text-lg font-medium hover:text-primary transition-colors py-2">
+                                    {link.label}
+                                </Link>
+                            </SheetClose>
+                        ))}
+                    </div>
 
-				<SheetClose asChild>
-					<Link href="/about" className="block hover:text-primary transition-colors py-2">
-						About
-					</Link>
-				</SheetClose>
-				<SheetClose asChild>
-					<Link href="/unveiler" className="block hover:text-primary transition-colors py-2">
-						Unveiler Magazine
-					</Link>
-				</SheetClose>
+                    <hr className="my-6" />
 
-				<div className="pt-2">
-					<p className="mb-3 text-sm font-semibold text-muted-foreground">Word & Worship</p>
-					<div className="space-y-3 pl-2">
-						<SheetClose asChild>
-							<Link href="/homilies" className="block hover:text-primary transition-colors">
-								Homilies
-							</Link>
-						</SheetClose>
-						<SheetClose asChild>
-							<Link href="/prayers" className="block hover:text-primary transition-colors">
-								Prayers
-							</Link>
-						</SheetClose>
-						<SheetClose asChild>
-							<Link href="/music" className="block hover:text-primary transition-colors">
-								Music
-							</Link>
-						</SheetClose>
-					</div>
-				</div>
+                    <div className="space-y-4">
+                        <p className="text-sm font-semibold text-muted-foreground">More</p>
+                        {moreLinks.map((link) => (
+                            <SheetClose key={link.href} asChild>
+                                <Link href={link.href} className="block text-base hover:text-primary transition-colors">
+                                    {link.label}
+                                </Link>
+                            </SheetClose>
+                        ))}
+                    </div>
 
-				<div className="pt-2">
-					<p className="mb-3 text-sm font-semibold text-muted-foreground">Media</p>
-					<div className="space-y-3 pl-2">
-						<SheetClose asChild>
-							<Link href="/news" className="block hover:text-primary transition-colors">
-								News / Events
-							</Link>
-						</SheetClose>
-						<SheetClose asChild>
-							<Link href="/radio" className="block hover:text-primary transition-colors">
-								Online Radio
-							</Link>
-						</SheetClose>
-						<SheetClose asChild>
-							<Link href="/newsletter" className="block hover:text-primary transition-colors">
-								Newsletter
-							</Link>
-						</SheetClose>
-					</div>
-				</div>
-
-				<div className="pt-2">
-					<p className="mb-3 text-sm font-semibold text-muted-foreground">Resources</p>
-					<div className="space-y-3 pl-2">
-						<SheetClose asChild>
-							<Link href="/publications" className="block hover:text-primary transition-colors">
-								Publications
-							</Link>
-						</SheetClose>
-					</div>
-				</div>
-
-				<div className="pt-4">
-					<SheetClose asChild>
-						<Button asChild className="w-full">
-							<Link href="/donations">Donate</Link>
-						</Button>
-					</SheetClose>
-				</div>
+                    <div className="mt-auto pt-6">
+                        <SheetClose asChild>
+                            <Button asChild className="w-full">
+                                <Link href="/donations">Donate</Link>
+                            </Button>
+                        </SheetClose>
+                    </div>
+                </div>
 			</SheetContent>
 		</Sheet>
 	);

@@ -1,77 +1,65 @@
 import Link from "next/link";
 import Image from "next/image";
 import { client } from "@/sanity/lib/client";
-import { HOMILIES_QUERY } from "@/sanity/lib/queries";
+import { PRAYERS_QUERY } from "@/sanity/lib/queries";
 
 export const revalidate = 60;
 
-interface Homily {
+interface Prayer {
     _id: string;
     title: string;
     slug: string;
-    date: string;
-    scripture: string;
-    category: string;
+    category?: string;
     imageUrl?: string;
     excerpt?: string;
 }
 
-export default async function HomiliesPage() {
-    const homilies: Homily[] = await client.fetch(HOMILIES_QUERY);
+export default async function PrayersPage() {
+    const prayers: Prayer[] = await client.fetch(PRAYERS_QUERY);
 
     return (
         <div className="container py-12">
             <header className="text-center mb-12">
                 <h1 className="text-4xl font-bold tracking-tight lg:text-5xl">
-                    Homilies & Reflections
+                    Prayers & Devotionals
                 </h1>
                 <p className="mt-4 text-lg text-muted-foreground">
-                    Explore our collection of homilies and reflections on the Word of God.
+                    Find solace and inspiration in our collection of prayers and devotionals.
                 </p>
             </header>
 
             <main>
-                {homilies.length > 0 ? (
+                {prayers.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {homilies.map((homily) => (
+                        {prayers.map((prayer) => (
                             <Link
-                                href={`/homilies/${homily.slug}`}
-                                key={homily._id}
+                                href={`/prayers/${prayer.slug}`}
+                                key={prayer._id}
                                 className="block bg-white rounded-lg border shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 group"
                             >
                                 <article>
-                                    {homily.imageUrl && (
+                                    {prayer.imageUrl && (
                                         <div className="relative aspect-video rounded-t-lg overflow-hidden">
                                             <Image
-                                                src={homily.imageUrl}
-                                                alt={homily.title}
+                                                src={prayer.imageUrl}
+                                                alt={prayer.title}
                                                 fill
                                                 className="object-cover"
                                             />
                                         </div>
                                     )}
                                     <div className="p-6">
-                                        {homily.category && (
+                                        {prayer.category && (
                                             <p className="text-sm font-medium text-primary uppercase mb-2">
-                                                {homily.category}
+                                                {prayer.category}
                                             </p>
                                         )}
-                                        <h2 className="text-2xl font-semibold mb-2 group-hover:text-primary leading-snug">
-                                            {homily.title}
+                                        <h2 className="text-xl font-semibold mb-2 group-hover:text-primary leading-snug">
+                                            {prayer.title}
                                         </h2>
-                                        {homily.scripture && (
-                                            <p className="text-sm text-muted-foreground mb-4">
-                                                {homily.scripture}
-                                            </p>
-                                        )}
-                                        <p className="text-sm text-muted-foreground">
-                                            {new Date(homily.date).toLocaleDateString("en-US", {
-                                                year: 'numeric', month: 'long', day: 'numeric'
-                                            })}
-                                        </p>
-                                        {homily.excerpt && (
+                                        {prayer.excerpt && (
                                             <p className="mt-4 text-base text-muted-foreground line-clamp-3">
-                                                {homily.excerpt}
+                                                {prayer.excerpt}
                                             </p>
                                         )}
                                     </div>
@@ -80,7 +68,7 @@ export default async function HomiliesPage() {
                         ))}
                     </div>
                 ) : (
-                    <p className="text-center text-muted-foreground">No homilies found.</p>
+                    <p className="text-center text-muted-foreground">No prayers found.</p>
                 )}
             </main>
         </div>
