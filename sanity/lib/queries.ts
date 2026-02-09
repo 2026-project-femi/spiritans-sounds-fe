@@ -3,63 +3,41 @@ export const HOME_QUERY = `
 *[_type == "home"][0]{
   title,
   heroText,
-  heroImage{
-    asset->{url}
-  },
-  ctaText,
-  aboutText,
-  aboutImage{
-    asset->{url}
-  },
+  "carouselImages": carouselImages[].asset->url,
   ctaSection,
   seo,
-  "latestHomilies": *[_type == "homily"] | order(publishedAt desc)[0...3]{
+  "latestPosts": *[_type == "homily" || _type == "article"] | order(coalesce(date, publishedAt) desc)[0...3]{
+      _id,
+      title,
+      "slug": slug.current,
+      "date": coalesce(date, publishedAt),
+      scripture,
+      category,
+      author,
+      "imageUrl": image.asset->url,
+      excerpt,
+      "type": _type
+  },
+  "latestHomilies": *[_type == "homily"] | order(date desc)[0...3]{
       _id,
       title,
       "slug": slug.current,
       date,
       scripture,
       category,
-      "imageUrl": featuredImage.asset->url,
+      "imageUrl": image.asset->url,
       excerpt
   },
-  "latestArticles": *[_type == "article"] | order(publishedAt desc)[0...3]{
-      _id,
-      title,
-      "slug": slug.current,
-      author,
-      "imageUrl": featuredImage.asset->url,
-      publishedAt,
-      excerpt
-  },
-  "latestEvents": *[_type == "event"] | order(date desc)[0...3]{
-      _id,
-      title,
-      "slug": slug.current,
-      date,
-      location,
-      "imageUrl": featuredImage.asset->url,
-      excerpt // Use description as excerpt for events
-  },
-  "latestPrayers": *[_type == "prayer"] | order(publishedAt desc)[0...3]{
+  "latestPrayers": *[_type == "prayer"] | order(_createdAt desc)[0...3]{
       _id,
       title,
       "slug": slug.current,
       category,
-      "imageUrl": featuredImage.asset->url,
-      excerpt
-  },
-  "latestMusic": *[_type == "music"] | order(publishedAt desc)[0...3]{
-      _id,
-      title,
-      "slug": slug.current,
-      artist,
-      "imageUrl": featuredImage.asset->url,
+      "imageUrl": image.asset->url,
       excerpt
   }
 }
 `;
-
 // About / Generic Pages
 // Used for: About the Ministry
 // Any static page
@@ -74,10 +52,9 @@ export const PAGE_QUERY = `
 }
 `;
 
-
-// Homilies List Page
+// Homilies List Page with Pagination
 export const HOMILIES_QUERY = `
-*[_type == "homily"] | order(publishedAt desc){
+*[_type == "homily"] | order(publishedAt desc)[$start...$end]{
   _id,
   title,
   "slug": slug.current,
@@ -87,6 +64,11 @@ export const HOMILIES_QUERY = `
   "imageUrl": featuredImage.asset->url,
   excerpt
 }
+`;
+
+// Count of all Homilies
+export const HOMILIES_COUNT_QUERY = `
+count(*[_type == "homily"])
 `;
 
 // Single Homily Page
@@ -106,9 +88,9 @@ export const HOMILY_QUERY = `
 }
 `;
 
-// Articles List Page
+// Articles List Page with Pagination
 export const ARTICLES_QUERY = `
-*[_type == "article"] | order(publishedAt desc) {
+*[_type == "article"] | order(publishedAt desc)[$start...$end] {
   _id,
   title,
   "slug": slug.current,
@@ -117,6 +99,11 @@ export const ARTICLES_QUERY = `
   publishedAt,
   excerpt
 }
+`;
+
+// Count of all Articles
+export const ARTICLES_COUNT_QUERY = `
+count(*[_type == "article"])
 `;
 
 // Single Article Page
@@ -132,9 +119,9 @@ export const ARTICLE_QUERY = `
 }
 `;
 
-// Prayers List Page
+// Prayers List Page with Pagination
 export const PRAYERS_QUERY = `
-*[_type == "prayer"] | order(publishedAt desc) {
+*[_type == "prayer"] | order(publishedAt desc)[$start...$end] {
   _id,
   title,
   "slug": slug.current,
@@ -143,6 +130,11 @@ export const PRAYERS_QUERY = `
   excerpt,
   content
 }
+`;
+
+// Count of all Prayers
+export const PRAYERS_COUNT_QUERY = `
+count(*[_type == "prayer"])
 `;
 
 // Single Prayer Page
@@ -157,9 +149,9 @@ export const PRAYER_QUERY = `
 }
 `;
 
-// Music List Page
+// Music List Page with Pagination
 export const MUSIC_QUERY = `
-*[_type == "music"] | order(publishedAt desc) {
+*[_type == "music"] | order(publishedAt desc)[$start...$end] {
   _id,
   title,
   "slug": slug.current,
@@ -169,6 +161,11 @@ export const MUSIC_QUERY = `
   "imageUrl": featuredImage.asset->url,
   excerpt
 }
+`;
+
+// Count of all Music items
+export const MUSIC_COUNT_QUERY = `
+count(*[_type == "music"])
 `;
 
 // Single Music Page
@@ -185,9 +182,9 @@ export const SINGLE_MUSIC_QUERY = `
 }
 `;
 
-// Events List Page
+// Events List Page with Pagination
 export const EVENTS_QUERY = `
-*[_type == "event"] | order(date desc) {
+*[_type == "event"] | order(date desc)[$start...$end] {
   _id,
   title,
   "slug": slug.current,
@@ -196,6 +193,11 @@ export const EVENTS_QUERY = `
   description, // Using description as excerpt
   "imageUrl": featuredImage.asset->url
 }
+`;
+
+// Count of all Events
+export const EVENTS_COUNT_QUERY = `
+count(*[_type == "event"])
 `;
 
 // Single Event Page
@@ -208,6 +210,33 @@ export const EVENT_QUERY = `
   location,
   description,
   "imageUrl": featuredImage.asset->url
+}
+`;
+
+// All Categories for Sidebar
+export const ALL_CATEGORIES_QUERY = `
+array::unique(*[_type == "homily"].category)
+`;
+
+// Latest combined Homilies and Articles for Sidebar
+export const LATEST_SIDEBAR_POSTS_QUERY = `
+{
+  "homilies": *[_type == "homily"] | order(publishedAt desc)[0...3] {
+    _id,
+    title,
+    "slug": slug.current,
+    "publishedAt": date, // Map date to publishedAt
+    "imageUrl": featuredImage.asset->url,
+    "type": "homily"
+  },
+  "articles": *[_type == "article"] | order(publishedAt desc)[0...3] {
+    _id,
+    title,
+    "slug": slug.current,
+    publishedAt,
+    "imageUrl": featuredImage.asset->url, // Assuming article schema has featuredImage
+    "type": "article"
+  }
 }
 `;
 

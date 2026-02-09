@@ -2,6 +2,7 @@ import Image from "next/image";
 import { client } from "@/sanity/lib/client";
 import { ARTICLE_QUERY } from "@/sanity/lib/queries";
 import { PortableText } from "@portabletext/react";
+import { Sidebar } from "@/components/common/Sidebar"; // Import the new Sidebar component
 
 export const revalidate = 60;
 
@@ -29,47 +30,69 @@ export default async function SingleArticlePage({ params }: { params: Promise<{ 
         return (
             <div className="container py-12 text-center">
                 <h1 className="text-4xl font-bold">Article not found</h1>
+                <p className="mt-4 text-lg text-muted-foreground">
+                    The requested article could not be found.
+                </p>
             </div>
         );
     }
 
     return (
-        <div className="container py-12">
-            <article className="max-w-3xl mx-auto">
-                {article.imageUrl && (
-                    <div className="relative aspect-video rounded-lg overflow-hidden mb-8 shadow-lg">
-                        <Image
-                            src={article.imageUrl}
-                            alt={article.title}
-                            fill
-                            className="object-cover"
-                        />
-                    </div>
-                )}
-
-                <header className="mb-8 text-center">
-                    <h1 className="text-4xl font-bold tracking-tight lg:text-5xl mb-4">
-                        {article.title}
-                    </h1>
-                    <div className="mt-4 text-sm text-muted-foreground flex justify-center items-center gap-4">
-                        {article.author && <p>By {article.author}</p>}
-                        {article.publishedAt && (
-                            <>
-                                <span>&bull;</span>
-                                <p>
-                                    Published on {new Date(article.publishedAt).toLocaleDateString("en-US", {
-                                        year: 'numeric', month: 'long', day: 'numeric'
-                                    })}
-                                </p>
-                            </>
+        <main className="pt-32 pb-20">
+            <div className="max-w-7xl mx-auto px-6 md:px-12">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
+                    {/* Main Content Area */}
+                    <article className="lg:col-span-8 relative z-0">
+                        {article.imageUrl && (
+                            // Image Section
+                            <div className="aspect-[16/9] mb-12 bg-gray-100 overflow-hidden rounded-lg">
+                                <Image
+                                    src={article.imageUrl}
+                                    alt={article.title}
+                                    width={800} // Explicit width
+                                    height={450} // Explicit height
+                                    className="object-cover transition-opacity duration-300"
+                                    priority
+                                />
+                            </div>
                         )}
-                    </div>
-                </header>
 
-                <div className="prose prose-lg dark:prose-invert max-w-none mx-auto">
-                    <PortableText value={article.content} />
+                        {/* Title and Content Section (below the image) */}
+                        <div className="pt-8">
+                            <header className="mb-8 text-center">
+                                <div className="flex items-center justify-center space-x-4 mb-6">
+                                    {article.publishedAt && (
+                                        <span className="text-[10px] tracking-widest text-gray-400 uppercase">
+                                            {new Date(article.publishedAt).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}
+                                        </span>
+                                    )}
+                                </div>
+                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-foreground mb-8">
+                                    {article.title}
+                                </h1>
+                                <div className="flex items-center space-x-4 pb-8 border-b border-gray-200 justify-center">
+                                    {article.author && (
+                                        <p className="text-sm text-muted-foreground">
+                                            By {article.author}
+                                        </p>
+                                    )}
+                                </div>
+                            </header>
+
+                            <div className="prose prose-lg dark:prose-invert max-w-none text-foreground/80 space-y-8 font-light leading-loose text-lg">
+                                <PortableText value={article.content} />
+                            </div>
+                        </div>
+                    </article>
+
+                    {/* Sidebar Area */}
+                    <div className="lg:col-span-4">
+                        <div className="sticky top-32 z-20">
+                            <Sidebar />
+                        </div>
+                    </div>
                 </div>
-            </article>
-        </div>
+            </div>
+        </main>
     );
 }

@@ -1,375 +1,310 @@
-// app/page.tsx
-import Image from "next/image";
 import Link from "next/link";
-import { PortableText } from "@portabletext/react";
 import { HOME_QUERY } from "@/sanity/lib/queries";
 import { client } from "@/sanity/lib/client";
+import React from "react";
+import Image from "next/image";
+import { HomeCarousel } from "@/components/HomeCarousel";
+import Sidebar from "@/components/common/Sidebar";
 
 export const revalidate = 60;
 
 interface BasicItem {
-    _id: string;
-    title: string;
-    slug: string;
-    imageUrl?: string;
-    excerpt?: string;
+	_id: string;
+	title: string;
+	slug: string;
+	imageUrl?: string;
+	excerpt?: string;
 }
 
 interface HomilyItem extends BasicItem {
-    date: string;
-    scripture: string;
-    category: string;
-}
-
-interface ArticleItem extends BasicItem {
-    author: string;
-    publishedAt: string;
-}
-
-interface EventItem extends BasicItem {
-    date: string;
-    location: string;
+	date: string;
+	scripture: string;
+	category: string;
 }
 
 interface PrayerItem extends BasicItem {
-    category: string;
+	category: string;
 }
 
-interface MusicItem extends BasicItem {
-    artist: string;
+interface LatestPostItem {
+	_id: string;
+	title: string;
+	slug: string;
+	date: string;
+	scripture?: string;
+	category?: string;
+	author?: string;
+	imageUrl?: string;
+	excerpt?: string;
+	type: "homily" | "article";
 }
 
 interface HomeData {
 	title: string;
 	heroText: string;
-	heroImage: { asset: { url: string } };
-	ctaText: string;
-	aboutText: any; // PortableText
-	aboutImage: { asset: { url: string } };
+	carouselImages?: string[];
 	ctaSection: {
-		title: string;
-		description: string;
 		buttonText: string;
 		buttonLink: string;
 	};
-    latestHomilies: HomilyItem[];
-    latestArticles: ArticleItem[];
-    latestEvents: EventItem[];
-    latestPrayers: PrayerItem[];
-    latestMusic: MusicItem[];
+	latestPosts: LatestPostItem[];
+	latestHomilies: HomilyItem[];
+	latestPrayers: PrayerItem[];
 }
 
-export default async function HomePage() {
+const HomePage: React.FC = async () => {
 	const data: HomeData = await client.fetch(HOME_QUERY);
+	console.log(data.latestPrayers, "latest homilies");
 
 	if (!data) return null;
 
 	return (
-		<main className="min-h-screen">
-			{/* HERO */}
-			<section className="relative h-[80vh] flex items-center justify-center text-white overflow-hidden">
-				{data.heroImage && (
-					<Image
-						src={data.heroImage.asset.url}
-						alt={data.title}
-						fill
-						priority
-						className="object-cover brightness-50 transform scale-105 transition-transform duration-1000 ease-in-out"
-					/>
-				)}
-
-				<div className="relative z-10 max-w-4xl text-center px-6 py-12 bg-black bg-opacity-40 rounded-xl backdrop-blur-sm">
-					<h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-lg">
-						{data.title}
-					</h1>
-					<p className="text-xl md:text-2xl text-gray-200 mb-10 font-light leading-relaxed">
-						{data.heroText}
-					</p>
-					{data.ctaText && (
-						<Link
-							href="/homilies"
-							className="inline-block rounded-full bg-white text-black px-10 py-5 text-lg font-semibold hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-lg"
-						>
-							{data.ctaText}
-						</Link>
-					)}
-				</div>
-			</section>
-
-            {/* LATEST HOMILIES */}
-            {data.latestHomilies && data.latestHomilies.length > 0 && (
-                <section className="py-20 px-6 max-w-7xl mx-auto">
-                    <h2 className="text-4xl font-bold text-center mb-16 text-gray-800">Latest Homilies</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        {data.latestHomilies.map((item) => (
-                            <Link
-                                href={`/homilies/${item.slug}`}
-                                key={item._id}
-                                className="block bg-white rounded-lg border shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 group"
-                            >
-                                <article>
-                                    {item.imageUrl && (
-                                        <div className="relative aspect-video rounded-t-lg overflow-hidden">
-                                            <Image src={item.imageUrl} alt={item.title} fill className="object-cover" />
-                                        </div>
-                                    )}
-                                    <div className="p-6">
-                                        {item.category && (
-                                            <p className="text-sm font-medium text-primary uppercase mb-2">
-                                                {item.category}
-                                            </p>
-                                        )}
-                                        <h3 className="text-2xl font-semibold mb-2 group-hover:text-primary leading-snug">
-                                            {item.title}
-                                        </h3>
-                                        {item.scripture && (
-                                            <p className="text-sm text-muted-foreground mb-4">
-                                                {item.scripture}
-                                            </p>
-                                        )}
-                                        <p className="text-sm text-muted-foreground">
-                                            {new Date(item.date).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}
-                                        </p>
-                                        {item.excerpt && (
-                                            <p className="mt-4 text-base text-muted-foreground line-clamp-3">
-                                                {item.excerpt}
-                                            </p>
-                                        )}
-                                    </div>
-                                </article>
-                            </Link>
-                        ))}
-                    </div>
-                    <div className="text-center mt-16">
-                        <Link href="/homilies" className="inline-block text-lg font-semibold text-primary hover:text-primary-foreground transition-colors duration-300">
-                            View All Homilies &rarr;
-                        </Link>
-                    </div>
-                </section>
-            )}
-
-            {/* LATEST ARTICLES */}
-            {data.latestArticles && data.latestArticles.length > 0 && (
-                <section className="bg-gray-50 py-20 px-6 max-w-7xl mx-auto">
-                    <h2 className="text-4xl font-bold text-center mb-16 text-gray-800">Latest Articles</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        {data.latestArticles.map((item) => (
-                            <Link
-                                href={`/articles/${item.slug}`}
-                                key={item._id}
-                                className="block bg-white rounded-lg border shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 group"
-                            >
-                                <article>
-                                    {item.imageUrl && (
-                                        <div className="relative aspect-video rounded-t-lg overflow-hidden">
-                                            <Image src={item.imageUrl} alt={item.title} fill className="object-cover" />
-                                        </div>
-                                    )}
-                                    <div className="p-6">
-                                        <h3 className="text-2xl font-semibold mb-2 group-hover:text-primary leading-snug">
-                                            {item.title}
-                                        </h3>
-                                        {item.author && (
-                                            <p className="text-sm text-muted-foreground mb-1">By {item.author}</p>
-                                        )}
-                                        <p className="text-sm text-muted-foreground">
-                                            Published on {new Date(item.publishedAt).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}
-                                        </p>
-                                        {item.excerpt && (
-                                            <p className="mt-4 text-base text-muted-foreground line-clamp-3">
-                                                {item.excerpt}
-                                            </p>
-                                        )}
-                                    </div>
-                                </article>
-                            </Link>
-                        ))}
-                    </div>
-                    <div className="text-center mt-16">
-                        <Link href="/articles" className="inline-block text-lg font-semibold text-primary hover:text-primary-foreground transition-colors duration-300">
-                            View All Articles &rarr;
-                        </Link>
-                    </div>
-                </section>
-            )}
-
-            {/* LATEST EVENTS */}
-            {data.latestEvents && data.latestEvents.length > 0 && (
-                <section className="py-20 px-6 max-w-7xl mx-auto">
-                    <h2 className="text-4xl font-bold text-center mb-16 text-gray-800">Upcoming Events</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        {data.latestEvents.map((item) => (
-                            <Link
-                                href={`/news/${item.slug}`}
-                                key={item._id}
-                                className="block bg-white rounded-lg border shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 group"
-                            >
-                                <article>
-                                    {item.imageUrl && (
-                                        <div className="relative aspect-video rounded-t-lg overflow-hidden">
-                                            <Image src={item.imageUrl} alt={item.title} fill className="object-cover" />
-                                        </div>
-                                    )}
-                                    <div className="p-6">
-                                        <h3 className="text-2xl font-semibold mb-2 group-hover:text-primary leading-snug">
-                                            {item.title}
-                                        </h3>
-                                        {item.date && (
-                                            <p className="text-sm text-muted-foreground mb-1">
-                                                {new Date(item.date).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })}
-                                            </p>
-                                        )}
-                                        {item.location && (
-                                            <p className="text-sm text-muted-foreground mb-4">
-                                                {item.location}
-                                            </p>
-                                        )}
-                                        {item.excerpt && (
-                                            <p className="mt-4 text-base text-muted-foreground line-clamp-3">
-                                                {item.excerpt}
-                                            </p>
-                                        )}
-                                    </div>
-                                </article>
-                            </Link>
-                        ))}
-                    </div>
-                    <div className="text-center mt-16">
-                        <Link href="/news" className="inline-block text-lg font-semibold text-primary hover:text-primary-foreground transition-colors duration-300">
-                            View All Events &rarr;
-                        </Link>
-                    </div>
-                </section>
-            )}
-
-            {/* LATEST PRAYERS */}
-            {data.latestPrayers && data.latestPrayers.length > 0 && (
-                <section className="bg-gray-50 py-20 px-6 max-w-7xl mx-auto">
-                    <h2 className="text-4xl font-bold text-center mb-16 text-gray-800">Latest Prayers</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        {data.latestPrayers.map((item) => (
-                            <Link
-                                href={`/prayers/${item.slug}`}
-                                key={item._id}
-                                className="block bg-white rounded-lg border shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 group"
-                            >
-                                <article>
-                                    {item.imageUrl && (
-                                        <div className="relative aspect-video rounded-t-lg overflow-hidden">
-                                            <Image src={item.imageUrl} alt={item.title} fill className="object-cover" />
-                                        </div>
-                                    )}
-                                    <div className="p-6">
-                                        {item.category && (
-                                            <p className="text-sm font-medium text-primary uppercase mb-2">
-                                                {item.category}
-                                            </p>
-                                        )}
-                                        <h3 className="text-2xl font-semibold mb-2 group-hover:text-primary leading-snug">
-                                            {item.title}
-                                        </h3>
-                                        {item.excerpt && (
-                                            <p className="mt-4 text-base text-muted-foreground line-clamp-3">
-                                                {item.excerpt}
-                                            </p>
-                                        )}
-                                    </div>
-                                </article>
-                            </Link>
-                        ))}
-                    </div>
-                    <div className="text-center mt-16">
-                        <Link href="/prayers" className="inline-block text-lg font-semibold text-primary hover:text-primary-foreground transition-colors duration-300">
-                            View All Prayers &rarr;
-                        </Link>
-                    </div>
-                </section>
-            )}
-
-            {/* LATEST MUSIC */}
-            {data.latestMusic && data.latestMusic.length > 0 && (
-                <section className="py-20 px-6 max-w-7xl mx-auto">
-                    <h2 className="text-4xl font-bold text-center mb-16 text-gray-800">Latest Music & Worship</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        {data.latestMusic.map((item) => (
-                            <Link
-                                href={`/music/${item.slug}`}
-                                key={item._id}
-                                className="block bg-white rounded-lg border shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 group"
-                            >
-                                <article>
-                                    {item.imageUrl && (
-                                        <div className="relative aspect-video rounded-t-lg overflow-hidden">
-                                            <Image src={item.imageUrl} alt={item.title} fill className="object-cover" />
-                                        </div>
-                                    )}
-                                    <div className="p-6">
-                                        {item.artist && (
-                                            <p className="text-sm text-muted-foreground mb-1">By {item.artist}</p>
-                                        )}
-                                        <h3 className="text-2xl font-semibold mb-2 group-hover:text-primary leading-snug">
-                                            {item.title}
-                                        </h3>
-                                        {item.excerpt && (
-                                            <p className="mt-4 text-base text-muted-foreground line-clamp-3">
-                                                {item.excerpt}
-                                            </p>
-                                        )}
-                                    </div>
-                                </article>
-                            </Link>
-                        ))}
-                    </div>
-                    <div className="text-center mt-16">
-                        <Link href="/music" className="inline-block text-lg font-semibold text-primary hover:text-primary-foreground transition-colors duration-300">
-                            View All Music &rarr;
-                        </Link>
-                    </div>
-                </section>
-            )}
-
-
-			{/* ABOUT SECTION */}
-			{data.aboutText && (
-				<section className="bg-gray-50 py-20 px-6">
-					<div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-						<div className={data.aboutImage ? "lg:order-2" : ""}>
-							<h2 className="text-4xl font-bold mb-8 text-gray-800">Our Mission</h2>
-							<div className="prose prose-lg max-w-none text-gray-700 leading-relaxed">
-								<PortableText value={data.aboutText} />
-							</div>
-						</div>
-						{data.aboutImage && (
-							<div className="lg:order-1 relative rounded-2xl overflow-hidden shadow-xl h-96 w-full">
-								<Image
-									src={data.aboutImage.asset.url}
-									alt="About Us"
-									fill
-									className="object-cover"
-								/>
+		<main className="pt-32 pb-20">
+			{/* Hero Section */}
+			<section className="px-6 md:px-12 mb-32">
+				<div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+					{/* Left Content - Static */}
+					<div className="lg:col-span-7 space-y-8 animate-fadeIn">
+						<span className="text-xs font-bold tracking-[0.4em] uppercase text-sacred-gold">
+							A Spiritual Journey
+						</span>
+						<h1 className="text-5xl md:text-7xl lg:text-8xl serif leading-[1.1] text-foreground">{data.title}</h1>
+						<p className="text-lg md:text-xl font-light text-foreground/60 max-w-xl leading-relaxed">
+							{data.heroText}
+						</p>
+						{data.ctaSection && (
+							<div className="pt-6">
+								<Link
+									href={data.ctaSection.buttonLink}
+									className="inline-block px-10 py-4 bg-black text-white text-xs tracking-widest uppercase font-semibold hover:bg-transparent hover:text-[#b08d57] hover:border transition-colors">
+									{data.ctaSection.buttonText}
+								</Link>
 							</div>
 						)}
 					</div>
-				</section>
-			)}
 
-			{/* CTA SECTION */}
-			{data.ctaSection && (
-				<section className="bg-indigo-700 text-white py-20 px-6">
-					<div className="max-w-4xl mx-auto text-center">
-						<h2 className="text-4xl font-bold mb-6">{data.ctaSection.title}</h2>
-						<p className="text-xl text-indigo-100 mb-10 leading-relaxed">
-							{data.ctaSection.description}
-						</p>
-						<Link
-							href={data.ctaSection.buttonLink}
-							className="inline-block rounded-full bg-white text-indigo-700 px-10 py-5 text-lg font-semibold hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-lg"
-						>
-							{data.ctaSection.buttonText}
-						</Link>
+					{/* Right Content - Image Carousel */}
+					<div className="lg:col-span-5 relative">
+						{data.carouselImages && data.carouselImages.length > 0 && (
+							<HomeCarousel images={data.carouselImages} />
+						)}
+						{/* Decorative element */}
+						<div className="absolute -bottom-10 -left-10 w-40 h-40 border border-primary/30 hidden md:block"></div>
 					</div>
-				</section>
-			)}
+				</div>
+			</section>
+
+			<div className="max-w-475 mx-auto px-6 md:px-12">
+				<div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
+					{/* Main Content Area */}
+					<div className="lg:col-span-8">
+						{/* Latest Reflections */}
+						{data.latestPosts && data.latestPosts.length > 0 && (
+							<section className="px-6 md:px-12 mb-32 bg-gray-50 py-24">
+								<div className="max-w-7xl mx-auto">
+									<div className="flex justify-between items-end mb-16 border-b border-foreground/10 pb-8">
+										<h2 className="text-4xl serif tracking-tight">Latest Reflections</h2>
+										<Link
+											href="/articles"
+											className="text-xs tracking-widest uppercase text-sacred-gold font-bold hover:text-foreground transition-colors">
+											View All
+										</Link>
+									</div>
+
+									<div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+										{data.latestPosts.map((post) => (
+											<Link
+												href={`/${post.type === "homily" ? "homilies" : "articles"}/${post.slug}`}
+												key={post._id}
+												className="group cursor-pointer">
+												<div className="aspect-video mb-8 overflow-hidden bg-gray-100 relative">
+													{post.imageUrl && (
+														<Image
+															src={post.imageUrl}
+															alt={post.title}
+															fill
+															className="w-full h-full object-cover grayscale group-hover:grayscale-0 opacity-80 hover:scale-105 transition-all"
+														/>
+													)}
+													<div className="absolute top-4 left-4 bg-white px-3 py-1 text-[9px] font-bold tracking-widest uppercase text-sacred-gold">
+														{post.type === "homily"
+															? post.category || "Homily"
+															: "Article"}
+													</div>
+												</div>
+												<span className="text-[10px] tracking-[0.2em] uppercase text-foreground/40 mb-3 block">
+													{new Date(post.date).toLocaleDateString(
+														"en-US",
+														{
+															year: "numeric",
+															month: "long",
+															day: "numeric",
+														},
+													)}
+												</span>
+												<h3 className="text-2xl serif mb-4 group-hover:text-primary transition-colors leading-snug">
+													{post.title}
+												</h3>
+												<p className="text-sm font-light text-foreground/60 leading-relaxed line-clamp-2">
+													{post.excerpt}
+												</p>
+												<div className="mt-6 pt-6 border-t border-foreground/5 opacity-0 group-hover:opacity-100 transition-all">
+													<span className="text-[10px] uppercase tracking-widest font-bold">
+														Read More →
+													</span>
+												</div>
+											</Link>
+										))}
+									</div>
+								</div>
+							</section>
+						)}
+
+						{/* LATEST HOMILIES */}
+						{data.latestHomilies && data.latestHomilies.length > 0 && (
+							<section className="px-6 md:px-12 mb-32 py-24">
+								<div className="max-w-7xl mx-auto">
+									<div className="flex justify-between items-end mb-16 border-b border-foreground/10 pb-8">
+										<h2 className="text-4xl serif tracking-tight">Latest Homilies</h2>
+										<Link
+											href="/homilies"
+											className="text-xs tracking-widest uppercase text-sacred-gold font-bold hover:text-foreground transition-colors">
+											View All
+										</Link>
+									</div>
+
+									<div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+										{data.latestHomilies.map((homily) => (
+											<Link
+												href={`/homilies/${homily.slug}`}
+												key={homily._id}
+												className="group cursor-pointer">
+												<div className="aspect-video mb-8 overflow-hidden bg-gray-100 relative">
+													{homily.imageUrl && (
+														<Image
+															src={homily.imageUrl}
+															alt={homily.title}
+															fill
+															className="w-full h-full object-cover grayscale group-hover:grayscale-0 opacity-80 hover:scale-105 transition-all"
+														/>
+													)}
+													<div className="absolute top-4 left-4 bg-white px-3 py-1 text-[9px] font-bold tracking-widest uppercase text-sacred-gold">
+														Homily
+													</div>
+												</div>
+												<span className="text-[10px] tracking-[0.2em] uppercase text-foreground/40 mb-3 block">
+													{new Date(homily.date).toLocaleDateString(
+														"en-US",
+														{
+															year: "numeric",
+															month: "long",
+															day: "numeric",
+														},
+													)}
+												</span>
+												<h3 className="text-2xl serif mb-4 group-hover:text-primary transition-colors leading-snug">
+													{homily.title}
+												</h3>
+												<p className="text-sm font-light text-foreground/60 leading-relaxed line-clamp-2">
+													{homily.excerpt}
+												</p>
+												<div className="mt-6 pt-6 border-t border-foreground/5 opacity-0 group-hover:opacity-100 transition-all">
+													<span className="text-[10px] uppercase tracking-widest font-bold">
+														Read More →
+													</span>
+												</div>
+											</Link>
+										))}
+									</div>
+								</div>
+							</section>
+						)}
+
+						{/* LATEST PRAYERS */}
+						{data.latestPrayers && data.latestPrayers.length > 0 && (
+							<section className="px-6 md:px-12 mb-32 bg-gray-50 py-24">
+								<div className="max-w-7xl mx-auto">
+									<div className="flex justify-between items-end mb-16 border-b border-foreground/10 pb-8">
+										<h2 className="text-4xl serif tracking-tight">Latest Prayers</h2>
+										<Link
+											href="/prayers"
+											className="text-xs tracking-widest uppercase text-sacred-gold font-bold hover:text-foreground transition-colors">
+											View All
+										</Link>
+									</div>
+
+									<div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+										{data.latestPrayers.map((prayer) => (
+											<Link
+												href={`/prayers/${prayer.slug}`}
+												key={prayer._id}
+												className="group cursor-pointer">
+												<div className="aspect-video mb-8 overflow-hidden bg-gray-100 relative">
+													{prayer.imageUrl && (
+														<Image
+															src={prayer.imageUrl}
+															alt={prayer.title}
+															fill
+															className="w-full h-full object-cover grayscale group-hover:grayscale-0 opacity-80 hover:scale-105 transition-all"
+														/>
+													)}
+													<div className="absolute top-4 left-4 bg-white px-3 py-1 text-[9px] font-bold tracking-widest uppercase text-sacred-gold">
+														Prayer
+													</div>
+												</div>
+												<span className="text-[10px] tracking-[0.2em] uppercase text-foreground/40 mb-3 block">
+													{prayer.category && `${prayer.category}`}
+												</span>
+												<h3 className="text-2xl serif mb-4 group-hover:text-primary transition-colors leading-snug">
+													{prayer.title}
+												</h3>
+												<p className="text-sm font-light text-foreground/60 leading-relaxed line-clamp-2">
+													{prayer.excerpt}
+												</p>
+												<div className="mt-6 pt-6 border-t border-foreground/5 opacity-0 group-hover:opacity-100 transition-all">
+													<span className="text-[10px] uppercase tracking-widest font-bold">
+														Read More →
+													</span>
+												</div>
+											</Link>
+										))}
+									</div>
+								</div>
+							</section>
+						)}
+
+						{/* Quote / Meditation Section */}
+						<section className="px-6 md:px-12 py-32 bg-white relative overflow-hidden">
+							<div className="absolute top-0 right-0 w-1/3 h-full bg-gray-100/30 transform skew-x-12 translate-x-1/2"></div>
+							<div className="max-w-4xl mx-auto text-center relative z-10">
+								<div className="mb-12 inline-block">
+									<svg
+										className="w-12 h-12 text-primary opacity-30 mx-auto"
+										fill="currentColor"
+										viewBox="0 0 24 24">
+										<path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017V14C19.017 11.7909 17.2261 10 15.017 10H14.017V8H15.017C18.3307 8 21.017 10.6863 21.017 14V21H14.017ZM3.017 21L3.017 18C3.017 16.8954 3.91243 16 5.017 16H8.017V14C8.017 11.7909 6.2261 10 4.017 10H3.017V8H4.017C7.3307 8 10.017 10.6863 10.017 14V21H3.017Z" />
+									</svg>
+								</div>
+								<p className="text-3xl md:text-5xl serif italic leading-relaxed text-foreground mb-12">
+									&quot;Silence is the root of everything. If you spiral into its center, you
+									will find the source of your light.&quot;
+								</p>
+								<span className="text-xs tracking-[0.4em] uppercase font-bold text-primary">
+									— Thomas Merton
+								</span>
+							</div>
+						</section>
+					</div>
+					{/* Sidebar Area */}
+					<div className="lg:col-span-4">
+						<div className="sticky top-32 z-20">
+							<Sidebar />
+						</div>
+					</div>
+				</div>
+			</div>
 		</main>
 	);
-}
+};
+
+export default HomePage;
