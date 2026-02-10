@@ -6,7 +6,7 @@ export const HOME_QUERY = `
   "carouselImages": carouselImages[].asset->url,
   ctaSection,
   seo,
-  "latestPosts": *[_type == "homily" || _type == "article"] | order(coalesce(date, publishedAt) desc)[0...3]{
+  "latestPosts": *[_type == "article"] | order(publishedAt desc)[0...3]{
       _id,
       title,
       "slug": slug.current,
@@ -14,7 +14,7 @@ export const HOME_QUERY = `
       scripture,
       category,
       author,
-      "imageUrl": image.asset->url,
+      "imageUrl": featuredImage.asset->url,
       excerpt,
       "type": _type
   },
@@ -25,7 +25,7 @@ export const HOME_QUERY = `
       date,
       scripture,
       category,
-      "imageUrl": image.asset->url,
+      "imageUrl": featuredImage.asset->url,
       excerpt
   },
   "latestPrayers": *[_type == "prayer"] | order(_createdAt desc)[0...3]{
@@ -33,7 +33,7 @@ export const HOME_QUERY = `
       title,
       "slug": slug.current,
       category,
-      "imageUrl": image.asset->url,
+      "imageUrl": featuredImage.asset->url,
       excerpt
   }
 }

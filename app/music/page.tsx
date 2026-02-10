@@ -3,6 +3,7 @@ import Image from "next/image";
 import { client } from "@/sanity/lib/client";
 import { MUSIC_QUERY, MUSIC_COUNT_QUERY } from "@/sanity/lib/queries"; // Import MUSIC_COUNT_QUERY
 import { Sidebar } from "@/components/common/Sidebar";
+import { MusicItem } from "@/lib/types";
 
 export const revalidate = 60;
 
@@ -10,159 +11,157 @@ const MUSIC_PER_PAGE = 9;
 const MAX_PAGE_BUTTONS = 5;
 
 interface Music {
-    _id: string;
-    title: string;
-    slug: string;
-    artist: string;
-    imageUrl?: string;
-    excerpt?: string;
+	_id: string;
+	title: string;
+	slug: string;
+	artist: string;
+	imageUrl?: string;
+	excerpt?: string;
 }
 
 interface MusicPageProps {
-    searchParams: { [key: string]: string | string[] | undefined };
+	searchParams: { [key: string]: string | string[] | undefined };
 }
 
 export default async function MusicPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
-    const resolvedSearchParams = await searchParams;
-    const currentPage = parseInt(resolvedSearchParams.page as string || '1', 10);
-    const startIndex = (currentPage - 1) * MUSIC_PER_PAGE;
-    const endIndex = startIndex + MUSIC_PER_PAGE;
+	const resolvedSearchParams = await searchParams;
+	const currentPage = parseInt((resolvedSearchParams.page as string) || "1", 10);
+	const startIndex = (currentPage - 1) * MUSIC_PER_PAGE;
+	const endIndex = startIndex + MUSIC_PER_PAGE;
 
-    const [musicItems, totalMusic] = await Promise.all([
-        client.fetch(MUSIC_QUERY, { start: startIndex, end: endIndex }),
-        client.fetch(MUSIC_COUNT_QUERY),
-    ]);
+	const [musicItems, totalMusic] = await Promise.all([
+		client.fetch(MUSIC_QUERY, { start: startIndex, end: endIndex }),
+		client.fetch(MUSIC_COUNT_QUERY),
+	]);
 
-    const totalPages = Math.ceil(totalMusic / MUSIC_PER_PAGE);
-    const hasPreviousPage = currentPage > 1;
-    const hasNextPage = currentPage < totalPages;
+	const totalPages = Math.ceil(totalMusic / MUSIC_PER_PAGE);
+	const hasPreviousPage = currentPage > 1;
+	const hasNextPage = currentPage < totalPages;
 
-    const pageNumbers: (number | string)[] = [];
-    if (totalPages <= MAX_PAGE_BUTTONS + 2) {
-        for (let i = 1; i <= totalPages; i++) {
-            pageNumbers.push(i);
-        }
-    } else {
-        pageNumbers.push(1);
+	const pageNumbers: (number | string)[] = [];
+	if (totalPages <= MAX_PAGE_BUTTONS + 2) {
+		for (let i = 1; i <= totalPages; i++) {
+			pageNumbers.push(i);
+		}
+	} else {
+		pageNumbers.push(1);
 
-        const startWindow = Math.max(2, currentPage - Math.floor(MAX_PAGE_BUTTONS / 2));
-        const endWindow = Math.min(totalPages - 1, currentPage + Math.floor(MAX_PAGE_BUTTONS / 2));
+		const startWindow = Math.max(2, currentPage - Math.floor(MAX_PAGE_BUTTONS / 2));
+		const endWindow = Math.min(totalPages - 1, currentPage + Math.floor(MAX_PAGE_BUTTONS / 2));
 
-        if (startWindow > 2) {
-            pageNumbers.push('...');
-        }
+		if (startWindow > 2) {
+			pageNumbers.push("...");
+		}
 
-        for (let i = startWindow; i <= endWindow; i++) {
-            if (i < totalPages) pageNumbers.push(i);
-        }
+		for (let i = startWindow; i <= endWindow; i++) {
+			if (i < totalPages) pageNumbers.push(i);
+		}
 
-        if (endWindow < totalPages - 1) {
-            pageNumbers.push('...');
-        }
-        if (totalPages > 1 && !pageNumbers.includes(totalPages)) {
-            pageNumbers.push(totalPages);
-        }
-    }
+		if (endWindow < totalPages - 1) {
+			pageNumbers.push("...");
+		}
+		if (totalPages > 1 && !pageNumbers.includes(totalPages)) {
+			pageNumbers.push(totalPages);
+		}
+	}
 
-    return (
-        <main className="pt-32 pb-20">
-            <div className="max-w-7xl mx-auto px-6 md:px-12">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
-                    {/* Main Content Area */}
-                    <div className="lg:col-span-8">
-                        <header className="text-center mb-12">
-                            <h1 className="text-4xl font-bold tracking-tight lg:text-5xl">
-                                Music & Worship
-                            </h1>
-                            <p className="mt-4 text-lg text-muted-foreground">
-                                Explore our collection of worship music and songs.
-                            </p>
-                        </header>
+	return (
+		<main className="pt-32 pb-20">
+			<div className="max-w-7xl mx-auto px-6 md:px-12">
+				<div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
+					{/* Main Content Area */}
+					<div className="lg:col-span-8">
+						<header className="text-center mb-12">
+							<h1 className="text-4xl font-bold tracking-tight lg:text-5xl">Music & Worship</h1>
+							<p className="mt-4 text-lg text-muted-foreground">
+								Explore our collection of worship music and songs.
+							</p>
+						</header>
 
-                        {musicItems.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                {musicItems.map((music) => (
-                                    <Link
-                                        href={`/music/${music.slug}`}
-                                        key={music._id}
-                                        className="block bg-white rounded-lg border shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 group"
-                                    >
-                                        <article>
-                                            {music.imageUrl && (
-                                                <div className="relative aspect-video rounded-t-lg overflow-hidden">
-                                                    <Image
-                                                        src={music.imageUrl}
-                                                        alt={music.title}
-                                                        fill
-                                                        className="object-cover"
-                                                    />
-                                                </div>
-                                            )}
-                                            <div className="p-6">
-                                                <h2 className="text-xl font-semibold mb-2 group-hover:text-primary leading-snug">
-                                                    {music.title}
-                                                </h2>
-                                                {music.artist && (
-                                                    <p className="text-sm text-muted-foreground mb-1">By {music.artist}</p>
-                                                )}
-                                                {music.excerpt && (
-                                                    <p className="mt-4 text-base text-muted-foreground line-clamp-3">
-                                                        {music.excerpt}
-                                                    </p>
-                                                )}
-                                            </div>
-                                        </article>
-                                    </Link>
-                                ))}
-                            </div>
-                        ) : (
-                            <p className="text-center text-muted-foreground">No music found.</p>
-                        )}
+						{musicItems.length > 0 ? (
+							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+								{musicItems.map((music: MusicItem) => (
+									<Link
+										href={`/music/${music.slug}`}
+										key={music._id}
+										className="block bg-white rounded-lg border shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 group">
+										<article>
+											{music.imageUrl && (
+												<div className="relative aspect-video rounded-t-lg overflow-hidden">
+													<Image
+														src={music.imageUrl}
+														alt={music.title}
+														fill
+														className="object-cover"
+													/>
+												</div>
+											)}
+											<div className="p-6">
+												<h2 className="text-xl font-semibold mb-2 group-hover:text-primary leading-snug">
+													{music.title}
+												</h2>
+												{music.artist && (
+													<p className="text-sm text-muted-foreground mb-1">
+														By {music.artist}
+													</p>
+												)}
+												{music.excerpt && (
+													<p className="mt-4 text-base text-muted-foreground line-clamp-3">
+														{music.excerpt}
+													</p>
+												)}
+											</div>
+										</article>
+									</Link>
+								))}
+							</div>
+						) : (
+							<p className="text-center text-muted-foreground">No music found.</p>
+						)}
 
-                        {/* Pagination Controls */}
-                        {totalPages > 1 && (
-                            <nav className="flex justify-center space-x-4 mt-16">
-                                <Link
-                                    href={`/music?page=${currentPage - 1}`}
-                                    className={`px-4 py-2 border rounded-lg ${!hasPreviousPage ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'}`}
-                                    aria-disabled={!hasPreviousPage}
-                                    tabIndex={!hasPreviousPage ? -1 : undefined}
-                                >
-                                    Previous
-                                </Link>
-                                {pageNumbers.map((page, index) =>
-                                    page === '...' ? (
-                                        <span key={`ellipsis-${index}`} className="px-4 py-2">...</span>
-                                    ) : (
-                                        <Link
-                                            key={page}
-                                            href={`/music?page=${page}`}
-                                            className={`px-4 py-2 border rounded-lg ${page === currentPage ? 'bg-primary text-white' : 'hover:bg-gray-100'}`}
-                                        >
-                                            {page}
-                                        </Link>
-                                    )
-                                )}
-                                <Link
-                                    href={`/music?page=${currentPage + 1}`}
-                                    className={`px-4 py-2 border rounded-lg ${!hasNextPage ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'}`}
-                                    aria-disabled={!hasNextPage}
-                                    tabIndex={!hasNextPage ? -1 : undefined}
-                                >
-                                    Next
-                                </Link>
-                            </nav>
-                        )}
-                    </div>
+						{/* Pagination Controls */}
+						{totalPages > 1 && (
+							<nav className="flex justify-center space-x-4 mt-16">
+								<Link
+									href={`/music?page=${currentPage - 1}`}
+									className={`px-4 py-2 border rounded-lg ${!hasPreviousPage ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-100"}`}
+									aria-disabled={!hasPreviousPage}
+									tabIndex={!hasPreviousPage ? -1 : undefined}>
+									Previous
+								</Link>
+								{pageNumbers.map((page, index) =>
+									page === "..." ? (
+										<span key={`ellipsis-${index}`} className="px-4 py-2">
+											...
+										</span>
+									) : (
+										<Link
+											key={page}
+											href={`/music?page=${page}`}
+											className={`px-4 py-2 border rounded-lg ${page === currentPage ? "bg-primary text-white" : "hover:bg-gray-100"}`}>
+											{page}
+										</Link>
+									),
+								)}
+								<Link
+									href={`/music?page=${currentPage + 1}`}
+									className={`px-4 py-2 border rounded-lg ${!hasNextPage ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-100"}`}
+									aria-disabled={!hasNextPage}
+									tabIndex={!hasNextPage ? -1 : undefined}>
+									Next
+								</Link>
+							</nav>
+						)}
+					</div>
 
-                    {/* Sidebar Area */}
-                    <div className="lg:col-span-4">
-                        <div className="sticky top-32 z-20">
-                            <Sidebar />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    );
+					{/* Sidebar Area */}
+					<div className="lg:col-span-4">
+						<div className="sticky top-32 z-20">
+							<Sidebar />
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+	);
 }

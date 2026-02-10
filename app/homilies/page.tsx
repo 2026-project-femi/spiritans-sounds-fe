@@ -30,9 +30,23 @@ export default async function HomiliesPage({ searchParams }: HomiliesPageProps) 
 	const startIndex = (currentPage - 1) * HOMILIES_PER_PAGE;
 	const endIndex = startIndex + HOMILIES_PER_PAGE;
 
-	const [homilies, totalHomilies] = await Promise.all([
+	// Sidebar query
+	const SIDEBAR_QUERY = `{
+		"categories": array::unique(*[_type == "homily" && defined(category)].category),
+		"recentPosts": *[_type in ["homily", "article"]] | order(coalesce(date, publishedAt) desc) [0...5] {
+			_id,
+			title,
+			"slug": slug.current,
+			"imageUrl": image.asset->url,
+			"publishedAt": coalesce(date, publishedAt),
+			"type": _type
+		}
+	}`;
+
+	const [homilies, totalHomilies, sidebarData] = await Promise.all([
 		client.fetch(HOMILIES_QUERY, { start: startIndex, end: endIndex }),
 		client.fetch(HOMILIES_COUNT_QUERY),
+		client.fetch(SIDEBAR_QUERY),
 	]);
 
 	const totalPages = Math.ceil(totalHomilies / HOMILIES_PER_PAGE);
@@ -83,7 +97,7 @@ export default async function HomiliesPage({ searchParams }: HomiliesPageProps) 
 
 	return (
 		<main className="pt-32 pb-20">
-			<div className="max-w-475 mx-auto px-6 md:px-12">
+			<div className="max-w-7xl mx-auto px-6 md:px-12">
 				<div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
 					{/* Main Content Area */}
 					<div className="lg:col-span-8">
@@ -101,7 +115,7 @@ export default async function HomiliesPage({ searchParams }: HomiliesPageProps) 
 										<Link
 											href={`/homilies/${homily.slug}`}
 											key={homily._id}
-											className="block bg-white rounded-lg border shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 group">
+											className="block bg-white rounded-lg  shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 group">
 											<article>
 												{homily.imageUrl && (
 													<div className="relative aspect-video rounded-t-lg overflow-hidden">
@@ -215,7 +229,10 @@ export default async function HomiliesPage({ searchParams }: HomiliesPageProps) 
 					{/* Sidebar Area */}
 					<div className="lg:col-span-4">
 						<div className="sticky top-32 z-20">
-							<Sidebar />
+							<Sidebar
+								categories={sidebarData.categories || []}
+								recentPosts={sidebarData.recentPosts || []}
+							/>
 						</div>
 					</div>
 				</div>

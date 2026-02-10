@@ -5,63 +5,20 @@ import React from "react";
 import Image from "next/image";
 import { HomeCarousel } from "@/components/HomeCarousel";
 import Sidebar from "@/components/common/Sidebar";
+import { getSidebarData } from "@/lib/utils";
+import { HomeData } from "@/lib/types";
 
 export const revalidate = 60;
 
-interface BasicItem {
-	_id: string;
-	title: string;
-	slug: string;
-	imageUrl?: string;
-	excerpt?: string;
-}
-
-interface HomilyItem extends BasicItem {
-	date: string;
-	scripture: string;
-	category: string;
-}
-
-interface PrayerItem extends BasicItem {
-	category: string;
-}
-
-interface LatestPostItem {
-	_id: string;
-	title: string;
-	slug: string;
-	date: string;
-	scripture?: string;
-	category?: string;
-	author?: string;
-	imageUrl?: string;
-	excerpt?: string;
-	type: "homily" | "article";
-}
-
-interface HomeData {
-	title: string;
-	heroText: string;
-	carouselImages?: string[];
-	ctaSection: {
-		buttonText: string;
-		buttonLink: string;
-	};
-	latestPosts: LatestPostItem[];
-	latestHomilies: HomilyItem[];
-	latestPrayers: PrayerItem[];
-}
-
 const HomePage: React.FC = async () => {
 	const data: HomeData = await client.fetch(HOME_QUERY);
-	console.log(data.latestPrayers, "latest homilies");
-
+	const sidebarData = await getSidebarData(); // Fetch sidebar data
 	if (!data) return null;
 
 	return (
 		<main className="pt-32 pb-20">
 			{/* Hero Section */}
-			<section className="px-6 md:px-12 mb-32">
+			<section className="px-6 md:px-12 mb-10">
 				<div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 					{/* Left Content - Static */}
 					<div className="lg:col-span-7 space-y-8 animate-fadeIn">
@@ -100,7 +57,7 @@ const HomePage: React.FC = async () => {
 					<div className="lg:col-span-8">
 						{/* Latest Reflections */}
 						{data.latestPosts && data.latestPosts.length > 0 && (
-							<section className="px-6 md:px-12 mb-32 bg-gray-50 py-24">
+							<section className="px-6 md:px-12 mb-10 bg-gray-50 py-16">
 								<div className="max-w-7xl mx-auto">
 									<div className="flex justify-between items-end mb-16 border-b border-foreground/10 pb-8">
 										<h2 className="text-4xl serif tracking-tight">Latest Reflections</h2>
@@ -133,14 +90,35 @@ const HomePage: React.FC = async () => {
 													</div>
 												</div>
 												<span className="text-[10px] tracking-[0.2em] uppercase text-foreground/40 mb-3 block">
-													{new Date(post.date).toLocaleDateString(
-														"en-US",
-														{
-															year: "numeric",
-															month: "long",
-															day: "numeric",
-														},
-													)}
+													{post.date &&
+													!isNaN(new Date(post.date).getTime())
+														? new Date(
+																post.date,
+															).toLocaleDateString(
+																"en-US",
+																{
+																	year: "numeric",
+																	month: "long",
+																	day: "numeric",
+																},
+															)
+														: post.publishedAt &&
+															  !isNaN(
+																	new Date(
+																		post.publishedAt,
+																	).getTime(),
+															  )
+															? new Date(
+																	post.publishedAt,
+																).toLocaleDateString(
+																	"en-US",
+																	{
+																		year: "numeric",
+																		month: "long",
+																		day: "numeric",
+																	},
+																)
+															: ""}
 												</span>
 												<h3 className="text-2xl serif mb-4 group-hover:text-primary transition-colors leading-snug">
 													{post.title}
@@ -162,7 +140,7 @@ const HomePage: React.FC = async () => {
 
 						{/* LATEST HOMILIES */}
 						{data.latestHomilies && data.latestHomilies.length > 0 && (
-							<section className="px-6 md:px-12 mb-32 py-24">
+							<section className="px-6 md:px-12 mb-10 py-16">
 								<div className="max-w-7xl mx-auto">
 									<div className="flex justify-between items-end mb-16 border-b border-foreground/10 pb-8">
 										<h2 className="text-4xl serif tracking-tight">Latest Homilies</h2>
@@ -222,7 +200,7 @@ const HomePage: React.FC = async () => {
 
 						{/* LATEST PRAYERS */}
 						{data.latestPrayers && data.latestPrayers.length > 0 && (
-							<section className="px-6 md:px-12 mb-32 bg-gray-50 py-24">
+							<section className="px-6 md:px-12 mb-10 bg-gray-50 py-16">
 								<div className="max-w-7xl mx-auto">
 									<div className="flex justify-between items-end mb-16 border-b border-foreground/10 pb-8">
 										<h2 className="text-4xl serif tracking-tight">Latest Prayers</h2>
@@ -298,7 +276,7 @@ const HomePage: React.FC = async () => {
 					{/* Sidebar Area */}
 					<div className="lg:col-span-4">
 						<div className="sticky top-32 z-20">
-							<Sidebar />
+							<Sidebar categories={sidebarData.categories} recentPosts={sidebarData.recentPosts} />
 						</div>
 					</div>
 				</div>
