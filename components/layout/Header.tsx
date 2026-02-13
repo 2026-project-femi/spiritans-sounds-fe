@@ -10,7 +10,7 @@ const navLinks = [
 	{ href: "/articles", label: "Articles" },
 	{ href: "/unveiler", label: "Unveiler Magazine" },
 	{ href: "/about", label: "About" },
-	{ href: "/contact", label: "Contact" },
+	// { href: "/contact", label: "Contact" },
 ];
 
 const moreLinks = [
