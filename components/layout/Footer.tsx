@@ -1,3 +1,4 @@
+import { FacebookIcon, Instagram, X, YoutubeIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -11,10 +12,10 @@ const navLinks = [
 ];
 
 const socialLinks = [
-	{ href: "#", label: "FB", name: "Facebook" },
-	{ href: "#", label: "TW", name: "Twitter" },
-	{ href: "#", label: "IG", name: "Instagram" },
-	{ href: "#", label: "YT", name: "YouTube" },
+	{ href: "#", icon: <FacebookIcon />, label: "FB", name: "Facebook" },
+	{ href: "#", icon: <X />, label: "TW", name: "Twitter" },
+	{ href: "#", icon: <Instagram />, label: "IG", name: "Instagram" },
+	{ href: "#", icon: <YoutubeIcon />, label: "YT", name: "YouTube" },
 ];
 
 const Footer: React.FC = () => {
@@ -40,6 +41,7 @@ const Footer: React.FC = () => {
 									rel="noopener noreferrer"
 									className="text-gray-500 hover:text-sacred-gold text-xs tracking-widest transition-gentle">
 									{social.label}
+									{social.icon}
 								</a>
 							))}
 						</div>
@@ -64,32 +66,25 @@ const Footer: React.FC = () => {
 						<h4 className="text-xs font-semibold tracking-widest uppercase mb-6 text-sacred-gold">Resources</h4>
 						<ul className="space-y-4">
 							<li>
-								<a
-									href="#/prayers"
+								<Link
+									href={"/prayers"}
 									className="text-sm text-gray-400 hover:text-white transition-gentle font-light">
 									Prayers
-								</a>
+								</Link>
 							</li>
 							<li>
-								<a
+								<Link
 									href="#/music"
 									className="text-sm text-gray-400 hover:text-white transition-gentle font-light">
 									Sacred Music
-								</a>
+								</Link>
 							</li>
 							<li>
-								<a
-									href="#/archives"
+								<Link
+									href="/homilies"
 									className="text-sm text-gray-400 hover:text-white transition-gentle font-light">
 									Homily Archives
-								</a>
-							</li>
-							<li>
-								<a
-									href="#/events"
-									className="text-sm text-gray-400 hover:text-white transition-gentle font-light">
-									Calendar
-								</a>
+								</Link>
 							</li>
 						</ul>
 					</div>
@@ -117,12 +112,12 @@ const Footer: React.FC = () => {
 				<div className="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center text-[10px] tracking-[0.2em] uppercase text-gray-600">
 					<p>© {new Date().getFullYear()} Spiritual Sound. All rights reserved.</p>
 					<div className="flex space-x-8 mt-4 md:mt-0">
-						<a href="#" className="hover:text-sacred-gold transition-gentle">
+						<Link href="/privacy" className="hover:text-sacred-gold transition-gentle">
 							Privacy Policy
-						</a>
-						<a href="#" className="hover:text-sacred-gold transition-gentle">
+						</Link>
+						<Link href="#" className="hover:text-sacred-gold transition-gentle">
 							Terms of Service
-						</a>
+						</Link>
 					</div>
 				</div>
 			</div>
