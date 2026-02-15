@@ -32,7 +32,7 @@ export function HomeCarousel({ images }: HomeCarouselProps) {
 								alt={`Slide ${index + 1}`}
 								fill
 								priority={index === 0}
-								className="w-full h-full object-cover grayscale opacity-80 hover:grayscale-0 hover:scale-105 transition-all duration-700"
+								className="w-full h-full object-cover  opacity-80  hover:scale-105 transition-all duration-700"
 							/>
 						</div>
 					</CarouselItem>

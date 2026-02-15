@@ -45,7 +45,7 @@ const Header: React.FC = () => {
 	return (
 		<header
 			className={`fixed top-0 left-0 right-0 z-50 transition-gentle px-6 md:px-12 py-4 ${
-				isScrolled ? "bg-white/80 backdrop-blur-md shadow-sm py-3" : "bg-transparent py-6"
+				isScrolled ? "bg-white md:bg-white/80 md:backdrop-blur-md shadow-sm py-3" : "bg-transparent py-6"
 			}`}>
 			<div className="max-w-7xl mx-auto flex items-center justify-between">
 				{/* Logo Section */}
@@ -63,7 +63,9 @@ const Header: React.FC = () => {
 								key={item.label}
 								href={item.href}
 								className={`text-sm font-medium tracking-widest uppercase transition-gentle ${
-									active ? "text-sacred-gold" : "text-sacred-slate/70 hover:text-sacred-gold"
+									active
+										? "text-brand-primary"
+										: "text-sacred-slate/70 hover:text-brand-primary"
 								}`}>
 								{item.label}
 							</Link>
@@ -72,10 +74,10 @@ const Header: React.FC = () => {
 
 					{/* More Dropdown */}
 					<div className="relative group">
-						<button className="text-sm font-medium tracking-widest uppercase text-sacred-slate/70 hover:text-sacred-gold transition-gentle">
+						<button className="text-sm font-medium tracking-widest uppercase text-sacred-slate/70 hover:text-brand-primary transition-gentle">
 							More
 						</button>
-						<div className="absolute top-full left-0 mt-4 w-56 bg-white shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-gentle border-t-2 border-sacred-gold py-2">
+						<div className="absolute top-full left-0 mt-4 w-56 bg-white shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-gentle border-t-2 text-brand-primary py-2">
 							{moreLinks.map((link) => {
 								const active = isActiveLink(link.href);
 								return (
@@ -84,8 +86,8 @@ const Header: React.FC = () => {
 										href={link.href}
 										className={`block px-4 py-2 text-xs uppercase tracking-widest transition-gentle ${
 											active
-												? "bg-sacred-ivory text-sacred-gold"
-												: "text-sacred-slate/60 hover:bg-sacred-ivory hover:text-sacred-gold"
+												? "bg-sacred-ivory text-brand-primary"
+												: "text-sacred-slate/60 hover:bg-sacred-ivory hover:text-brand-primary"
 										}`}>
 										{link.label}
 									</Link>
@@ -96,7 +98,7 @@ const Header: React.FC = () => {
 
 					<Link
 						href="/donations"
-						className="px-6 py-2 border border-sacred-gold text-sacred-gold text-xs font-semibold tracking-widest uppercase hover:bg-sacred-gold hover:text-white transition-gentle">
+						className="px-6 py-2 border text-brand-primary text-brand-primary text-xs font-semibold tracking-widest uppercase hover:bg-brand-primary transition-all duration-500 hover:text-white transition-gentle">
 						Donate
 					</Link>
 				</nav>
@@ -146,8 +148,8 @@ const Header: React.FC = () => {
 									onClick={() => setIsMobileMenuOpen(false)}
 									className={`text-2xl serif font-light transition-gentle ${
 										active
-											? "text-sacred-gold"
-											: "text-sacred-slate hover:text-sacred-gold"
+											? "text-brand-primary"
+											: "text-sacred-slate hover:text-brand-primary"
 									}`}>
 									{item.label}
 								</Link>
@@ -169,8 +171,8 @@ const Header: React.FC = () => {
 											onClick={() => setIsMobileMenuOpen(false)}
 											className={`block text-sm text-center transition-gentle ${
 												active
-													? "text-sacred-gold"
-													: "text-sacred-slate/70 hover:text-sacred-gold"
+													? "text-brand-primary"
+													: "text-sacred-slate/70 hover:text-brand-primary"
 											}`}>
 											{link.label}
 										</Link>
@@ -182,7 +184,7 @@ const Header: React.FC = () => {
 						<Link
 							href="/donations"
 							onClick={() => setIsMobileMenuOpen(false)}
-							className="mt-4 px-10 py-3 bg-sacred-gold text-white text-sm font-semibold tracking-widest uppercase hover:bg-sacred-gold/90 transition-gentle">
+							className="mt-4 px-10 py-3 bg-sacred-gold text-white text-sm font-semibold tracking-widest uppercase hover:bg-brand-primary transition-gentle">
 							Donate
 						</Link>
 					</div>

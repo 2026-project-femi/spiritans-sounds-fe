@@ -23,7 +23,7 @@ export default function MagazineNav() {
 	};
 
 	return (
-		<nav className="border-b border-sacred-gold/20 bg-[#413d3d] pt-20">
+		<nav className="border-b text-brand-primary/20 bg-[#413d3d] pt-20">
 			<div className="text-center text-black font-bold text-4xl italic animate-pulse">UNVEILER MAGAZINE</div>
 			<div className="max-w-6xl mx-auto px-6 md:px-12">
 				<ul className="flex gap-8 py-6">
@@ -36,8 +36,8 @@ export default function MagazineNav() {
 									href={tab.href}
 									className={`text-xs font-medium uppercase tracking-[0.2em] transition-gentle pb-2 border-b-2 ${
 										active
-											? "text-sacred-gold border-sacred-gold"
-											: "text-gray-400 border-transparent hover:text-white hover:border-sacred-gold/50"
+											? "text-brand-primary text-brand-primary"
+											: "text-gray-400 border-transparent hover:text-white hover:text-brand-primary/50"
 									}`}>
 									{tab.label}
 								</Link>

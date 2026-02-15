@@ -156,7 +156,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 															src={result.imageUrl}
 															alt={result.title}
 															fill
-															className="object-cover grayscale group-hover:grayscale-0 transition-all duration-300"
+															className="object-cover   transition-all duration-300"
 														/>
 													</div>
 												)}

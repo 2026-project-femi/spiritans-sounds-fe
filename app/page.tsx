@@ -22,7 +22,7 @@ const HomePage: React.FC = async () => {
 				<div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 					{/* Left Content - Static */}
 					<div className="lg:col-span-7 space-y-8 animate-fadeIn">
-						<span className="text-xs font-bold tracking-[0.4em] uppercase text-sacred-gold">
+						<span className="text-xs font-bold tracking-[0.4em] uppercase text-brand-primary">
 							A Spiritual Journey
 						</span>
 						<h1 className="text-5xl md:text-7xl lg:text-8xl serif leading-[1.1] text-foreground">{data.title}</h1>
@@ -33,7 +33,7 @@ const HomePage: React.FC = async () => {
 							<div className="pt-6">
 								<Link
 									href={data.ctaSection.buttonLink}
-									className="inline-block px-10 py-4 bg-black text-white text-xs tracking-widest uppercase font-semibold hover:bg-transparent hover:text-[#b08d57] hover:border transition-colors">
+									className="inline-block px-10 py-4 bg-brand-primary  duration-500 text-white text-xs tracking-widest uppercase font-semibold hover:bg-transparent hover:text-brand-primary hover:border transition-colors">
 									{data.ctaSection.buttonText}
 								</Link>
 							</div>
@@ -63,7 +63,7 @@ const HomePage: React.FC = async () => {
 										<h2 className="text-4xl serif tracking-tight">Latest Reflections</h2>
 										<Link
 											href="/articles"
-											className="text-xs tracking-widest uppercase text-sacred-gold font-bold hover:text-foreground transition-colors">
+											className="text-xs tracking-widest uppercase text-brand-primary font-bold hover:text-foreground transition-colors">
 											View All
 										</Link>
 									</div>
@@ -80,10 +80,10 @@ const HomePage: React.FC = async () => {
 															src={post.imageUrl}
 															alt={post.title}
 															fill
-															className="w-full h-full object-cover grayscale group-hover:grayscale-0 opacity-80 hover:scale-105 transition-all"
+															className="w-full h-full object-cover   opacity-80 hover:scale-105 transition-all"
 														/>
 													)}
-													<div className="absolute top-4 left-4 bg-white px-3 py-1 text-[9px] font-bold tracking-widest uppercase text-sacred-gold">
+													<div className="absolute top-4 left-4 bg-white px-3 py-1 text-[9px] font-bold tracking-widest uppercase text-brand-primary text-brand-primary">
 														{post.type === "homily"
 															? post.category || "Homily"
 															: "Article"}
@@ -146,7 +146,7 @@ const HomePage: React.FC = async () => {
 										<h2 className="text-4xl serif tracking-tight">Latest Homilies</h2>
 										<Link
 											href="/homilies"
-											className="text-xs tracking-widest uppercase text-sacred-gold font-bold hover:text-foreground transition-colors">
+											className="text-xs tracking-widest uppercase text-brand-primary text-brand-primary font-bold hover:text-foreground transition-colors">
 											View All
 										</Link>
 									</div>
@@ -163,10 +163,10 @@ const HomePage: React.FC = async () => {
 															src={homily.imageUrl}
 															alt={homily.title}
 															fill
-															className="w-full h-full object-cover grayscale group-hover:grayscale-0 opacity-80 hover:scale-105 transition-all"
+															className="w-full h-full object-cover   opacity-80 hover:scale-105 transition-all"
 														/>
 													)}
-													<div className="absolute top-4 left-4 bg-white px-3 py-1 text-[9px] font-bold tracking-widest uppercase text-sacred-gold">
+													<div className="absolute top-4 left-4 text-brand-primary bg-white px-3 py-1 text-[9px] font-bold tracking-widest uppercase text-brand-primary">
 														Homily
 													</div>
 												</div>
@@ -206,7 +206,7 @@ const HomePage: React.FC = async () => {
 										<h2 className="text-4xl serif tracking-tight">Latest Prayers</h2>
 										<Link
 											href="/prayers"
-											className="text-xs tracking-widest uppercase text-sacred-gold font-bold hover:text-foreground transition-colors">
+											className="text-xs tracking-widest uppercase text-brand-primary font-bold hover:text-foreground transition-colors">
 											View All
 										</Link>
 									</div>
@@ -223,10 +223,10 @@ const HomePage: React.FC = async () => {
 															src={prayer.imageUrl}
 															alt={prayer.title}
 															fill
-															className="w-full h-full object-cover grayscale group-hover:grayscale-0 opacity-80 hover:scale-105 transition-all"
+															className="w-full h-full object-cover   opacity-80 hover:scale-105 transition-all"
 														/>
 													)}
-													<div className="absolute top-4 left-4 bg-white px-3 py-1 text-[9px] font-bold tracking-widest uppercase text-sacred-gold">
+													<div className="absolute top-4 left-4 bg-white px-3 py-1 text-[9px] font-bold tracking-widest uppercase text-brand-primary">
 														Prayer
 													</div>
 												</div>

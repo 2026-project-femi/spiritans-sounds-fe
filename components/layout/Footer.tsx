@@ -20,7 +20,7 @@ const socialLinks = [
 
 const Footer: React.FC = () => {
 	return (
-		<footer className="bg-[#1a1a1a] text-white pt-20 pb-10 px-6 md:px-12 border-t border-sacred-gold/20">
+		<footer className="bg-[#1a1a1a] text-white pt-20 pb-10 px-6 md:px-12 border-t text-brand-primary/20">
 			<div className="max-w-7xl mx-auto">
 				<div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
 					<div className="col-span-1 md:col-span-1">
@@ -39,7 +39,7 @@ const Footer: React.FC = () => {
 									href={social.href}
 									target="_blank"
 									rel="noopener noreferrer"
-									className="text-gray-500 hover:text-sacred-gold text-xs tracking-widest transition-gentle">
+									className="text-gray-500 hover:text-brand-primary text-xs tracking-widest transition-gentle">
 									{social.label}
 									{social.icon}
 								</a>
@@ -48,7 +48,9 @@ const Footer: React.FC = () => {
 					</div>
 
 					<div>
-						<h4 className="text-xs font-semibold tracking-widest uppercase mb-6 text-sacred-gold">Navigate</h4>
+						<h4 className="text-xs font-semibold tracking-widest uppercase mb-6 text-brand-primary text-brand-primary">
+							Navigate
+						</h4>
 						<ul className="space-y-4">
 							{navLinks.map((link) => (
 								<li key={link.href}>
@@ -63,7 +65,7 @@ const Footer: React.FC = () => {
 					</div>
 
 					<div>
-						<h4 className="text-xs font-semibold tracking-widest uppercase mb-6 text-sacred-gold">Resources</h4>
+						<h4 className="text-xs font-semibold tracking-widest uppercase mb-6 text-brand-primary">Resources</h4>
 						<ul className="space-y-4">
 							<li>
 								<Link
@@ -90,7 +92,9 @@ const Footer: React.FC = () => {
 					</div>
 
 					<div>
-						<h4 className="text-xs font-semibold tracking-widest uppercase mb-6 text-sacred-gold">Newsletter</h4>
+						<h4 className="text-xs font-semibold tracking-widest uppercase mb-6 text-brand-primary">
+							Newsletter
+						</h4>
 						<p className="text-xs text-gray-500 mb-6 font-light leading-relaxed">
 							Get the latest updates and spiritual insights delivered to your inbox.
 						</p>
@@ -98,11 +102,11 @@ const Footer: React.FC = () => {
 							<input
 								type="email"
 								placeholder="Email Address"
-								className="bg-transparent border-b border-gray-700 py-2 text-sm focus:outline-none focus:border-sacred-gold transition-gentle"
+								className="bg-transparent border-b border-gray-700 py-2 text-sm focus:outline-none focus:text-brand-primary transition-gentle"
 							/>
 							<Link
 								href="/newsletter"
-								className="text-left text-xs uppercase tracking-widest text-sacred-gold hover:text-white transition-gentle pt-2">
+								className="text-left text-xs uppercase tracking-widest text-brand-primary hover:text-white transition-gentle pt-2">
 								Subscribe →
 							</Link>
 						</div>
@@ -112,10 +116,10 @@ const Footer: React.FC = () => {
 				<div className="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center text-[10px] tracking-[0.2em] uppercase text-gray-600">
 					<p>© {new Date().getFullYear()} Spiritual Sound. All rights reserved.</p>
 					<div className="flex space-x-8 mt-4 md:mt-0">
-						<Link href="/privacy" className="hover:text-sacred-gold transition-gentle">
+						<Link href="/privacy" className="hover:text-brand-primary transition-gentle">
 							Privacy Policy
 						</Link>
-						<Link href="#" className="hover:text-sacred-gold transition-gentle">
+						<Link href="#" className="hover:text-brand-primary transition-gentle">
 							Terms of Service
 						</Link>
 					</div>
