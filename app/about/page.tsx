@@ -75,15 +75,12 @@ export default function AboutPage() {
 			<section className="max-w-6xl mx-auto px-6 md:px-12 pt-12">
 				<p className="text-xs tracking-[0.3em] uppercase text-brand-primary mb-6">Our Story</p>
 
-				<h1 className="serif text-4xl md:text-6xl leading-tight mb-8">
-					A Sacred Journey of Faith, <br className="hidden md:block" />
-					Sound & Reflection
-				</h1>
+				<h1 className="serif text-4xl md:text-6xl leading-tight mb-8">The Vision & The People</h1>
 
 				<p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
-					Spiritans Sound exists as a digital sanctuary — a space where faith meets thoughtful reflection, sacred music,
-					and meaningful community. We believe spirituality should not be distant, but lived — gently, daily, and
-					intentionally.
+					Spiritans Sound Outreach, founded on December 1st, 2018, by Rev. Fr. Oluwafemi Victor Orilua CSSp, operates as
+					a dynamic arm of the youth apostolate within the Holy Ghost Fathers and Brothers, Province of Nigeria,
+					Southwest.
 				</p>
 			</section>
 
@@ -91,11 +88,13 @@ export default function AboutPage() {
 			   Mission Section
 			=============================== */}
 			<section id="mission" className="max-w-5xl mx-auto px-6 md:px-12 py-24 border-t border-border mt-24">
-				<h2 className="serif text-3xl md:text-4xl mb-8">Our Mission</h2>
+				<h2 className="serif text-3xl md:text-4xl mb-8">Our Mission and Vision</h2>
 
 				<p className="text-lg leading-relaxed text-muted-foreground mb-6">
-					To create a living archive of spiritual wisdom — where homilies, reflections, and sacred expression inspire
-					deeper devotion and clarity of purpose.
+					At Spiritans Sound Outreach, our mission is twofold: to proclaim the message of faith and to nurture the
+					creative talents of young individuals in the realms of music, art, and writing. We envision a community where
+					spirituality and artistic expression harmoniously blend, inspiring our members to embody faith-driven
+					leadership through their creative pursuits.
 				</p>
 
 				<p className="text-lg leading-relaxed text-muted-foreground">
@@ -111,14 +110,25 @@ export default function AboutPage() {
 				<div className="grid md:grid-cols-2 gap-16 items-center">
 					<div>
 						<p className="text-xs tracking-[0.3em] uppercase text-brand-primary mb-4">Treasures Unveiler</p>
-
-						<h2 className="serif text-3xl md:text-4xl mb-6">A Journal of Reflection</h2>
-
+						<h2 className="serif text-3xl md:text-4xl mb-6">Our Magazine:</h2>
 						<p className="text-lg text-muted-foreground leading-relaxed mb-8">
-							More than a magazine — Treasures Unveiler explores theological insight, lived experience, and
-							spiritual discovery in contemporary life.
+							“Treasures Unveiler” (TU) magazine, launched in December 2022, stands as a beacon for emerging
+							artists, providing them with a platform to showcase their talents and offering indispensable
+							resources for their development. With a primary focus on music, drama, arts, and crafts, TU
+							magazine also serves as a conduit for news within the Spiritans Congregation, amplifying the
+							voices and achievements of our outreach activities.
 						</p>
-
+						Beyond artistic expression, TU magazine engages in meaningful dialogue by featuring interviews with
+						esteemed figures from both clergy and laity. These conversations not only highlight insights from
+						within the Catholic Church but also explore perspectives on broader global issues, enriching our
+						readers’ understanding of faith and society.
+						<p className="text-lg text-muted-foreground leading-relaxed mb-8">
+							Explore more about Spiritans Sound Outreach and discover the vibrant community of creative
+							expression at{" "}
+							<Link className="underline text-brand-primary" href={"unveiler"}>
+								treasuresunveiler
+							</Link>
+						</p>
 						<Link
 							href="/unveiler/articles"
 							className="inline-block border text-brand-primary px-8 py-3 text-sm uppercase tracking-widest text-brand-primary hover:bg-brand-primary hover:text-white transition-gentle">
@@ -162,22 +172,49 @@ export default function AboutPage() {
 			<section className="max-w-6xl mx-auto px-6 md:px-12 py-24 border-t border-border">
 				<h2 className="serif text-3xl md:text-4xl text-center mb-16">Those Who Guide the Vision</h2>
 
+				<p className="text-lg text-muted-foreground leading-relaxed mb-8">
+					Joining our community offers a transformative experience that goes beyond mere membership. It’s an opportunity
+					to become part of a supportive and nurturing environment where your spiritual, emotional, and personal growth
+					is prioritized. Here are some compelling reasons to join us:
+				</p>
+
 				<div className="grid md:grid-cols-3 gap-12">
 					{[
 						{
-							name: "Rev. John Doe",
-							role: "Founder & Lead Pastor",
-							image: "/assets/team-member-1.webp",
+							name: "Rev. Fr. Femi Orilua CSSp",
+							role: "Founder & Director", // No explicit role in filename
+							image: "/assets/team/Rev-Fr-Femi-Orilua-CSSp-1.jpg",
 						},
 						{
-							name: "Jane Smith",
-							role: "Community Outreach",
-							image: "/assets/team-member-2.webp",
+							name: "Elizabeth Ojiabor",
+							role: "Secretary",
+							image: "/assets/team/Elizabeth-secretary.jpg",
 						},
 						{
-							name: "Dr. Alex Lee",
-							role: "Theological Advisor",
-							image: "/assets/team-member-3.webp",
+							name: "Engr. Lauretta Uwak",
+							role: "Deputy Coordinator",
+							image: "/assets/team/Engr-Lauretta-Uwak-1-Deputy-cordinator.jpg",
+						},
+						{
+							name: "Mr. Matthew Abifarin",
+							role: "Coordinator",
+							image: "/assets/team/Mr-Matthew-Abifarin-Cordinator.jpg",
+						},
+						{
+							name: "Rev. Fr. Onyilo Willams",
+							role: "Homilist & Columnist",
+							image: "/assets/team/Rev Fr. Onyilo Willams- Homilist & Columnist.jpg",
+						},
+						{
+							name: "Rev. Fr. Andrew Odeyemi",
+							role: "Homilist & Columnist",
+							image: "/assets/team/Rev-Fr-Andrew-Odeyemi-Homilist & columnist.jpg",
+						},
+
+						{
+							name: "Rev. Fr. Jude Ekeshiri CSSp",
+							role: "Homilist & Columnist",
+							image: "/assets/team/Rev-Fr-Jude-Ekeshiri-CSSp-Homilist &Columnist.jpg",
 						},
 					].map((member) => (
 						<div key={member.name} className="text-center">
