@@ -55,7 +55,7 @@ export default function AboutPage() {
 											{slide.ctaText && slide.ctaLink && (
 												<Link
 													href={slide.ctaLink}
-													className="inline-block rounded-full bg-white text-black px-8 py-4 font-semibold hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-lg">
+													className="inline-block bg-white text-black px-8 py-4 font-semibold hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-lg">
 													{slide.ctaText}
 												</Link>
 											)}
