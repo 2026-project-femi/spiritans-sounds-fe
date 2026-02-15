@@ -11,7 +11,7 @@ export default function AboutPage() {
 			title: "About Spiritual Sound",
 			description: "Journey with us through faith, music, and community.",
 			ctaText: "Learn More",
-			ctaLink: "/about",
+			ctaLink: "/about#mission",
 		},
 		{
 			image: { asset: { url: "/assets/about-hero-2.jpg" } },
