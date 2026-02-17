@@ -3,6 +3,8 @@ import { client } from "@/sanity/lib/client";
 import { HOMILY_QUERY } from "@/sanity/lib/queries";
 import { PortableText } from "@portabletext/react";
 import { Sidebar } from "@/components/common/Sidebar"; // Import the new Sidebar component
+import Comments from "@/components/Comments";
+import { Comment } from "@/lib/types";
 
 export const revalidate = 60;
 
@@ -18,6 +20,7 @@ interface Homily {
     seo?: any;
     imageUrl?: string;
     publishedAt?: string;
+    comments?: Comment[];
 }
 
 interface PageProps {
@@ -104,6 +107,7 @@ export default async function SingleHomilyPage({ params }: { params: Promise<{ s
                                 )}
                             </div>
                         </div>
+                        <Comments postId={homily._id} comments={homily.comments || []} />
                     </article>
 
                     {/* Sidebar Area */}

@@ -3,6 +3,8 @@ import { client } from "@/sanity/lib/client";
 import { ARTICLE_QUERY } from "@/sanity/lib/queries";
 import { PortableText } from "@portabletext/react";
 import { Sidebar } from "@/components/common/Sidebar"; // Import the new Sidebar component
+import Comments from "@/components/Comments";
+import { Comment } from "@/lib/types";
 
 export const revalidate = 60;
 
@@ -14,6 +16,7 @@ interface Article {
     imageUrl?: string;
     publishedAt: string;
     content: any; // PortableText
+    comments?: Comment[];
 }
 
 interface PageProps {
@@ -83,6 +86,7 @@ export default async function SingleArticlePage({ params }: { params: Promise<{ 
                                 <PortableText value={article.content} />
                             </div>
                         </div>
+                        <Comments postId={article._id} comments={article.comments || []} />
                     </article>
 
                     {/* Sidebar Area */}

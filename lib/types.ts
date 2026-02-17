@@ -47,11 +47,21 @@ export interface HomilyItem extends BasicItem {
 	category?: string;
 }
 
+
+
+export interface Comment {
+	_id: string;
+	name: string;
+	comment: string;
+	_createdAt: string;
+}
+
 export interface Homily extends HomilyItem {
 	audio?: string;
 	content: any; // Sanity Portable Text
 	publishedAt?: string;
 	seo?: SEO;
+	comments?: Comment[];
 }
 
 export interface PrayerItem extends BasicItem {
@@ -60,6 +70,7 @@ export interface PrayerItem extends BasicItem {
 
 export interface Prayer extends PrayerItem {
 	content: any; // Sanity Portable Text
+	comments?: Comment[];
 }
 
 export interface MusicItem extends BasicItem {
@@ -70,6 +81,7 @@ export interface MusicItem extends BasicItem {
 
 export interface Music extends MusicItem {
 	content: any; // Assuming content field for full lyrics/details
+	comments?: Comment[];
 }
 
 export interface ArticleItem extends BasicItem {
@@ -80,6 +92,7 @@ export interface ArticleItem extends BasicItem {
 export interface Article extends ArticleItem {
 	content: any;
 	seo?: SEO;
+	comments?: Comment[];
 }
 
 export interface EventItem extends BasicItem {

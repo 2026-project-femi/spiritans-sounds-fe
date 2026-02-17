@@ -84,7 +84,13 @@ export const HOMILY_QUERY = `
   category,
   seo,
   "imageUrl": featuredImage.asset->url,
-  publishedAt
+  publishedAt,
+  "comments": *[_type == "comment" && post._ref == ^._id && approved == true] | order(_createdAt desc){
+      _id,
+      name,
+      comment,
+      _createdAt
+  }
 }
 `;
 
@@ -115,7 +121,13 @@ export const ARTICLE_QUERY = `
   author,
   "imageUrl": featuredImage.asset->url,
   publishedAt,
-  content
+  content,
+  "comments": *[_type == "comment" && post._ref == ^._id && approved == true] | order(_createdAt desc){
+      _id,
+      name,
+      comment,
+      _createdAt
+  }
 }
 `;
 
@@ -145,7 +157,13 @@ export const PRAYER_QUERY = `
   "slug": slug.current,
   category,
   "imageUrl": featuredImage.asset->url,
-  content
+  content,
+  "comments": *[_type == "comment" && post._ref == ^._id && approved == true] | order(_createdAt desc){
+      _id,
+      name,
+      comment,
+      _createdAt
+  }
 }
 `;
 

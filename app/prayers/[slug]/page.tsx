@@ -4,6 +4,7 @@ import { PRAYER_QUERY } from "@/sanity/lib/queries";
 import { PortableText } from "@portabletext/react";
 import { Sidebar } from "@/components/common/Sidebar"; // Import the new Sidebar component
 import { Prayer } from "@/lib/types";
+import Comments from "@/components/Comments";
 
 export const revalidate = 60;
 
@@ -57,6 +58,7 @@ export default async function SinglePrayerPage({ params }: { params: Promise<{ s
 								<PortableText value={prayer.content} />
 							</div>
 						</div>
+						<Comments postId={prayer._id} comments={prayer.comments || []} />
 					</article>
 
 					{/* Sidebar Area */}
