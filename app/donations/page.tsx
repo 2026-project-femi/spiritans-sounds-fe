@@ -118,9 +118,9 @@ export default function DonatePage() {
 function HeroSection() {
 	return (
 		<section className="text-center space-y-4">
-			<h1 className="text-4xl md:text-5xl font-bold text-gray-900">Partner With Us in Spreading the Gospel</h1>
+			<h1 className="text-4xl md:text-5xl font-bold text-black">Partner With Us in Spreading the Gospel</h1>
 
-			<p className="text-lg text-gray-600 max-w-xl mx-auto">
+			<p className="text-lg text-gray-800 max-w-xl mx-auto">
 				Every homily, reflection, and moment of worship we share is made possible by faithful supporters like you.
 			</p>
 
@@ -155,7 +155,7 @@ function ImpactSection() {
 				))}
 			</ul>
 
-			<p className="italic text-gray-600 pt-2 border-t border-gray-200">
+			<p className="italic text-gray-800 pt-2 border-t border-gray-200">
 				When you give, you are not just funding a website. You are helping someone find hope, healing, and Christ.
 			</p>
 		</section>
@@ -174,8 +174,8 @@ function DonationForm({ formData, isLoading, error, onInputChange, onSubmit }: D
 	return (
 		<section className="bg-white shadow-xl p-8 rounded-2xl space-y-6">
 			<div className="text-center space-y-3">
-				<p className="text-gray-600">Your generosity becomes a seed planted in faith.</p>
-				<p className="text-gray-600">What you give today may be the message that restores someone tomorrow.</p>
+				<p className="text-gray-800">Your generosity becomes a seed planted in faith.</p>
+				<p className="text-gray-800">What you give today may be the message that restores someone tomorrow.</p>
 				<p className="font-medium text-green-700">God multiplies what is given in love.</p>
 			</div>
 

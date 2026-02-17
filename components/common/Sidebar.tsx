@@ -35,14 +35,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ categories = [], recentPosts =
 				<input
 					type="text"
 					placeholder="SEARCH THE SANCTUARY..."
-					className="bg-transparent w-full text-xs tracking-widest uppercase focus:outline-none placeholder:text-gray-400 pr-8"
+					className="bg-transparent w-full text-xs tracking-widest uppercase focus:outline-none placeholder:text-gray-600pr-8"
 					value={searchQuery}
 					onChange={(e) => setSearchQuery(e.target.value)}
 					onKeyDown={handleSearch}
 				/>
 				<button
 					onClick={handleSearchClick}
-					className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
+					className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-800 hover:text-primary transition-colors"
 					aria-label="Search">
 					<Search size={16} />
 				</button>
@@ -115,14 +115,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ categories = [], recentPosts =
 			{/* Newsletter Signup Card */}
 			<section className="bg-gray-50 p-8 border border-primary/10">
 				<h4 className="text-xs font-semibold tracking-widest uppercase mb-4 serif">Stay Inspired</h4>
-				<p className="text-xs text-gray-600 leading-relaxed mb-6 italic">
+				<p className="text-xs text-gray-800 leading-relaxed mb-6 italic">
 					&quot;The spirit flows where it will.&quot; Sign up for monthly meditations.
 				</p>
 				<div className="space-y-3">
 					<input
 						type="email"
 						placeholder="YOUR EMAIL"
-						className="w-full bg-white px-4 py-3 text-[10px] tracking-widest border border-gray-200 focus:outline-none focus:border-primary"
+						className="w-full bg-white px-4 py-3 text-[10px] tracking-widest placeholder:text-gray-600 border border-gray-200 focus:outline-none focus:border-primary"
 					/>
 					<button className="w-full bg-primary text-white py-3 text-[10px] tracking-widest uppercase font-bold hover:bg-primary/90 transition-colors">
 						Join

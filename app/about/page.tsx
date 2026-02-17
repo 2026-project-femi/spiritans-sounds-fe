@@ -183,12 +183,12 @@ export default function AboutPage() {
 						{
 							name: "Rev. Fr. Femi Orilua CSSp",
 							role: "Founder & Director", // No explicit role in filename
-							image: "/assets/team/Rev-Fr-Femi-Orilua-CSSp-1.jpg",
+							image: "/assets/team/father-femi.jpeg",
 						},
 						{
-							name: "Elizabeth Ojiabor",
+							name: "Laura Nnana",
 							role: "Secretary",
-							image: "/assets/team/Elizabeth-secretary.jpg",
+							image: "/assets/team/LauraNnana-secretary.jpeg",
 						},
 						{
 							name: "Engr. Lauretta Uwak",
@@ -216,6 +216,16 @@ export default function AboutPage() {
 							role: "Homilist & Columnist",
 							image: "/assets/team/Rev-Fr-Jude-Ekeshiri-CSSp-Homilist &Columnist.jpg",
 						},
+						{
+							name: "Rev Sister Rosemary Etim, DHS",
+							role: "Assistant Coordinator",
+							image: "/assets/team/Rev-Sister-Rosemary-Etim-DHS.jpg",
+						},
+						{
+							name: "Mr Martin Eichie",
+							role: "Coordinator",
+							image: "/assets/team/MrMartinEichie-Coordinator.jpeg",
+						}
 					].map((member) => (
 						<div key={member.name} className="text-center">
 							<Image

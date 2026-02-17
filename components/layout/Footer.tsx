@@ -20,7 +20,7 @@ const socialLinks = [
 
 const Footer: React.FC = () => {
 	return (
-		<footer className="bg-[#1a1a1a] text-white pt-20 pb-10 px-6 md:px-12 border-t text-brand-primary/20">
+		<footer className="bg-[#1a1a1a] text-white pt-20 pb-10 px-6 md:px-12 border-t ">
 			<div className="max-w-7xl mx-auto">
 				<div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
 					<div className="col-span-1 md:col-span-1">
@@ -29,7 +29,7 @@ const Footer: React.FC = () => {
 							<Image src="/assets/cropped-SpritansLogo.png" alt="Logo" width={40} height={40} />
 							<span className="font-bold text-lg text-primary">Spiritans Sound</span>
 						</Link>
-						<p className="text-sm text-gray-400 mb-6 font-light leading-relaxed">
+						<p className="text-sm text-gray-200 mb-6 font-light leading-relaxed">
 							Bringing you closer to the divine through homilies, reflections, and music.
 						</p>
 						<div className="flex space-x-6">
@@ -48,7 +48,7 @@ const Footer: React.FC = () => {
 					</div>
 
 					<div>
-						<h4 className="text-xs font-semibold tracking-widest uppercase mb-6 text-brand-primary text-brand-primary">
+						<h4 className="text-xs font-semibold tracking-widest uppercase mb-6 text-brand-primary ">
 							Navigate
 						</h4>
 						<ul className="space-y-4">
@@ -56,7 +56,7 @@ const Footer: React.FC = () => {
 								<li key={link.href}>
 									<Link
 										href={link.href}
-										className="text-sm text-gray-400 hover:text-white transition-gentle font-light">
+										className="text-sm text-gray-200 hover:text-white transition-gentle font-light">
 										{link.label}
 									</Link>
 								</li>
@@ -70,21 +70,21 @@ const Footer: React.FC = () => {
 							<li>
 								<Link
 									href={"/prayers"}
-									className="text-sm text-gray-400 hover:text-white transition-gentle font-light">
+									className="text-sm text-gray-200 hover:text-white transition-gentle font-light">
 									Prayers
 								</Link>
 							</li>
 							<li>
 								<Link
 									href="#/music"
-									className="text-sm text-gray-400 hover:text-white transition-gentle font-light">
+									className="text-sm text-gray-200 hover:text-white transition-gentle font-light">
 									Sacred Music
 								</Link>
 							</li>
 							<li>
 								<Link
 									href="/homilies"
-									className="text-sm text-gray-400 hover:text-white transition-gentle font-light">
+									className="text-sm text-gray-200 hover:text-white transition-gentle font-light">
 									Homily Archives
 								</Link>
 							</li>
@@ -95,7 +95,7 @@ const Footer: React.FC = () => {
 						<h4 className="text-xs font-semibold tracking-widest uppercase mb-6 text-brand-primary">
 							Newsletter
 						</h4>
-						<p className="text-xs text-gray-500 mb-6 font-light leading-relaxed">
+						<p className="text-xs text-gray-200 mb-6 font-light leading-relaxed">
 							Get the latest updates and spiritual insights delivered to your inbox.
 						</p>
 						<div className="flex flex-col space-y-3">
@@ -113,7 +113,7 @@ const Footer: React.FC = () => {
 					</div>
 				</div>
 
-				<div className="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center text-[10px] tracking-[0.2em] uppercase text-gray-600">
+				<div className="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center text-[10px] tracking-[0.2em] uppercase text-gray-400">
 					<p>© {new Date().getFullYear()} Spiritual Sound. All rights reserved.</p>
 					<div className="flex space-x-8 mt-4 md:mt-0">
 						<Link href="/privacy" className="hover:text-brand-primary transition-gentle">

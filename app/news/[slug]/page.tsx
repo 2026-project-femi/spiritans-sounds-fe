@@ -55,7 +55,7 @@ export default async function SingleEventPage({ params }: { params: Promise<{ sl
 										</p>
 									)}
 								</div>
-								<h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-foreground mb-8">
+								<h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-black mb-8">
 									{event.title}
 								</h1>
 								<div className="flex items-center space-x-4 pb-8 border-b border-gray-200 justify-center">
@@ -66,7 +66,7 @@ export default async function SingleEventPage({ params }: { params: Promise<{ sl
 							</header>
 
 							{event?.description && (
-								<div className="prose prose-lg dark:prose-invert max-w-none text-foreground/80 space-y-8 font-light leading-loose text-lg">
+								<div className="prose prose-lg dark:prose-invert max-w-none text-black space-y-8 font-light leading-loose text-lg">
 									<p>{event.description}</p>
 								</div>
 							)}

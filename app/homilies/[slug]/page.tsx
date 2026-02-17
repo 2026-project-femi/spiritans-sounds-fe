@@ -71,12 +71,12 @@ export default async function SingleHomilyPage({ params }: { params: Promise<{ s
                                         </span>
                                     )}
                                     {homily.date && (
-                                        <span className="text-[10px] tracking-widest text-gray-400 uppercase">
+                                        <span className="text-[10px] tracking-widest text-gray-800 uppercase">
                                             {new Date(homily.date).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}
                                         </span>
                                     )}
                                 </div>
-                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-foreground mb-8">
+                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-black mb-8">
                                     {homily.title}
                                 </h1>
                                 <div className="flex items-center space-x-4 pb-8 border-b border-gray-200 justify-center">
@@ -97,9 +97,8 @@ export default async function SingleHomilyPage({ params }: { params: Promise<{ s
                                 </div>
                             )}
 
-                            <div className="prose prose-lg dark:prose-invert max-w-none text-foreground/80 space-y-8 font-light leading-loose text-lg">
-                                <h2>Diagnostic: Content Area Visible?</h2> {/* Very simple text */}
-                                <p>This is a test paragraph.</p> {/* Simple paragraph */}
+                            <div className="prose prose-lg dark:prose-invert max-w-none text-black space-y-8 font-light leading-loose text-lg">
+                        
                                 {homily.content && (
                                     <PortableText value={homily.content} />
                                 )}

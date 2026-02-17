@@ -48,12 +48,12 @@ export default async function SinglePrayerPage({ params }: { params: Promise<{ s
 										{prayer.category}
 									</span>
 								)}
-								<h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-foreground mb-8">
+								<h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-black mb-8">
 									{prayer.title}
 								</h1>
 							</header>
 
-							<div className="prose prose-lg dark:prose-invert max-w-none text-foreground/80 space-y-8 font-light leading-loose text-lg">
+							<div className="prose prose-lg dark:prose-invert max-w-none text-black space-y-8 font-light leading-loose text-lg">
 								<PortableText value={prayer.content} />
 							</div>
 						</div>

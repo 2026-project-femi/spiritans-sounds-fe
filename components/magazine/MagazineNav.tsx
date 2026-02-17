@@ -37,7 +37,7 @@ export default function MagazineNav() {
 									className={`text-xs font-medium uppercase tracking-[0.2em] transition-gentle pb-2 border-b-2 ${
 										active
 											? "text-brand-primary text-brand-primary"
-											: "text-gray-400 border-transparent hover:text-white hover:text-brand-primary/50"
+											: "text-gray-800 border-transparent hover:text-white hover:text-brand-primary/50"
 									}`}>
 									{tab.label}
 								</Link>

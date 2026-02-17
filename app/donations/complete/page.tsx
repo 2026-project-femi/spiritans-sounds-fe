@@ -33,7 +33,7 @@ function DonationContent() {
 
 				<h2 className="mt-4 text-2xl font-bold text-gray-800">Thank You! 🙏</h2>
 
-				<p className="mt-2 text-gray-600">Your donation is being processed.</p>
+				<p className="mt-2 text-gray-800">Your donation is being processed.</p>
 
 				{reference && (
 					<div className="mt-4 p-3 bg-gray-50 rounded-lg">

@@ -61,7 +61,7 @@ export default async function SingleMusicPage({ params }: { params: Promise<{ sl
                         {/* Title and Content Section (below the image) */}
                         <div className="pt-8">
                             <header className="mb-8 text-center">
-                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-foreground mb-8">
+                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-black mb-8">
                                     {music.title}
                                 </h1>
                                 {music.artist && (
@@ -79,7 +79,7 @@ export default async function SingleMusicPage({ params }: { params: Promise<{ sl
                             )}
 
                             {(music.lyrics || music.content) && (
-                                <div className="prose prose-lg dark:prose-invert max-w-none text-foreground/80 space-y-8 font-light leading-loose text-lg">
+                                <div className="prose prose-lg dark:prose-invert max-w-none text-black space-y-8 font-light leading-loose text-lg">
                                     <PortableText value={music.lyrics || music.content} />
                                 </div>
                             )}

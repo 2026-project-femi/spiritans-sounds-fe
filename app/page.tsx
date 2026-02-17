@@ -26,7 +26,7 @@ const HomePage: React.FC = async () => {
 							A Spiritual Journey
 						</span>
 						<h1 className="text-5xl md:text-7xl lg:text-8xl serif leading-[1.1] text-foreground">{data.title}</h1>
-						<p className="text-lg md:text-xl font-light text-foreground/60 max-w-xl leading-relaxed">
+						<p className="text-lg md:text-xl font-light text-foreground max-w-xl leading-relaxed">
 							{data.heroText}
 						</p>
 						{data.ctaSection && (
@@ -83,13 +83,13 @@ const HomePage: React.FC = async () => {
 															className="w-full h-full object-cover   opacity-80 hover:scale-105 transition-all"
 														/>
 													)}
-													<div className="absolute top-4 left-4 bg-white px-3 py-1 text-[9px] font-bold tracking-widest uppercase text-brand-primary text-brand-primary">
+													<div className="absolute top-4 left-4 bg-white px-3 py-1 text-[9px] font-bold tracking-widest uppercase text-brand-primary">
 														{post.type === "homily"
 															? post.category || "Homily"
 															: "Article"}
 													</div>
 												</div>
-												<span className="text-[10px] tracking-[0.2em] uppercase text-foreground/40 mb-3 block">
+												<span className="text-[10px] tracking-[0.2em] uppercase text-foreground mb-3 block">
 													{post.date &&
 													!isNaN(new Date(post.date).getTime())
 														? new Date(
@@ -123,7 +123,7 @@ const HomePage: React.FC = async () => {
 												<h3 className="text-2xl serif mb-4 group-hover:text-primary transition-colors leading-snug">
 													{post.title}
 												</h3>
-												<p className="text-sm font-light text-foreground/60 leading-relaxed line-clamp-2">
+												<p className="text-sm font-light text-foreground leading-relaxed line-clamp-2">
 													{post.excerpt}
 												</p>
 												<div className="mt-6 pt-6 border-t border-foreground/5 opacity-0 group-hover:opacity-100 transition-all">
@@ -146,7 +146,7 @@ const HomePage: React.FC = async () => {
 										<h2 className="text-4xl serif tracking-tight">Latest Homilies</h2>
 										<Link
 											href="/homilies"
-											className="text-xs tracking-widest uppercase text-brand-primary text-brand-primary font-bold hover:text-foreground transition-colors">
+											className="text-xs tracking-widest uppercase text-brand-primary font-bold hover:text-foreground transition-colors">
 											View All
 										</Link>
 									</div>
@@ -166,11 +166,11 @@ const HomePage: React.FC = async () => {
 															className="w-full h-full object-cover   opacity-80 hover:scale-105 transition-all"
 														/>
 													)}
-													<div className="absolute top-4 left-4 text-brand-primary bg-white px-3 py-1 text-[9px] font-bold tracking-widest uppercase text-brand-primary">
+													<div className="absolute top-4 left-4  bg-white px-3 py-1 text-[9px] font-bold tracking-widest uppercase text-brand-primary">
 														Homily
 													</div>
 												</div>
-												<span className="text-[10px] tracking-[0.2em] uppercase text-foreground/40 mb-3 block">
+												<span className="text-[10px] tracking-[0.2em] uppercase text-foreground mb-3 block">
 													{new Date(homily.date).toLocaleDateString(
 														"en-US",
 														{
@@ -183,7 +183,7 @@ const HomePage: React.FC = async () => {
 												<h3 className="text-2xl serif mb-4 group-hover:text-primary transition-colors leading-snug">
 													{homily.title}
 												</h3>
-												<p className="text-sm font-light text-foreground/60 leading-relaxed line-clamp-2">
+												<p className="text-sm font-light text-foregroundleading-relaxed line-clamp-2">
 													{homily.excerpt}
 												</p>
 												<div className="mt-6 pt-6 border-t border-foreground/5 opacity-0 group-hover:opacity-100 transition-all">
@@ -230,13 +230,13 @@ const HomePage: React.FC = async () => {
 														Prayer
 													</div>
 												</div>
-												<span className="text-[10px] tracking-[0.2em] uppercase text-foreground/40 mb-3 block">
+												<span className="text-[10px] tracking-[0.2em] uppercase text-foreground mb-3 block">
 													{prayer.category && `${prayer.category}`}
 												</span>
 												<h3 className="text-2xl serif mb-4 group-hover:text-primary transition-colors leading-snug">
 													{prayer.title}
 												</h3>
-												<p className="text-sm font-light text-foreground/60 leading-relaxed line-clamp-2">
+												<p className="text-sm font-light text-foregroundleading-relaxed line-clamp-2">
 													{prayer.excerpt}
 												</p>
 												<div className="mt-6 pt-6 border-t border-foreground/5 opacity-0 group-hover:opacity-100 transition-all">
