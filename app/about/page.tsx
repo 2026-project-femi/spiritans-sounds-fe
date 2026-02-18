@@ -219,12 +219,12 @@ export default function AboutPage() {
 						{
 							name: "Rev Sister Rosemary Etim, DHS",
 							role: "Assistant Coordinator",
-							image: "/assets/team/Rev-Sister-Rosemary-Etim-DHS.jpg",
+							image: "/assets/team/RevSr_Etim_Rosemary_DHS_Assistant_Coordinator.resized.jpeg",
 						},
 						{
 							name: "Mr Martin Eichie",
 							role: "Coordinator",
-							image: "/assets/team/MrMartinEichie-Coordinator.jpeg",
+							image: "/assets/team/MrMart.jpeg",
 						}
 					].map((member) => (
 						<div key={member.name} className="text-center">
