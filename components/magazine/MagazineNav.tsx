@@ -23,7 +23,7 @@ export default function MagazineNav() {
 	};
 
 	return (
-		<nav className="border-b text-brand-primary/20 bg-[#413d3d] pt-20">
+		<nav className="border-b text-brand-primary/20 bg-white pt-20">
 			<div className="text-center text-black font-bold text-4xl italic animate-pulse">UNVEILER MAGAZINE</div>
 			<div className="max-w-6xl mx-auto px-6 md:px-12">
 				<ul className="flex gap-8 py-6">
