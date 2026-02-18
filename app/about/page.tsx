@@ -14,7 +14,21 @@ export default function AboutPage() {
 			ctaLink: "/about#mission",
 		},
 		{
-			image: { asset: { url: "/assets/about-hero-2.jpg" } },
+			image: { asset: { url: "/assets/team/about-hero-7.jpeg" } },
+			title: "Our Mission",
+			description: "Inspiring spiritual growth through meaningful content.",
+			ctaText: "Discover Our Mission",
+			ctaLink: "/about#mission",
+		},
+		{
+			image: { asset: { url: "/assets/team/about-11.jpeg" } },
+			title: "Our Mission",
+			description: "Inspiring spiritual growth through meaningful content.",
+			ctaText: "Discover Our Mission",
+			ctaLink: "/about#mission",
+		},
+		{
+			image: { asset: { url: "/assets/team/about-hero-4.jpeg" } },
 			title: "Our Mission",
 			description: "Inspiring spiritual growth through meaningful content.",
 			ctaText: "Discover Our Mission",
@@ -44,7 +58,7 @@ export default function AboutPage() {
 										priority={index === 0}
 										className="object-cover"
 									/>
-									<div className="absolute inset-0 flex items-center justify-center text-white text-center p-4 bg-black/40 bg-opacity-40">
+									<div className="absolute inset-0 flex items-center justify-center text-white text-center p-4 bg-black/60 bg-opacity-10">
 										<div className="max-w-3xl">
 											<h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
 												{slide.title}
