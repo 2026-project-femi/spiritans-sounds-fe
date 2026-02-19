@@ -205,16 +205,6 @@ export default function AboutPage() {
 							image: "/assets/team/LauraNnana-secretary.jpeg",
 						},
 						{
-							name: "Engr. Lauretta Uwak",
-							role: "Deputy Coordinator",
-							image: "/assets/team/Engr-Lauretta-Uwak-1-Deputy-cordinator.jpg",
-						},
-						{
-							name: "Mr. Matthew Abifarin",
-							role: "Coordinator",
-							image: "/assets/team/Mr-Matthew-Abifarin-Cordinator.jpg",
-						},
-						{
 							name: "Rev. Fr. Onyilo Willams",
 							role: "Homilist & Columnist",
 							image: "/assets/team/Rev Fr. Onyilo Willams- Homilist & Columnist.jpg",
@@ -239,7 +229,7 @@ export default function AboutPage() {
 							name: "Mr Martin Eichie",
 							role: "Coordinator",
 							image: "/assets/team/MrMart.jpeg",
-						}
+						},
 					].map((member) => (
 						<div key={member.name} className="text-center">
 							<Image
