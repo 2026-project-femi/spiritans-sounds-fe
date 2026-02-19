@@ -197,11 +197,23 @@ async function handleFailedCharge(data: any) {
 				to: process.env.ADMIN_EMAIL,
 				subject: "⚠️ Failed Donation Attempt",
 				html: `
-          <h2>Failed Donation Attempt</h2>
-          <p><strong>Email:</strong> ${data.customer?.email || "N/A"}</p>
-          <p><strong>Amount:</strong> ${data.currency || "NGN"} ${(data.amount / 100).toLocaleString()}</p>
-          <p><strong>Reference:</strong> ${data.reference}</p>
-          <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
+          <div style="font-family: 'Montserrat', sans-serif; color: #2d3436; max-width: 600px; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+            <div style="background-color: #ee0303; padding: 20px; text-align: center;">
+              <h2 style="color: #ffffff; margin: 0; font-family: 'Playfair Display', serif;">⚠️ Failed Donation Attempt</h2>
+            </div>
+            <div style="padding: 30px; background-color: #ffffff;">
+              <p style="margin-bottom: 20px;">A donation attempt has failed on Spiritans Sound.</p>
+              <div style="background-color: #fffcf8; padding: 20px; border-radius: 6px; border-left: 4px solid #ee0303;">
+                <p><strong>Email:</strong> ${data.customer?.email || "N/A"}</p>
+                <p><strong>Amount:</strong> ${data.currency || "NGN"} ${(data.amount / 100).toLocaleString()}</p>
+                <p><strong>Reference:</strong> ${data.reference}</p>
+                <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
+              </div>
+            </div>
+             <div style="background-color: #f9fafb; padding: 20px; text-align: center; font-size: 12px; color: #9ca3af; border-top: 1px solid #e5e7eb;">
+              &copy; ${new Date().getFullYear()} Spiritans Sound
+            </div>
+          </div>
         `,
 			});
 

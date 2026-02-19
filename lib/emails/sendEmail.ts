@@ -128,13 +128,30 @@ export async function sendAdminNotification(donation: any) {
 			to: process.env.ADMIN_EMAIL,
 			subject: `🎉 New Donation Received: ${donation.currency} ${donation.amount / 100}`,
 			html: `
-        <h2>New Donation Received</h2>
-        <p><strong>Donor:</strong> ${donation.metadata?.name || donation.customer.email}</p>
-        <p><strong>Email:</strong> ${donation.customer.email}</p>
-        <p><strong>Amount:</strong> ${donation.currency} ${donation.amount / 100}</p>
-        <p><strong>Reference:</strong> ${donation.reference}</p>
-        <p><strong>Date:</strong> ${new Date(donation.paid_at).toLocaleString()}</p>
-        <p><a href="https://dashboard.paystack.com/#/transactions/${donation.id}">View in Dashboard</a></p>
+        <div style="font-family: 'Montserrat', sans-serif; color: #2d3436; max-width: 600px; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+          <div style="background-color: #ee0303; padding: 20px; text-align: center;">
+            <h2 style="color: #ffffff; margin: 0; font-family: 'Playfair Display', serif;">New Donation Received 🎉</h2>
+          </div>
+          <div style="padding: 30px; background-color: #ffffff;">
+            <p style="margin-bottom: 20px;">A new donation has been successfully processed through Spiritans Sound.</p>
+            <div style="background-color: #fffcf8; padding: 20px; border-radius: 6px; border-left: 4px solid #ee0303;">
+              <p><strong>Donor:</strong> ${donation.metadata?.name || donation.customer.email}</p>
+              <p><strong>Email:</strong> ${donation.customer.email}</p>
+              <p><strong>Amount:</strong> ${donation.currency} ${donation.amount / 100}</p>
+              <p><strong>Reference:</strong> ${donation.reference}</p>
+              <p><strong>Date:</strong> ${new Date(donation.paid_at).toLocaleString()}</p>
+            </div>
+            <p style="margin-top: 30px; text-align: center;">
+              <a href="https://dashboard.paystack.com/#/transactions/${donation.id}" 
+                 style="background-color: #ee0303; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">
+                View in Paystack Dashboard
+              </a>
+            </p>
+          </div>
+          <div style="background-color: #f9fafb; padding: 20px; text-align: center; font-size: 12px; color: #9ca3af; border-top: 1px solid #e5e7eb;">
+            &copy; ${new Date().getFullYear()} Spiritans Sound
+          </div>
+        </div>
       `,
 		};
 

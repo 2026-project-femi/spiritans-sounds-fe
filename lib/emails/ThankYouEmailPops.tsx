@@ -28,7 +28,7 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
           /* Gmail-friendly styles */
           .ExternalClass, .ReadMsgBody {
             width: 100%;
-            background-color: #f4f4f7;
+            background-color: #fffcf8;
           }
           
           body, table, td, p, a {
@@ -54,8 +54,8 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
           body {
             margin: 0;
             padding: 0;
-            background-color: #f4f4f7;
-            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #fffcf8;
+            font-family: 'Montserrat', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
           }
           
           /* Container */
@@ -67,13 +67,14 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
           
           /* Header */
           .header {
-            background: linear-gradient(135deg, #166534 0%, #22c55e 100%);
+            background: linear-gradient(135deg, #ee0303 0%, #a50202 100%);
             padding: 40px 30px;
             text-align: center;
           }
           
           .header h1 {
             color: #ffffff;
+            font-family: 'Playfair Display', Georgia, serif;
             font-size: 32px;
             font-weight: 700;
             margin: 0 0 8px 0;
@@ -94,8 +95,8 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
           
           /* Scripture */
           .scripture {
-            background-color: #f0fdf4;
-            border-left: 4px solid #22c55e;
+            background-color: #fffcf8;
+            border-left: 4px solid #ee0303;
             padding: 24px;
             margin-bottom: 32px;
             border-radius: 8px;
@@ -104,14 +105,15 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
           .scripture p {
             font-size: 18px;
             line-height: 1.8;
-            color: #166534;
+            color: #2d3436;
             font-style: italic;
             margin: 0 0 12px 0;
           }
           
           .scripture cite {
             font-size: 14px;
-            color: #4b5563;
+            color: #ee0303;
+            font-weight: 600;
             font-style: normal;
           }
           
@@ -127,7 +129,7 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
           .amount {
             font-size: 48px;
             font-weight: 800;
-            color: #166534;
+            color: #ee0303;
             text-align: center;
             margin: 0 0 24px 0;
           }
@@ -143,18 +145,18 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
           
           .detail-label {
             font-weight: 600;
-            color: #4b5563;
+            color: #455254;
             display: inline-block;
             width: 140px;
           }
           
           .detail-value {
-            color: #1e293b;
+            color: #2d3436;
           }
           
           /* Impact */
           .impact {
-            background: linear-gradient(135deg, #fef9c3 0%, #fde047 100%);
+            background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
             border-radius: 16px;
             padding: 32px;
             margin-bottom: 32px;
@@ -164,7 +166,7 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
             font-size: 24px;
             font-weight: 700;
             margin: 0 0 16px 0;
-            color: #854d0e;
+            color: #9b2c2c;
           }
           
           .impact ul {
@@ -177,7 +179,7 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
             margin-bottom: 12px;
             padding-left: 28px;
             position: relative;
-            color: #854d0e;
+            color: #9b2c2c;
           }
           
           .impact li:before {
@@ -189,7 +191,7 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
           /* Button */
           .button {
             display: inline-block;
-            background-color: #166534;
+            background-color: #ee0303;
             color: #ffffff;
             text-decoration: none;
             padding: 14px 32px;
@@ -249,8 +251,8 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
 								<tr>
 									<td
 										className="header"
-										style={{ background: "linear-gradient(135deg, #166534 0%, #22c55e 100%)", padding: "40px 30px", textAlign: "center" }}>
-										<h1 style={{ color: "#ffffff", fontSize: "32px", margin: "0 0 8px 0" }}>
+										style={{ background: "linear-gradient(135deg, #ee0303 0%, #a50202 100%)", padding: "40px 30px", textAlign: "center" }}>
+										<h1 style={{ color: "#ffffff", fontFamily: "'Playfair Display', Georgia, serif", fontSize: "32px", margin: "0 0 8px 0" }}>
 											Thank You for Your Gift! 🙏
 										</h1>
 										<p style={{ color: "rgba(255, 255, 255, 0.9)", fontSize: "18px", margin: 0 }}>
@@ -269,16 +271,16 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
 										{/* Scripture */}
 										<table
 											width="100%"
-											style={{ backgroundColor: "#f0fdf4", borderLeft: "4px solid #22c55e", borderRadius: "8px", marginBottom: "32px" }}>
+											style={{ backgroundColor: "#fffcf8", borderLeft: "4px solid #ee0303", borderRadius: "8px", marginBottom: "32px" }}>
 											<tr>
 												<td style={{ padding: "24px" }}>
-													<p style={{ fontSize: "18px", lineHeight: 1.8, color: "#166534", fontStyle: "italic", margin: "0 0 12px 0" }}>
+													<p style={{ fontSize: "18px", lineHeight: 1.8, color: "#2d3436", fontStyle: "italic", margin: "0 0 12px 0" }}>
 														"Each one must give as he has decided
 														in his heart, not reluctantly or under
 														compulsion, for God loves a cheerful
 														giver."
 													</p>
-													<cite style={{ fontSize: "14px", color: "#4b5563", fontStyle: "normal" }}>
+													<cite style={{ fontSize: "14px", color: "#ee0303", fontWeight: 600, fontStyle: "normal" }}>
 														— 2 Corinthians 9:7
 													</cite>
 												</td>
@@ -291,7 +293,7 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
 											style={{ backgroundColor: "#f8fafc", borderRadius: "16px", border: "1px solid #e2e8f0", marginBottom: "32px" }}>
 											<tr>
 												<td style={{ padding: "32px" }}>
-													<div style={{ fontSize: "48px", fontWeight: 800, color: "#166534", textAlign: "center", marginBottom: "24px" }}>
+													<div style={{ fontSize: "48px", fontWeight: 800, color: "#ee0303", textAlign: "center", marginBottom: "24px" }}>
 														{currency} {amount.toLocaleString()}
 													</div>
 
@@ -319,31 +321,31 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
 										{/* Impact */}
 										<table
 											width="100%"
-											style={{ background: "linear-gradient(135deg, #fef9c3 0%, #fde047 100%)", borderRadius: "16px", marginBottom: "32px" }}>
+											style={{ background: "linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%)", borderRadius: "16px", marginBottom: "32px" }}>
 											<tr>
 												<td style={{ padding: "32px" }}>
-													<h3 style={{ fontSize: "24px", fontWeight: 700, margin: "0 0 16px 0", color: "#854d0e" }}>
+													<h3 style={{ fontSize: "24px", fontWeight: 700, margin: "0 0 16px 0", color: "#9b2c2c" }}>
 														Your Gift Will:
 													</h3>
 													<ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
-														<li style={{ marginBottom: "12px", paddingLeft: "28px", position: "relative", color: "#854d0e" }}>
+														<li style={{ marginBottom: "12px", paddingLeft: "28px", position: "relative", color: "#9b2c2c" }}>
 															📖 Help produce daily homilies
 															reaching thousands
 														</li>
-														<li style={{ marginBottom: "12px", paddingLeft: "28px", position: "relative", color: "#854d0e" }}>
+														<li style={{ marginBottom: "12px", paddingLeft: "28px", position: "relative", color: "#9b2c2c" }}>
 															🎙 Support online spiritual
 															broadcasts
 														</li>
-														<li style={{ marginBottom: "12px", paddingLeft: "28px", position: "relative", color: "#854d0e" }}>
+														<li style={{ marginBottom: "12px", paddingLeft: "28px", position: "relative", color: "#9b2c2c" }}>
 															📚 Provide faith formation
 															resources
 														</li>
-														<li style={{ marginBottom: "12px", paddingLeft: "28px", position: "relative", color: "#854d0e" }}>
+														<li style={{ marginBottom: "12px", paddingLeft: "28px", position: "relative", color: "#9b2c2c" }}>
 															🙏 Enable prayer support for
 															families in need
 														</li>
 													</ul>
-													<p style={{ margin: "20px 0 0 0", fontStyle: "italic", color: "#854d0e" }}>
+													<p style={{ margin: "20px 0 0 0", fontStyle: "italic", color: "#9b2c2c" }}>
 														{message ||
 															"Your generosity helps us continue spreading the Gospel to thousands worldwide."}
 													</p>
@@ -357,7 +359,7 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
 												<td align="center">
 													<a
 														href={`${process.env.APP_URL}/my-donations`}
-														style={{ display: "inline-block", backgroundColor: "#166534", color: "#ffffff", textDecoration: "none", padding: "14px 32px", borderRadius: "9999px", fontWeight: 600, fontSize: "16px" }}>
+														style={{ display: "inline-block", backgroundColor: "#ee0303", color: "#ffffff", textDecoration: "none", padding: "14px 32px", borderRadius: "9999px", fontWeight: 600, fontSize: "16px" }}>
 														View Your Giving History
 													</a>
 												</td>
@@ -372,16 +374,14 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
 										className="footer"
 										style={{ backgroundColor: "#f8fafc", padding: "30px", textAlign: "center", borderTop: "1px solid #e2e8f0" }}>
 										<p style={{ color: "#64748b", fontSize: "14px", margin: "0 0 8px 0" }}>
-											Your Church Name • 123 Faith Avenue
-											<br />
-											Your City, State 12345
+											Spiritans Sound • Digital Ministry
 										</p>
 										<p style={{ color: "#64748b", fontSize: "14px", margin: "0 0 20px 0" }}>
 											This receipt serves as your official donation record for tax
 											purposes.
 										</p>
 										<p style={{ color: "#94a3b8", fontSize: "12px", margin: "20px 0 0 0" }}>
-											© {new Date().getFullYear()} Your Church Name. All rights
+											© {new Date().getFullYear()} Spiritans Sound. All rights
 											reserved.
 											<br />
 											<a

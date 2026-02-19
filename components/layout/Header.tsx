@@ -8,12 +8,12 @@ const navLinks = [
 	{ href: "/", label: "Home" },
 	{ href: "/homilies", label: "Homilies" },
 	{ href: "/articles", label: "Articles" },
-	{ href: "/unveiler", label: "Treasures Unveiler" },
+	{ href: "/unveiler", label: "Treasures  Unveiler" },
 	{ href: "/about", label: "About" },
-	// { href: "/contact", label: "Contact" },
 ];
 
 const moreLinks = [
+	{ href: "/contact", label: "Contact" },
 	{ href: "/unveiler/issues", label: "Magazine Issues" },
 	{ href: "/unveiler/books", label: "Book Publishing" },
 	{ href: "/unveiler/radio", label: "Internet Radio" },
@@ -42,8 +42,9 @@ const Header: React.FC = () => {
 
 	return (
 		<header
-			className={`fixed top-0 left-0 right-0 z-50 transition-gentle px-6 md:px-12 py-4 ${isScrolled ? "bg-white md:bg-white/80 md:backdrop-blur-md shadow-sm py-3" : "bg-transparent py-6"
-				}`}>
+			className={`fixed top-0 left-0 right-0 z-50 transition-gentle px-6 md:px-12 py-4 ${
+				isScrolled ? "bg-white md:bg-white/80 md:backdrop-blur-md shadow-sm py-3" : "bg-transparent py-6"
+			}`}>
 			<div className="max-w-7xl mx-auto flex items-center justify-between">
 				{/* Logo Section */}
 				<Link href="/" className="flex items-center gap-2">
@@ -59,10 +60,11 @@ const Header: React.FC = () => {
 							<Link
 								key={item.label}
 								href={item.href}
-								className={`text-sm font-medium tracking-widest uppercase transition-gentle ${active
-									? "text-brand-primary"
-									: "text-sacred-slate/70 hover:text-brand-primary"
-									}`}>
+								className={`text-sm font-medium tracking-widest uppercase transition-gentle ${
+									active
+										? "text-brand-primary"
+										: "text-sacred-slate/70 hover:text-brand-primary"
+								}`}>
 								{item.label}
 							</Link>
 						);
@@ -80,10 +82,11 @@ const Header: React.FC = () => {
 									<Link
 										key={link.label}
 										href={link.href}
-										className={`block px-4 py-2 text-xs uppercase tracking-widest transition-gentle ${active
-											? "bg-sacred-ivory text-brand-primary"
-											: "text-sacred-slate/60 hover:bg-sacred-ivory hover:text-brand-primary"
-											}`}>
+										className={`block px-4 py-2 text-xs uppercase tracking-widest transition-gentle ${
+											active
+												? "bg-sacred-ivory text-brand-primary"
+												: "text-sacred-slate/60 hover:bg-sacred-ivory hover:text-brand-primary"
+										}`}>
 										{link.label}
 									</Link>
 								);
@@ -141,10 +144,11 @@ const Header: React.FC = () => {
 									key={item.label}
 									href={item.href}
 									onClick={() => setIsMobileMenuOpen(false)}
-									className={`text-2xl serif font-light transition-gentle ${active
-										? "text-brand-primary"
-										: "text-sacred-slate hover:text-brand-primary"
-										}`}>
+									className={`text-2xl serif font-light transition-gentle ${
+										active
+											? "text-brand-primary"
+											: "text-sacred-slate hover:text-brand-primary"
+									}`}>
 									{item.label}
 								</Link>
 							);
@@ -163,10 +167,11 @@ const Header: React.FC = () => {
 											key={link.label}
 											href={link.href}
 											onClick={() => setIsMobileMenuOpen(false)}
-											className={`block text-sm text-center transition-gentle ${active
-												? "text-brand-primary"
-												: "text-sacred-slate/70 hover:text-brand-primary"
-												}`}>
+											className={`block text-sm text-center transition-gentle ${
+												active
+													? "text-brand-primary"
+													: "text-sacred-slate/70 hover:text-brand-primary"
+											}`}>
 											{link.label}
 										</Link>
 									);
