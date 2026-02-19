@@ -202,13 +202,18 @@ export const SINGLE_MUSIC_QUERY = `
 
 // Events List Page with Pagination
 export const EVENTS_QUERY = `
-*[_type == "event"] | order(date desc)[$start...$end] {
+*[_type == "event"] | order(isFeatured desc, date asc)[$start...$end] {
   _id,
   title,
   "slug": slug.current,
   date,
+  publishedAt,
   location,
-  description, // Using description as excerpt
+  description,
+  excerpt,
+  eventType,
+  isFeatured,
+  isPopular,
   "imageUrl": featuredImage.asset->url
 }
 `;
@@ -225,11 +230,44 @@ export const EVENT_QUERY = `
   title,
   "slug": slug.current,
   date,
+  publishedAt,
   location,
   description,
+  excerpt,
+  eventType,
+  isFeatured,
+  isPopular,
   "imageUrl": featuredImage.asset->url
 }
 `;
+
+// Featured event for hero (editor-pinned)
+export const FEATURED_EVENT_QUERY = `
+*[_type == "event" && isFeatured == true] | order(date asc)[0] {
+  _id,
+  title,
+  "slug": slug.current,
+  date,
+  location,
+  excerpt,
+  description,
+  eventType,
+  "imageUrl": featuredImage.asset->url
+}
+`;
+
+// Popular events for sidebar
+export const POPULAR_EVENTS_QUERY = `
+*[_type == "event" && isPopular == true] | order(date desc)[0...5] {
+  _id,
+  title,
+  "slug": slug.current,
+  date,
+  location,
+  "imageUrl": featuredImage.asset->url
+}
+`;
+
 
 // All Categories for Sidebar
 export const ALL_CATEGORIES_QUERY = `
@@ -320,48 +358,34 @@ seo{
 }
 `;
 
-// Magazine Landing page - Removed as per user request
-// export const MAGAZINE_LANDING_QUERY = `
-// *[_type == "magazineLanding"][0]{
-//   title,
-//   subtitle,
-//   heroImage{
-//     asset->{url}
-//   },
-//   aboutMagazine,
-//   mission,
-//   editorNote,
-//   seo
-// }
-// `;
+// 📚 Magazine Issues List
+export const MAGAZINE_ISSUES_QUERY = `
+*[_type == "magazineIssue"] | order(publishDate desc){
+  _id,
+  issueNumber,
+  "slug": slug.current,
+  publishDate,
+  "imageUrl": featuredImage.asset->url,
+  "articleCount": count(articles)
+}
+`;
 
-// 📚 Magazine Issues List - Removed as per user request
-// export const MAGAZINE_ISSUES_QUERY = `
-// *[_type == "magazineIssue"] | order(publishDate desc){
-//   issueNumber,
-//   slug,
-//   publishDate,
-//   cover{
-//     asset->{url}
-//   }
-// }
-// `;
-
-// 📝 Single Magazine Article Page - Removed as per user request
-// export const MAGAZINE_ISSUE_QUERY = `
-// *[_type == "magazineIssue" && slug.current == $slug][0]{
-//   issueNumber,
-//   publishDate,
-//   cover{
-//     asset->{url}
-//   },
-//   articles[]->{
-//     title,
-//     slug,
-//     author,
-//     image{
-//       asset->{url}
-//     }
-//   }
-// }
-// `;
+// 📝 Single Magazine Issue Page
+export const MAGAZINE_ISSUE_QUERY = `
+*[_type == "magazineIssue" && slug.current == $slug][0]{
+  _id,
+  issueNumber,
+  publishDate,
+  "slug": slug.current,
+  "imageUrl": featuredImage.asset->url,
+  "articles": articles[]->{
+    _id,
+    title,
+    "slug": slug.current,
+    author,
+    excerpt,
+    publishedAt,
+    "imageUrl": featuredImage.asset->url
+  }
+}
+`;

@@ -16,12 +16,13 @@ const navLinks = [
 ];
 
 const moreLinks = [
-    { href: "/prayers", label: "Prayers & Devotionals" },
-    { href: "/music", label: "Music & Worship" },
-    { href: "/news", label: "News / Events" },
-    { href: "/radio", label: "Online Radio" },
+    { href: "/unveiler", label: "TUYDF Events" },
+    { href: "/unveiler/issues", label: "Magazine Issues" },
+    { href: "/unveiler/books", label: "Book Publishing" },
+    { href: "/unveiler/radio", label: "Internet Radio" },
+    { href: "/unveiler/adverts", label: "Advertising" },
+    { href: "/unveiler/about", label: "About Foundation" },
     { href: "/newsletter", label: "Newsletter" },
-    { href: "/publications", label: "Publications" },
 ];
 
 export default function MobileNav() {

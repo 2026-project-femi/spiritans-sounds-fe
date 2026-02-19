@@ -8,18 +8,16 @@ const navLinks = [
 	{ href: "/", label: "Home" },
 	{ href: "/homilies", label: "Homilies" },
 	{ href: "/articles", label: "Articles" },
-	{ href: "/unveiler", label: "Unveiler Magazine" },
+	{ href: "/unveiler", label: "Treasures Unveiler" },
 	{ href: "/about", label: "About" },
 	// { href: "/contact", label: "Contact" },
 ];
 
 const moreLinks = [
-	{ href: "/prayers", label: "Prayers & Devotionals" },
-	{ href: "/music", label: "Music & Worship" },
-	{ href: "/news", label: "News / Events" },
-	{ href: "/radio", label: "🎙 Online Radio" },
-	{ href: "/newsletter", label: "Newsletter" },
-	{ href: "/publications", label: "📚 eBooks & Publications" },
+	{ href: "/unveiler/issues", label: "Magazine Issues" },
+	{ href: "/unveiler/books", label: "Book Publishing" },
+	{ href: "/unveiler/radio", label: "Internet Radio" },
+	{ href: "/unveiler/adverts", label: "Advertising" },
 ];
 
 const Header: React.FC = () => {
@@ -72,10 +70,10 @@ const Header: React.FC = () => {
 
 					{/* More Dropdown */}
 					<div className="relative group">
-						<button className="text-sm font-medium tracking-widest uppercase text-sacred-slate/70 hover:text-brand-primary transition-gentle">
+						<button className="text-sm font-medium tracking-widest uppercase text-sacred-slate/70 hover:text-brand-primary transition-gentle ">
 							More
 						</button>
-						<div className="absolute top-full left-0 mt-4 w-56 bg-white shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-gentle border-t-2 text-brand-primary py-2">
+						<div className="absolute top-full left-0 w-56 bg-white shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-gentle border-t-2 border-brand-primary py-2 z-50">
 							{moreLinks.map((link) => {
 								const active = isActiveLink(link.href);
 								return (
@@ -95,7 +93,7 @@ const Header: React.FC = () => {
 
 					<Link
 						href="/donations"
-						className="px-6 py-2 border text-brand-primary text-brand-primary text-xs font-semibold tracking-widest uppercase hover:bg-brand-primary transition-all duration-500 hover:text-white transition-gentle">
+						className="px-6 py-2 border text-brand-primary  text-xs font-semibold tracking-widest uppercase hover:bg-brand-primary transition-all duration-500 hover:text-white transition-gentle">
 						Donate
 					</Link>
 				</nav>

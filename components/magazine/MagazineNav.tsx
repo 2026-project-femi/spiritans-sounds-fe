@@ -4,48 +4,54 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const tabs = [
-	{ label: "About", href: "/unveiler" },
-	{ label: "Issues", href: "/unveiler/issues" },
-	{ label: "Articles", href: "/unveiler/articles" },
+  { label: "Events", href: "/unveiler" },
+  { label: "Magazine", href: "/unveiler/issues" },
+  { label: "Books", href: "/unveiler/books" },
+  { label: "Radio", href: "/unveiler/radio" },
+  { label: "Adverts", href: "/unveiler/adverts" },
+  { label: "About", href: "/unveiler/about" },
 ];
 
 export default function MagazineNav() {
-	const pathname = usePathname();
+  const pathname = usePathname();
 
-	const isActiveTab = (href: string) => {
-		// Exact match for all tabs to avoid overlap
-		// Since /unveiler/issues starts with /unveiler, we need exact matching
-		if (href === "/unveiler") {
-			return pathname === "/unveiler" || pathname === "/unveiler/";
-		}
-		// For sub-pages, check if pathname starts with the href
-		return pathname === href || pathname.startsWith(href + "/");
-	};
+  const isActiveTab = (href: string) => {
+    // Events tab: exact match on /unveiler only (not sub-paths like /unveiler/about)
+    if (href === "/unveiler") {
+      return pathname === "/unveiler" || pathname === "/unveiler/";
+    }
+    return pathname === href || pathname.startsWith(href + "/");
+  };
 
-	return (
-		<nav className="border-b text-brand-primary/20 bg-white pt-20">
-			<div className="text-center text-black font-bold text-4xl italic animate-pulse">UNVEILER MAGAZINE</div>
-			<div className="max-w-6xl mx-auto px-6 md:px-12">
-				<ul className="flex gap-8 py-6">
-					{tabs.map((tab) => {
-						const active = isActiveTab(tab.href);
-
-						return (
-							<li key={tab.href}>
-								<Link
-									href={tab.href}
-									className={`text-xs font-medium uppercase tracking-[0.2em] transition-gentle pb-2 border-b-2 ${
-										active
-											? "text-brand-primary text-brand-primary"
-											: "text-gray-800 border-transparent hover:text-white hover:text-brand-primary/50"
-									}`}>
-									{tab.label}
-								</Link>
-							</li>
-						);
-					})}
-				</ul>
-			</div>
-		</nav>
-	);
+  return (
+    <nav className="border-b border-pink-500/10 bg-[#0c0c0e]/95 backdrop-blur-md pt-20 sticky top-0 z-40">
+      <div className="text-center py-4 border-b border-white/5">
+        <Link href="/unveiler" className="text-white font-black text-2xl tracking-[0.15em] uppercase hover:text-pink-400 transition-colors">
+          <span className="text-transparent bg-clip-text bg-linear-to-r from-pink-400 to-purple-400">TREASURES</span>{" "}
+          UNVEILER
+        </Link>
+        <p className="text-[10px] tracking-[0.3em] uppercase text-gray-600 mt-1">Youth Development Foundation</p>
+      </div>
+      <div className="max-w-7xl mx-auto px-6 overflow-x-auto">
+        <ul className="flex gap-1 py-3 min-w-max">
+          {tabs.map((tab) => {
+            const active = isActiveTab(tab.href);
+            return (
+              <li key={tab.href}>
+                <Link
+                  href={tab.href}
+                  className={`text-xs font-semibold uppercase tracking-[0.15em] transition-all duration-200 px-4 py-2 rounded-full ${
+                    active
+                      ? "bg-linear-to-r from-pink-600 to-purple-600 text-white"
+                      : "text-gray-400 hover:text-white hover:bg-white/5"
+                  }`}>
+                  {tab.label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </nav>
+  );
 }
