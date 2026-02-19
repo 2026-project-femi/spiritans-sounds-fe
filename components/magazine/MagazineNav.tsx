@@ -30,7 +30,7 @@ export default function MagazineNav() {
           <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-primary to-brand-primary/80">TREASURES</span>{" "}
           UNVEILER
         </Link>
-        <p className="text-[10px] tracking-[0.3em] uppercase text-gray-600 mt-1">Youth Development Foundation</p>
+        <p className="text-[10px] tracking-[0.3em] uppercase text-gray-300 mt-1">Youth Development Foundation</p>
       </div>
       <div className="max-w-7xl mx-auto px-6 overflow-x-auto">
         <ul className="flex gap-1 py-3 min-w-max">
