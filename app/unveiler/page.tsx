@@ -77,10 +77,10 @@ function HeroEvent({ event, isDummy }: { event: Event; isDummy: boolean }) {
   const excerpt = event.excerpt || event.description || "";
 
   const inner = (
-    <article className="group relative rounded-3xl overflow-hidden border border-pink-500/30 bg-linear-to-br from-pink-900/40 via-[#0c0c0e] to-purple-900/40 hover:border-pink-500/60 transition-all duration-500 shadow-2xl">
+    <article className="group relative rounded-3xl overflow-hidden border border-brand-primary/30 bg-linear-to-br from-red-950/40 via-[#0c0c0e] to-red-900/40 hover:border-brand-primary/60 transition-all duration-500 shadow-2xl">
       <div className="flex flex-col lg:flex-row min-h-[450px]">
         {/* Image Section */}
-        <div className="lg:w-3/5 relative overflow-hidden bg-linear-to-br from-pink-900/30 to-purple-900/40">
+        <div className="lg:w-3/5 relative overflow-hidden bg-linear-to-br from-red-950/30 to-red-900/40">
           {event.imageUrl ? (
             <Image
               src={event.imageUrl}
@@ -91,7 +91,7 @@ function HeroEvent({ event, isDummy }: { event: Event; isDummy: boolean }) {
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
-              <CalendarDays className="w-24 h-24 text-pink-400/10" />
+              <CalendarDays className="w-24 h-24 text-brand-primary/10" />
             </div>
           )}
           <div className="absolute inset-0 bg-linear-to-r from-black/60 via-transparent to-transparent hidden lg:block" />
@@ -99,7 +99,7 @@ function HeroEvent({ event, isDummy }: { event: Event; isDummy: boolean }) {
 
           {/* Badges */}
           <div className="absolute top-6 left-6 flex gap-3 z-20">
-            <span className="text-[10px] tracking-widest uppercase font-black px-4 py-2 rounded-full bg-pink-600 text-white shadow-lg">
+            <span className="text-[10px] tracking-widest uppercase font-black px-4 py-2 rounded-full bg-brand-primary text-white shadow-lg">
               Featured Event
             </span>
             <span
@@ -118,8 +118,8 @@ function HeroEvent({ event, isDummy }: { event: Event; isDummy: boolean }) {
         <div className="lg:w-2/5 p-8 lg:p-12 flex flex-col justify-center relative z-10">
           <div className="space-y-6">
             <div className="flex flex-col gap-2">
-              <span className="flex items-center gap-2 text-xs font-bold text-pink-400 uppercase tracking-widest">
-                <Star className="w-4 h-4 fill-pink-400" />
+              <span className="flex items-center gap-2 text-xs font-bold text-brand-primary uppercase tracking-widest">
+                <Star className="w-4 h-4 fill-brand-primary" />
                 Special Feature
               </span>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight">
@@ -129,12 +129,12 @@ function HeroEvent({ event, isDummy }: { event: Event; isDummy: boolean }) {
 
             <div className="flex flex-col gap-3 text-sm text-gray-400">
               <span className="flex items-center gap-2 font-medium">
-                <Clock className="w-4 h-4 text-pink-500" />
+                <Clock className="w-4 h-4 text-brand-primary" />
                 {formatDateLong(event.date)}
               </span>
               {event.location && (
                 <span className="flex items-center gap-2 font-medium">
-                  <MapPin className="w-4 h-4 text-pink-500" />
+                  <MapPin className="w-4 h-4 text-brand-primary" />
                   {event.location}
                 </span>
               )}
@@ -147,7 +147,7 @@ function HeroEvent({ event, isDummy }: { event: Event; isDummy: boolean }) {
             )}
 
             <div className="pt-4">
-              <div className="inline-flex items-center gap-3 px-8 py-4 bg-linear-to-r from-pink-600 to-purple-600 text-white font-bold rounded-full hover:opacity-90 transition-all duration-300 hover:scale-105 shadow-xl shadow-pink-900/20">
+              <div className="inline-flex items-center gap-3 px-8 py-4 bg-linear-to-r from-brand-primary to-red-700 text-white font-bold rounded-full hover:opacity-90 transition-all duration-300 hover:scale-105 shadow-xl shadow-red-900/20">
                 Explore Event Details <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
               </div>
             </div>
@@ -167,7 +167,7 @@ function EventCard({ event, isDummy }: { event: Event; isDummy: boolean }) {
   const excerpt = event.excerpt || event.description || "";
 
   const inner = (
-    <article className="group flex flex-col rounded-2xl overflow-hidden border border-white/5 bg-[#121214] hover:border-pink-500/30 transition-all duration-300 h-full">
+    <article className="group flex flex-col rounded-2xl overflow-hidden border border-white/5 bg-[#121214] hover:border-brand-primary/30 transition-all duration-300 h-full">
       {/* Image Container */}
       <div className="aspect-16/9 relative overflow-hidden bg-[#1a1a1e]">
         {event.imageUrl ? (
@@ -179,7 +179,7 @@ function EventCard({ event, isDummy }: { event: Event; isDummy: boolean }) {
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
-            <CalendarDays className="w-10 h-10 text-pink-400/10" />
+            <CalendarDays className="w-10 h-10 text-brand-primary/10" />
           </div>
         )}
         <div className="absolute inset-0 bg-linear-to-t from-[#121214] via-transparent to-transparent opacity-60" />
@@ -199,7 +199,7 @@ function EventCard({ event, isDummy }: { event: Event; isDummy: boolean }) {
 
         {event.eventType && (
           <div className="absolute top-4 right-4">
-            <span className="text-[9px] tracking-widest uppercase font-bold px-3 py-1.5 rounded-full bg-linear-to-r from-pink-600/80 to-purple-600/80 text-white shadow-lg">
+            <span className="text-[9px] tracking-widest uppercase font-bold px-3 py-1.5 rounded-full bg-linear-to-r from-brand-primary/80 to-red-600/80 text-white shadow-lg">
               {eventTypeLabels[event.eventType]}
             </span>
           </div>
@@ -210,7 +210,7 @@ function EventCard({ event, isDummy }: { event: Event; isDummy: boolean }) {
       <div className="p-6 flex flex-col flex-1 gap-4">
         <div className="space-y-2">
           <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-500">
-            <span className="text-pink-500">{formatDate(event.date)}</span>
+            <span className="text-brand-primary">{formatDate(event.date)}</span>
             {event.location && (
               <>
                 <span className="w-1 h-1 rounded-full bg-gray-700" />
@@ -218,7 +218,7 @@ function EventCard({ event, isDummy }: { event: Event; isDummy: boolean }) {
               </>
             )}
           </div>
-          <h3 className="text-xl font-bold text-white group-hover:text-pink-300 transition-colors leading-tight line-clamp-2">
+          <h3 className="text-xl font-bold text-white group-hover:text-red-400 transition-colors leading-tight line-clamp-2">
             {event.title}
           </h3>
         </div>
@@ -230,10 +230,10 @@ function EventCard({ event, isDummy }: { event: Event; isDummy: boolean }) {
         )}
 
         <div className="pt-2 border-t border-white/5 flex items-center justify-between group/btn">
-          <span className="text-xs font-bold text-pink-400 uppercase tracking-widest group-hover/btn:text-pink-300 transition-colors">
+          <span className="text-xs font-bold text-brand-primary uppercase tracking-widest group-hover/btn:text-red-400 transition-colors">
             Read Story
           </span>
-          <ArrowRight className="w-4 h-4 text-pink-500 group-hover/btn:translate-x-1 transition-transform" />
+          <ArrowRight className="w-4 h-4 text-brand-primary group-hover/btn:translate-x-1 transition-transform" />
         </div>
       </div>
     </article>
@@ -268,25 +268,25 @@ function EventsSidebar({
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
-              <CalendarDays className="w-6 h-6 text-pink-400/20" />
+              <CalendarDays className="w-6 h-6 text-brand-primary/20" />
             </div>
           )}
           {showPopularMark && (
             <div className="absolute top-0 right-0 p-1">
-              <Flame className="w-3 h-3 text-pink-500 fill-pink-500" />
+              <Flame className="w-3 h-3 text-brand-primary fill-brand-primary" />
             </div>
           )}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[9px] font-black text-pink-500 uppercase tracking-widest">
+            <span className="text-[9px] font-black text-brand-primary uppercase tracking-widest">
               {formatDate(event.date)}
             </span>
             {isUpcoming(event.date) && (
               <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-sm shadow-green-900" />
             )}
           </div>
-          <h4 className="text-sm font-bold text-gray-200 group-hover:text-pink-400 transition-colors leading-snug line-clamp-2">
+          <h4 className="text-sm font-bold text-gray-200 group-hover:text-brand-primary transition-colors leading-snug line-clamp-2">
             {event.title}
           </h4>
         </div>
@@ -302,7 +302,7 @@ function EventsSidebar({
       {/* Upcoming Events */}
       <section className="bg-[#0c0c0e] rounded-2xl border border-white/5 p-6 shadow-xl">
         <h3 className="text-xs tracking-[0.3em] uppercase font-black text-white mb-6 flex items-center gap-3">
-          <span className="w-8 h-[1px] bg-pink-600" />
+          <span className="w-8 h-[1px] bg-brand-primary" />
           Upcoming
         </h3>
         <div className="space-y-1">
@@ -317,7 +317,7 @@ function EventsSidebar({
       {/* Popular Events */}
       <section className="bg-[#0c0c0e] rounded-2xl border border-white/5 p-6 shadow-xl">
         <h3 className="text-xs tracking-[0.3em] uppercase font-black text-white mb-6 flex items-center gap-3">
-          <span className="w-8 h-[1px] bg-purple-600" />
+          <span className="w-8 h-[1px] bg-red-700" />
           Popular
         </h3>
         <div className="space-y-1">
@@ -346,9 +346,9 @@ function EventsSidebar({
 
       {/* Newsletter - Premium Design */}
       <section className="relative overflow-hidden group">
-        <div className="absolute inset-0 bg-linear-to-br from-pink-600 to-purple-700 blur-[60px] opacity-20 group-hover:opacity-30 transition-opacity" />
-        <div className="relative p-8 rounded-3xl border border-pink-500/20 bg-black/40 backdrop-blur-xl">
-          <Users className="w-10 h-10 text-pink-400 mb-4" />
+        <div className="absolute inset-0 bg-linear-to-br from-brand-primary to-red-800 blur-[60px] opacity-20 group-hover:opacity-30 transition-opacity" />
+        <div className="relative p-8 rounded-3xl border border-brand-primary/20 bg-black/40 backdrop-blur-xl">
+          <Users className="w-10 h-10 text-brand-primary mb-4" />
           <h3 className="text-xl font-black text-white mb-2 tracking-tight">The Unveiler Digest</h3>
           <p className="text-xs text-gray-400 mb-6 leading-relaxed">
             Join 2,000+ creators and believers. Get event invites and spiritual treasures in your inbox.
@@ -357,9 +357,9 @@ function EventsSidebar({
             <input
               type="email"
               placeholder="Your sacred email"
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-600 focus:outline-none focus:border-pink-500/50 transition-all text-xs"
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-600 focus:outline-none focus:border-brand-primary/50 transition-all text-xs"
             />
-            <button className="w-full py-3 bg-white text-black text-xs font-black rounded-xl hover:bg-pink-500 hover:text-white transition-all duration-300 uppercase tracking-widest">
+            <button className="w-full py-3 bg-white text-black text-xs font-black rounded-xl hover:bg-brand-primary hover:text-white transition-all duration-300 uppercase tracking-widest">
               Join The Mission
             </button>
           </div>
@@ -390,7 +390,7 @@ function Pagination({ currentPage, totalPages }: { currentPage: number; totalPag
       {currentPage > 1 && (
         <Link
           href={`/unveiler?page=${currentPage - 1}`}
-          className="w-10 h-10 flex items-center justify-center rounded-xl border border-white/5 bg-white/3 text-gray-400 hover:border-pink-500/40 hover:text-pink-400 transition-all"
+          className="w-10 h-10 flex items-center justify-center rounded-xl border border-white/5 bg-white/3 text-gray-400 hover:border-brand-primary/40 hover:text-brand-primary transition-all"
         >
           <ChevronLeft className="w-5 h-5" />
         </Link>
@@ -403,8 +403,8 @@ function Pagination({ currentPage, totalPages }: { currentPage: number; totalPag
             href={`/unveiler?page=${p}`}
             className={`w-10 h-10 flex items-center justify-center rounded-xl text-sm font-black transition-all ${
               p === currentPage
-                ? "bg-linear-to-r from-pink-600 to-purple-600 text-white shadow-lg shadow-pink-900/30"
-                : "border border-white/5 bg-white/3 text-gray-500 hover:border-pink-500/40 hover:text-pink-400"
+                ? "bg-linear-to-r from-brand-primary to-red-600 text-white shadow-lg shadow-red-900/30"
+                : "border border-white/5 bg-white/3 text-gray-500 hover:border-brand-primary/40 hover:text-brand-primary"
             }`}
           >
             {p}
@@ -419,7 +419,7 @@ function Pagination({ currentPage, totalPages }: { currentPage: number; totalPag
       {currentPage < totalPages && (
         <Link
           href={`/unveiler?page=${currentPage + 1}`}
-          className="w-10 h-10 flex items-center justify-center rounded-xl border border-white/5 bg-white/3 text-gray-400 hover:border-pink-500/40 hover:text-pink-400 transition-all"
+          className="w-10 h-10 flex items-center justify-center rounded-xl border border-white/5 bg-white/3 text-gray-400 hover:border-brand-primary/40 hover:text-brand-primary transition-all"
         >
           <ChevronRight className="w-5 h-5" />
         </Link>
@@ -510,8 +510,8 @@ export default async function UnveilerHomePage({
     <main className="min-h-screen bg-[#08080a] text-foreground pb-32">
       {/* Dynamic Background */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-pink-600/5 blur-[120px]" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-600/5 blur-[120px]" />
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-primary/5 blur-[120px]" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-red-800/5 blur-[120px]" />
       </div>
 
       <div className="relative z-10">
@@ -520,8 +520,8 @@ export default async function UnveilerHomePage({
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-[2px] bg-pink-600" />
-                <span className="text-xs tracking-[0.4em] uppercase text-pink-500 font-extrabold">
+                <div className="w-12 h-[2px] bg-brand-primary" />
+                <span className="text-xs tracking-[0.4em] uppercase text-brand-primary font-extrabold">
                   Spiritans Outreach
                 </span>
               </div>
@@ -558,7 +558,7 @@ export default async function UnveilerHomePage({
               {currentPage === 1 && groupedEvents["celebration"] && (
                 <section className="space-y-10">
                   <div className="flex items-center gap-4">
-                    <Award className="w-6 h-6 text-pink-500" />
+                    <Award className="w-6 h-6 text-brand-primary" />
                     <h2 className="text-2xl font-black text-white uppercase tracking-tight">Focus: Celebrations</h2>
                     <div className="flex-1 h-[1px] bg-white/5" />
                   </div>
@@ -573,7 +573,7 @@ export default async function UnveilerHomePage({
               {/* 3. Main Stream (Paginated Grid) */}
               <section className="space-y-10">
                 <div className="flex items-center gap-4">
-                  <Users className="w-6 h-6 text-purple-500" />
+                  <Users className="w-6 h-6 text-red-700" />
                   <h2 className="text-2xl font-black text-white uppercase tracking-tight">
                     {currentPage === 1 ? "Latest Activity" : `Archive - Page ${currentPage}`}
                   </h2>

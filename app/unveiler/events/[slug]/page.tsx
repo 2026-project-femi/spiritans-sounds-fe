@@ -67,7 +67,7 @@ All are welcome. Come and celebrate the treasures in our midst.`,
       {/* Back */}
       <div className="max-w-4xl mx-auto px-6 pt-10">
         <Link href="/unveiler"
-          className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-pink-400 transition-colors">
+          className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-brand-primary transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to Events
         </Link>
       </div>
@@ -106,23 +106,23 @@ All are welcome. Come and celebrate the treasures in our midst.`,
         {/* Meta */}
         <div className="flex flex-wrap gap-5 text-sm text-gray-400 pb-6 border-b border-white/10">
           <span className="flex items-center gap-2">
-            <CalendarDays className="w-4 h-4 text-pink-400/60" />
+            <CalendarDays className="w-4 h-4 text-brand-primary/60" />
             {formattedDate}
           </span>
           <span className="flex items-center gap-2">
-            <Clock className="w-4 h-4 text-pink-400/60" />
+            <Clock className="w-4 h-4 text-brand-primary/60" />
             {formattedTime}
           </span>
           {displayEvent.location && (
             <span className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-pink-400/60" />
+              <MapPin className="w-4 h-4 text-brand-primary/60" />
               {displayEvent.location}
             </span>
           )}
         </div>
 
         {/* Body */}
-        <div className="prose prose-invert prose-pink max-w-none">
+        <div className="prose prose-invert prose-red max-w-none">
           {(displayEvent.description || displayEvent.excerpt || "").split("\n\n").map((para, i) => (
             <p key={i} className="text-gray-300 leading-relaxed text-lg mb-5">
               {para}
@@ -132,13 +132,13 @@ All are welcome. Come and celebrate the treasures in our midst.`,
 
         {/* CTA for upcoming */}
         {upcoming && (
-          <div className="mt-10 p-8 rounded-2xl bg-linear-to-br from-pink-900/20 to-purple-900/20 border border-pink-500/20 text-center space-y-4">
+          <div className="mt-10 p-8 rounded-2xl bg-linear-to-br from-red-950/20 to-red-900/20 border border-brand-primary/20 text-center space-y-4">
             <h2 className="text-2xl font-bold text-white">Join Us</h2>
             <p className="text-gray-400">
               This event is coming up. We&apos;d love to see you there. Reach out for more details or to register.
             </p>
             <Link href="/contact"
-              className="inline-block px-8 py-3 bg-linear-to-r from-pink-600 to-purple-600 text-white font-semibold rounded-full hover:opacity-90 transition-all hover:scale-105">
+              className="inline-block px-8 py-3 bg-linear-to-r from-brand-primary to-red-700 text-white font-semibold rounded-full hover:opacity-90 transition-all hover:scale-105">
               Get in Touch
             </Link>
           </div>

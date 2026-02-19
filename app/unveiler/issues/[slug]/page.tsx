@@ -100,7 +100,7 @@ export default async function SingleIssuePage({ params }: { params: Promise<{ sl
       {/* Back link */}
       <div className="max-w-6xl mx-auto px-6 pt-10">
         <Link href="/unveiler/issues"
-          className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-pink-400 transition-colors">
+          className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-brand-primary transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to Magazine
         </Link>
       </div>
@@ -110,12 +110,12 @@ export default async function SingleIssuePage({ params }: { params: Promise<{ sl
         <div className="flex flex-col md:flex-row gap-10 items-start">
           {/* Cover */}
           <div className="w-full md:w-56 shrink-0">
-            <div className="aspect-3/4 relative rounded-xl overflow-hidden bg-linear-to-br from-pink-900/30 to-purple-900/40 border border-white/10 shadow-2xl shadow-pink-900/20">
+            <div className="aspect-3/4 relative rounded-xl overflow-hidden bg-linear-to-br from-red-950/30 to-red-900/40 border border-white/10 shadow-2xl shadow-red-950/20">
               {displayIssue.imageUrl ? (
                 <Image src={displayIssue.imageUrl} alt={displayIssue.issueNumber} fill className="object-cover" />
               ) : (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center px-4">
-                  <BookOpen className="w-10 h-10 text-pink-400/40" />
+                  <BookOpen className="w-10 h-10 text-brand-primary/40" />
                   <p className="text-xs text-gray-600 uppercase tracking-widest">Treasures Unveiler</p>
                   <p className="text-base font-black text-white/20">{displayIssue.issueNumber}</p>
                 </div>
@@ -131,7 +131,7 @@ export default async function SingleIssuePage({ params }: { params: Promise<{ sl
                 Sample content — add this issue in Sanity Studio
               </div>
             )}
-            <span className="text-[10px] tracking-[0.3em] uppercase text-pink-400 font-semibold">
+            <span className="text-[10px] tracking-[0.3em] uppercase text-brand-primary font-semibold">
               Treasures Unveiler Magazine
             </span>
             <h1 className="text-4xl md:text-5xl font-extrabold text-white">{displayIssue.issueNumber}</h1>
@@ -144,7 +144,7 @@ export default async function SingleIssuePage({ params }: { params: Promise<{ sl
               shining a light on the gifts of young people and the work of Spiritans Sound Outreach.
             </p>
             <div className="flex gap-3 pt-2">
-              <button className="px-6 py-2.5 bg-linear-to-r from-pink-600 to-purple-600 text-white text-sm font-semibold rounded-full hover:opacity-90 transition-all">
+              <button className="px-6 py-2.5 bg-linear-to-r from-brand-primary to-red-700 text-white text-sm font-semibold rounded-full hover:opacity-90 transition-all">
                 Read Online
               </button>
               <button className="px-6 py-2.5 border border-white/20 text-white text-sm font-semibold rounded-full hover:bg-white/5 transition-all">
@@ -158,7 +158,7 @@ export default async function SingleIssuePage({ params }: { params: Promise<{ sl
       {/* Articles in this Issue */}
       <section className="max-w-6xl mx-auto px-6">
         <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
-          <span className="w-1 h-6 rounded-full bg-linear-to-b from-pink-500 to-purple-500 inline-block" />
+          <span className="w-1 h-6 rounded-full bg-linear-to-b from-brand-primary to-red-600 inline-block" />
           In This Issue
           <span className="text-sm text-gray-600 font-normal ml-1">
             ({displayIssue.articles?.length ?? 0} articles)
@@ -171,10 +171,10 @@ export default async function SingleIssuePage({ params }: { params: Promise<{ sl
               className={`group flex flex-col rounded-xl border transition-all duration-300 overflow-hidden ${
                 isDummy
                   ? "border-white/8 bg-white/3 opacity-70 cursor-not-allowed"
-                  : "border-white/10 bg-white/3 hover:border-pink-500/30 hover:bg-white/5"
+                  : "border-white/10 bg-white/3 hover:border-brand-primary/30 hover:bg-white/5"
               }`}>
               {/* Article image or placeholder */}
-              <div className="aspect-video relative bg-linear-to-br from-pink-900/20 to-purple-900/20 flex items-center justify-center overflow-hidden">
+              <div className="aspect-video relative bg-linear-to-br from-red-950/20 to-red-900/20 flex items-center justify-center overflow-hidden">
                 {article.imageUrl ? (
                   <Image src={article.imageUrl} alt={article.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 ) : (
@@ -182,7 +182,7 @@ export default async function SingleIssuePage({ params }: { params: Promise<{ sl
                 )}
               </div>
               <div className="p-5 flex flex-col flex-1 gap-2">
-                <h3 className="font-bold text-white leading-tight group-hover:text-pink-300 transition-colors">
+                <h3 className="font-bold text-white leading-tight group-hover:text-red-400 transition-colors">
                   {article.title}
                 </h3>
                 {article.author && (
@@ -195,7 +195,7 @@ export default async function SingleIssuePage({ params }: { params: Promise<{ sl
                 )}
                 {!isDummy && (
                   <Link href={`/articles/${article.slug}`}
-                    className="text-xs text-pink-400 font-semibold mt-2 hover:text-pink-300 transition-colors">
+                    className="text-xs text-brand-primary font-semibold mt-2 hover:text-red-400 transition-colors">
                     Read Article →
                   </Link>
                 )}

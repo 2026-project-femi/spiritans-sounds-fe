@@ -13,17 +13,17 @@ export default function AboutPage() {
     <main className="pb-24">
       {/* Hero */}
       <section className="relative min-h-[60vh] flex flex-col items-center justify-center text-center px-6 py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-linear-to-br from-[#0c0c0e] via-[#1a0a1e] to-[#0c0c0e] z-0" />
+        <div className="absolute inset-0 bg-linear-to-br from-[#0c0c0e] via-[#1a0a0a] to-[#0c0c0e] z-0" />
         <div className="absolute inset-0 opacity-10 z-0"
-          style={{ backgroundImage: "radial-gradient(circle at 30% 50%, #be185d 0%, transparent 60%), radial-gradient(circle at 70% 30%, #7c3aed 0%, transparent 60%)" }}
+          style={{ backgroundImage: "radial-gradient(circle at 30% 50%, #ee0303 0%, transparent 60%), radial-gradient(circle at 70% 30%, #991b1b 0%, transparent 60%)" }}
         />
         <div className="relative z-10 max-w-4xl mx-auto space-y-6">
-          <span className="inline-block text-[10px] tracking-[0.4em] uppercase text-pink-400 font-semibold border border-pink-400/30 px-4 py-1.5 rounded-full">
+          <span className="inline-block text-[10px] tracking-[0.4em] uppercase text-brand-primary font-semibold border border-brand-primary/30 px-4 py-1.5 rounded-full">
             Treasures Unveiler Youth Development Foundation
           </span>
           <h1 className="text-5xl md:text-7xl font-extrabold text-white leading-tight">
             Bring Out What Is<br />
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-pink-400 to-purple-400">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-primary to-red-600">
               New and Old
             </span>
           </h1>
@@ -33,7 +33,7 @@ export default function AboutPage() {
           </p>
           <p className="text-sm text-gray-500 italic">cf. Mt 13:52</p>
           <div className="flex flex-wrap gap-4 justify-center pt-4">
-            <Link href="/unveiler" className="px-8 py-3 bg-linear-to-r from-pink-600 to-purple-600 text-white font-semibold rounded-full hover:opacity-90 transition-all duration-300 hover:scale-105">
+            <Link href="/unveiler" className="px-8 py-3 bg-linear-to-r from-brand-primary to-red-700 text-white font-semibold rounded-full hover:opacity-90 transition-all duration-300 hover:scale-105">
               See Our Events
             </Link>
             <Link href="/donations" className="px-8 py-3 border border-white/20 text-white font-semibold rounded-full hover:bg-white/10 transition-all duration-300">
@@ -47,7 +47,7 @@ export default function AboutPage() {
       <section className="max-w-5xl mx-auto px-6 py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-6">
-            <span className="text-[10px] tracking-[0.3em] uppercase text-pink-400 font-semibold">Our Story</span>
+            <span className="text-[10px] tracking-[0.3em] uppercase text-brand-primary font-semibold">Our Story</span>
             <h2 className="text-4xl font-bold text-white leading-tight">
               A Living Branch of the Spiritans Sound Outreach
             </h2>
@@ -62,14 +62,14 @@ export default function AboutPage() {
               Treasures Unveiler Youth Development Foundation stands as a living branch — dedicated to forming,
               mentoring, and sending forth young creatives.
             </p>
-            <blockquote className="border-l-2 border-pink-500 pl-4 italic text-gray-400 text-sm">
+            <blockquote className="border-l-2 border-brand-primary pl-4 italic text-gray-400 text-sm">
               "Each has received a gift to be used to serve others." — 1 Pt 4:10
             </blockquote>
           </div>
           <div className="space-y-4">
             {pillars.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="flex gap-4 p-5 rounded-xl bg-white/5 border border-white/10 hover:border-pink-500/30 transition-all duration-300">
-                <div className="w-10 h-10 rounded-lg bg-linear-to-br from-pink-600 to-purple-600 flex items-center justify-center shrink-0">
+              <div key={title} className="flex gap-4 p-5 rounded-xl bg-white/5 border border-white/10 hover:border-brand-primary/30 transition-all duration-300">
+                <div className="w-10 h-10 rounded-lg bg-linear-to-br from-brand-primary to-red-700 flex items-center justify-center shrink-0">
                   <Icon className="w-5 h-5 text-white" />
                 </div>
                 <div>

@@ -24,10 +24,10 @@ export default function MagazineNav() {
   };
 
   return (
-    <nav className="border-b border-pink-500/10 bg-[#0c0c0e]/95 backdrop-blur-md pt-20 sticky top-0 z-40">
+    <nav className="border-b border-brand-primary/10 bg-[#0c0c0e]/95 backdrop-blur-md pt-20 sticky top-0 z-40">
       <div className="text-center py-4 border-b border-white/5">
-        <Link href="/unveiler" className="text-white font-black text-2xl tracking-[0.15em] uppercase hover:text-pink-400 transition-colors">
-          <span className="text-transparent bg-clip-text bg-linear-to-r from-pink-400 to-purple-400">TREASURES</span>{" "}
+        <Link href="/unveiler" className="text-white font-black text-2xl tracking-[0.15em] uppercase hover:text-brand-primary transition-colors">
+          <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-primary to-brand-primary/80">TREASURES</span>{" "}
           UNVEILER
         </Link>
         <p className="text-[10px] tracking-[0.3em] uppercase text-gray-600 mt-1">Youth Development Foundation</p>
@@ -42,7 +42,7 @@ export default function MagazineNav() {
                   href={tab.href}
                   className={`text-xs font-semibold uppercase tracking-[0.15em] transition-all duration-200 px-4 py-2 rounded-full ${
                     active
-                      ? "bg-linear-to-r from-pink-600 to-purple-600 text-white"
+                      ? "bg-linear-to-r from-brand-primary to-brand-primary/80 text-white"
                       : "text-gray-400 hover:text-white hover:bg-white/5"
                   }`}>
                   {tab.label}

@@ -16,8 +16,8 @@ const schedule = [
 
 const typeColors: Record<string, string> = {
   Prayer: "text-blue-400 bg-blue-400/10 border-blue-400/20",
-  Music: "text-pink-400 bg-pink-400/10 border-pink-400/20",
-  Talk: "text-purple-400 bg-purple-400/10 border-purple-400/20",
+  Music: "text-brand-primary bg-brand-primary/10 border-brand-primary/20",
+  Talk: "text-red-500 bg-red-500/10 border-red-500/20",
   Youth: "text-amber-400 bg-amber-400/10 border-amber-400/20",
 };
 
@@ -31,13 +31,13 @@ export default function RadioPage() {
     <main className="pb-24">
       {/* Hero Player */}
       <section className="relative px-6 py-20 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-linear-to-b from-pink-900/20 to-transparent z-0" />
+        <div className="absolute inset-0 bg-linear-to-b from-red-950/20 to-transparent z-0" />
         <div className="relative z-10 max-w-2xl mx-auto space-y-6">
-          <span className="inline-block text-[10px] tracking-[0.4em] uppercase text-pink-400 font-semibold border border-pink-400/30 px-4 py-1.5 rounded-full">
+          <span className="inline-block text-[10px] tracking-[0.4em] uppercase text-brand-primary font-semibold border border-brand-primary/30 px-4 py-1.5 rounded-full">
             Spiritans Sound Internet Radio
           </span>
           <h1 className="text-5xl font-extrabold text-white">
-            Listen. Pray. <span className="text-transparent bg-clip-text bg-linear-to-r from-pink-400 to-purple-400">Be Renewed.</span>
+            Listen. Pray. <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-primary to-red-600">Be Renewed.</span>
           </h1>
           <p className="text-gray-400 leading-relaxed">
             Sacred music, spiritual talks, homilies, and prayer — streaming live 24 hours a day, 7 days a week.
@@ -46,7 +46,7 @@ export default function RadioPage() {
           {/* Player Card */}
           <div className="mt-8 p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-14 h-14 rounded-full bg-linear-to-br from-pink-600 to-purple-600 flex items-center justify-center shrink-0">
+              <div className="w-14 h-14 rounded-full bg-linear-to-br from-brand-primary to-red-700 flex items-center justify-center shrink-0">
                 <Radio className="w-7 h-7 text-white" />
               </div>
               <div className="text-left">
@@ -63,7 +63,7 @@ export default function RadioPage() {
               <div className="flex items-end justify-center gap-1 h-10 mb-6">
                 {Array.from({ length: 20 }).map((_, i) => (
                   <div key={i}
-                    className="w-1.5 bg-linear-to-t from-pink-600 to-purple-400 rounded-full animate-pulse"
+                    className="w-1.5 bg-linear-to-t from-brand-primary to-red-500 rounded-full animate-pulse"
                     style={{ height: `${Math.random() * 100}%`, animationDelay: `${i * 0.05}s` }}
                   />
                 ))}
@@ -73,7 +73,7 @@ export default function RadioPage() {
             <div className="flex items-center justify-center gap-4">
               <button
                 onClick={() => setIsPlaying(!isPlaying)}
-                className="flex items-center gap-3 px-8 py-4 bg-linear-to-r from-pink-600 to-purple-600 text-white font-bold rounded-full hover:opacity-90 transition-all duration-300 hover:scale-105 text-lg"
+                className="flex items-center gap-3 px-8 py-4 bg-linear-to-r from-brand-primary to-red-700 text-white font-bold rounded-full hover:opacity-90 transition-all duration-300 hover:scale-105 text-lg"
               >
                 {isPlaying ? <Volume2 className="w-6 h-6" /> : <Play className="w-6 h-6" />}
                 {isPlaying ? "Now Playing" : "Tune In Live"}
@@ -104,14 +104,14 @@ export default function RadioPage() {
               <div key={i}
                 className={`flex items-center gap-6 p-5 rounded-xl border transition-all duration-300 ${
                   isCurrent
-                    ? "bg-pink-900/20 border-pink-500/40"
+                    ? "bg-red-950/20 border-brand-primary/40"
                     : "bg-white/3 border-white/8 hover:border-white/20"
                 }`}>
                 <div className="w-20 shrink-0">
-                  <span className={`text-sm font-mono font-bold ${isCurrent ? "text-pink-400" : "text-gray-500"}`}>
+                  <span className={`text-sm font-mono font-bold ${isCurrent ? "text-brand-primary" : "text-gray-500"}`}>
                     {item.time}
                   </span>
-                  {isCurrent && <div className="text-[10px] text-pink-400 uppercase tracking-widest mt-0.5">On Air</div>}
+                  {isCurrent && <div className="text-[10px] text-brand-primary uppercase tracking-widest mt-0.5">On Air</div>}
                 </div>
                 <div className="flex-1">
                   <p className={`font-semibold ${isCurrent ? "text-white" : "text-gray-300"}`}>{item.program}</p>
@@ -130,14 +130,14 @@ export default function RadioPage() {
 
       {/* Podcast Archive CTA */}
       <section className="max-w-3xl mx-auto px-6 py-12 text-center">
-        <div className="p-10 rounded-2xl bg-linear-to-br from-pink-900/20 to-purple-900/20 border border-pink-500/20">
-          <Music className="w-10 h-10 text-pink-400 mx-auto mb-4" />
+        <div className="p-10 rounded-2xl bg-linear-to-br from-red-950/20 to-red-900/20 border border-brand-primary/20">
+          <Music className="w-10 h-10 text-brand-primary mx-auto mb-4" />
           <h2 className="text-3xl font-bold text-white mb-4">Missed a Broadcast?</h2>
           <p className="text-gray-400 mb-8">
             Browse our archive of past programmes, homilies, and sacred music recordings.
           </p>
           <a href="/homilies"
-            className="inline-block px-8 py-3 bg-linear-to-r from-pink-600 to-purple-600 text-white font-semibold rounded-full hover:opacity-90 transition-all duration-300 hover:scale-105">
+            className="inline-block px-8 py-3 bg-linear-to-r from-brand-primary to-red-700 text-white font-semibold rounded-full hover:opacity-90 transition-all duration-300 hover:scale-105">
             Browse Homily Archive
           </a>
         </div>

@@ -69,13 +69,13 @@ function IssueCard({ issue, index, isDummy }: { issue: MagazineIssue; index: num
   });
 
   const cardContent = (
-    <div className={`group relative flex flex-col rounded-2xl overflow-hidden border transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-pink-900/20 ${
+    <div className={`group relative flex flex-col rounded-2xl overflow-hidden border transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-red-950/20 ${
       isLatest
-        ? "border-pink-500/50 bg-linear-to-br from-pink-900/20 to-purple-900/20"
-        : "border-white/10 bg-white/3 hover:border-pink-500/30"
+        ? "border-brand-primary/50 bg-linear-to-br from-red-950/20 to-red-900/20"
+        : "border-white/10 bg-white/3 hover:border-brand-primary/30"
     }`}>
       {isLatest && (
-        <span className="absolute top-4 left-4 z-10 text-[10px] tracking-widest uppercase font-bold text-white bg-linear-to-r from-pink-600 to-purple-600 px-3 py-1.5 rounded-full">
+        <span className="absolute top-4 left-4 z-10 text-[10px] tracking-widest uppercase font-bold text-white bg-linear-to-r from-brand-primary to-red-700 px-3 py-1.5 rounded-full">
           Latest Issue
         </span>
       )}
@@ -86,7 +86,7 @@ function IssueCard({ issue, index, isDummy }: { issue: MagazineIssue; index: num
       )}
 
       {/* Cover */}
-      <div className="aspect-[3/4] relative bg-linear-to-br from-pink-900/30 to-purple-900/40 flex items-center justify-center overflow-hidden">
+      <div className="aspect-[3/4] relative bg-linear-to-br from-red-950/30 to-red-900/40 flex items-center justify-center overflow-hidden">
         {issue.imageUrl ? (
           <Image
             src={issue.imageUrl}
@@ -96,7 +96,7 @@ function IssueCard({ issue, index, isDummy }: { issue: MagazineIssue; index: num
           />
         ) : (
           <div className="flex flex-col items-center gap-3 text-center px-6">
-            <BookOpen className="w-12 h-12 text-pink-400/40" />
+            <BookOpen className="w-12 h-12 text-brand-primary/40" />
             <p className="text-xs text-gray-600 uppercase tracking-widest">Treasures Unveiler</p>
             <p className="text-lg font-black text-white/20">{issue.issueNumber}</p>
           </div>
@@ -123,7 +123,7 @@ function IssueCard({ issue, index, isDummy }: { issue: MagazineIssue; index: num
           )}
         </div>
         <div className={`text-xs font-semibold uppercase tracking-widest transition-colors ${
-          isLatest ? "text-pink-400" : "text-gray-600 group-hover:text-pink-400"
+          isLatest ? "text-brand-primary" : "text-gray-600 group-hover:text-brand-primary"
         }`}>
           Read Issue →
         </div>
@@ -157,12 +157,12 @@ export default async function MagazinePage() {
     <main className="pb-24">
       {/* Header */}
       <section className="px-6 py-20 text-center max-w-3xl mx-auto">
-        <span className="inline-block text-[10px] tracking-[0.4em] uppercase text-pink-400 font-semibold border border-pink-400/30 px-4 py-1.5 rounded-full mb-6">
+        <span className="inline-block text-[10px] tracking-[0.4em] uppercase text-brand-primary font-semibold border border-brand-primary/30 px-4 py-1.5 rounded-full mb-6">
           Treasures Unveiler Magazine
         </span>
         <h1 className="text-5xl font-extrabold text-white mb-6">
           Every Issue,{" "}
-          <span className="text-transparent bg-clip-text bg-linear-to-r from-pink-400 to-purple-400">
+          <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-primary to-red-600">
             A New Treasure
           </span>
         </h1>
@@ -190,7 +190,7 @@ export default async function MagazinePage() {
 
       {/* Subscribe CTA */}
       <section className="max-w-3xl mx-auto px-6 py-20 text-center">
-        <div className="p-10 rounded-2xl bg-linear-to-br from-pink-900/20 to-purple-900/20 border border-pink-500/20">
+        <div className="p-10 rounded-2xl bg-linear-to-br from-red-950/20 to-red-900/20 border border-brand-primary/20">
           <h2 className="text-3xl font-bold text-white mb-4">Never Miss an Issue</h2>
           <p className="text-gray-400 mb-8 leading-relaxed">
             Subscribe to receive the Treasures Unveiler Magazine directly in your inbox 
@@ -200,9 +200,9 @@ export default async function MagazinePage() {
             <input
               type="email"
               placeholder="Your email address"
-              className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-full text-white placeholder:text-gray-600 focus:outline-none focus:border-pink-500/50 transition-colors text-sm"
+              className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-full text-white placeholder:text-gray-600 focus:outline-none focus:border-brand-primary/50 transition-colors text-sm"
             />
-            <button className="px-6 py-3 bg-linear-to-r from-pink-600 to-purple-600 text-white font-semibold rounded-full hover:opacity-90 transition-all whitespace-nowrap text-sm">
+            <button className="px-6 py-3 bg-linear-to-r from-brand-primary to-red-700 text-white font-semibold rounded-full hover:opacity-90 transition-all whitespace-nowrap text-sm">
               Subscribe Free
             </button>
           </div>

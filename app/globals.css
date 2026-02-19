@@ -7,108 +7,108 @@
    Base Brand Theme Tokens
    =============================== */
 :root {
-	/* Brand Colors */
-	--brand-primary: 238 3 3; /* #ee0303 */
-	--brand-primary-foreground: 255 255 255;
+  /* Brand Colors */
+  --brand-primary: 238 3 3; /* #ee0303 */
+  --brand-primary-foreground: 255 255 255;
 
-	/* Core Theme */
-	--background: 255 252 248;
-	--foreground: 45 52 54;
+  /* Core Theme */
+  --background: 255 252 248;
+  --foreground: 45 52 54;
 
-	--primary: oklch(0.205 0 0);
-	--primary-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
 
-	--accent: oklch(0.97 0 0);
-	--muted: oklch(0.97 0 0);
+  --accent: oklch(0.97 0 0);
+  --muted: oklch(0.97 0 0);
 
-	--surface: 243 244 246;
-	--border: oklch(0.922 0 0);
+  --surface: 243 244 246;
+  --border: oklch(0.922 0 0);
 
-	--radius: 0.625rem;
+  --radius: 0.625rem;
 }
 
 /* ===============================
    Tailwind Theme Mapping
    =============================== */
 @theme inline {
-	--color-background: rgb(var(--background));
-	--color-foreground: rgb(var(--foreground));
+  --color-background: rgb(var(--background));
+  --color-foreground: rgb(var(--foreground));
 
-	--color-brand-primary: rgb(var(--brand-primary));
-	--color-brand-primary-foreground: rgb(var(--brand-primary-foreground));
+  --color-brand-primary: rgb(var(--brand-primary));
+  --color-brand-primary-foreground: rgb(var(--brand-primary-foreground));
 
-	--color-primary: rgb(var(--primary));
-	--color-primary-foreground: rgb(var(--primary-foreground));
+  --color-primary: rgb(var(--primary));
+  --color-primary-foreground: rgb(var(--primary-foreground));
 
-	--color-accent: rgb(var(--accent));
-	--color-muted: rgb(var(--muted));
-	--color-surface: rgb(var(--surface));
-	--color-border: rgb(var(--border));
+  --color-accent: rgb(var(--accent));
+  --color-muted: rgb(var(--muted));
+  --color-surface: rgb(var(--surface));
+  --color-border: rgb(var(--border));
 
-	--radius-md: var(--radius);
+  --radius-md: var(--radius);
 }
 
 /* ===============================
    Alternate Theme Example
    =============================== */
 .unveiler-theme {
-	--brand-primary: 190 24 93;
-	--background: 12 12 14;
-	--foreground: 229 231 235;
+  --brand-primary: 238 3 3;
+  --background: 12 12 14;
+  --foreground: 229 231 235;
 }
 
 /* ===============================
    Base Layer
    =============================== */
 @layer base {
-	* {
-		@apply border-border outline-brand-primary/40;
-	}
+  * {
+    @apply border-border outline-brand-primary/40;
+  }
 
-	body {
-		@apply bg-background text-foreground;
-		font-family: "Montserrat", sans-serif;
-	}
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Montserrat", sans-serif;
+  }
 
-	h1,
-	h2,
-	h3,
-	h4,
-	h5,
-	h6,
-	.serif {
-		font-family: "Playfair Display", serif;
-	}
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .serif {
+    font-family: "Playfair Display", serif;
+  }
 }
 
 /* ===============================
    Component Utilities
    =============================== */
 @layer components {
-	.btn-brand {
-		@apply bg-brand-primary text-brand-primary-foreground 
+  .btn-brand {
+    @apply bg-brand-primary text-brand-primary-foreground 
 		       px-4 py-2 rounded-md transition-all duration-300;
-	}
+  }
 
-	.btn-brand:hover {
-		@apply opacity-90;
-	}
+  .btn-brand:hover {
+    @apply opacity-90;
+  }
 }
 
 /* ===============================
    Animations
    =============================== */
 @keyframes fadeIn {
-	from {
-		opacity: 0;
-		transform: translateY(10px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fadeIn {
-	animation: fadeIn 0.8s ease-out forwards;
+  animation: fadeIn 0.8s ease-out forwards;
 }
