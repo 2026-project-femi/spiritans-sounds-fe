@@ -54,9 +54,8 @@ export default function ContactPage() {
 					className="text-4xl md:text-5xl font-extrabold">
 					Contact Us
 				</motion.h1>
-				<p className="mt-3 text-red-100 max-w-2xl mx-auto">
-					We’re here to make e-waste disposal effortless, secure, and eco-friendly. Reach out today to schedule your
-					free pickup.
+				<p className="mt-3 text-red-100 max-w-2xl mx-auto italic font-light">
+					"Silence is the root of everything. If you spiral into its center, you will find the source of your light." — Thomas Merton
 				</p>
 			</div>
 
@@ -73,9 +72,9 @@ export default function ContactPage() {
 						<li className="flex items-center gap-4">
 							<Phone className="w-6 h-6 text-red-600" />
 							<div>
-								<div className="font-semibold">Chat/Text</div>
-								<a href="tel:4709225665" className="hover:text-red-600">
-									+447576543367 (WhatsApp)
+								<div className="font-semibold">Connect with us</div>
+								<a href="https://wa.me/447576543367" target="_blank" rel="noopener noreferrer" className="hover:text-red-600">
+									+44 7576 543367 (WhatsApp)
 								</a>
 							</div>
 						</li>
@@ -83,7 +82,7 @@ export default function ContactPage() {
 							<Mail className="w-6 h-6 text-red-600" />
 							<div>
 								<div className="font-semibold">Email</div>
-								<a href="mailto:info@techcyclesolutionsllc.com" className="hover:text-red-600">
+								<a href="mailto:spiritansounds@gmail.com" className="hover:text-red-600">
 									spiritansounds@gmail.com
 								</a>
 							</div>
@@ -107,7 +106,7 @@ export default function ContactPage() {
 					whileInView={{ x: 0, opacity: 1 }}
 					transition={{ duration: 0.6 }}
 					className="bg-white rounded-2xl shadow-lg p-8">
-					<h2 className="text-2xl font-bold text-red-700 mb-6">SendMessage</h2>
+					<h2 className="text-2xl font-bold text-red-700 mb-6">Send Message</h2>
 
 					<form className="space-y-4" onSubmit={handleSubmit}>
 						<div className="grid sm:grid-cols-2 gap-4">
