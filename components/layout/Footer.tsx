@@ -48,9 +48,7 @@ const Footer: React.FC = () => {
 					</div>
 
 					<div>
-						<h4 className="text-xs font-semibold tracking-widest uppercase mb-6 text-brand-primary ">
-							Navigate
-						</h4>
+						<h4 className="text-xs font-semibold tracking-widest uppercase mb-6 text-brand-primary ">Navigate</h4>
 						<ul className="space-y-4">
 							{navLinks.map((link) => (
 								<li key={link.href}>
@@ -114,12 +112,12 @@ const Footer: React.FC = () => {
 				</div>
 
 				<div className="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center text-[10px] tracking-[0.2em] uppercase text-gray-400">
-					<p>© {new Date().getFullYear()} Spiritual Sound. All rights reserved.</p>
+					<p>© {new Date().getFullYear()} Spiritans Sound. All rights reserved.</p>
 					<div className="flex space-x-8 mt-4 md:mt-0">
 						<Link href="/privacy" className="hover:text-brand-primary transition-gentle">
 							Privacy Policy
 						</Link>
-						<Link href="#" className="hover:text-brand-primary transition-gentle">
+						<Link href="/terms" className="hover:text-brand-primary transition-gentle">
 							Terms of Service
 						</Link>
 					</div>
