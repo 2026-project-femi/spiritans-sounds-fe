@@ -8,7 +8,7 @@ const tabs = [
   { label: "Magazine", href: "/unveiler/issues" },
   { label: "Books", href: "/unveiler/books" },
   { label: "Radio", href: "/unveiler/radio" },
-  { label: "Adverts", href: "/unveiler/adverts" },
+  // { label: "Adverts", href: "/unveiler/adverts" },
   { label: "About", href: "/unveiler/about" },
 ];
 
