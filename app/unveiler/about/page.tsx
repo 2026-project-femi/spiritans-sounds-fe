@@ -52,7 +52,7 @@ export default function AboutPage() {
               A Living Branch of the Spiritans Sound Outreach
             </h2>
             <p className="text-gray-400 leading-relaxed">
-              TUYDF is an initiative of <strong className="text-white">Rev. Fr. Oluwafemi Victor Orilua, CSSp</strong>,
+              TUYDEF is an initiative of <strong className="text-white">Rev. Fr. Oluwafemi Victor Orilua, CSSp</strong>,
               founder of Spiritans Sound Outreach — a youth ministry of the Holy Ghost Fathers and Brothers,
               Nigeria South-West Province, committed to proclaiming Christ through music, art, and writing.
             </p>
