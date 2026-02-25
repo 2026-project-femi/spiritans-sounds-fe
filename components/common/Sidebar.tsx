@@ -5,7 +5,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { SidebarRecentPost } from "@/lib/types";
-import { Search } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 
 interface SidebarProps {
 	categories?: string[];
@@ -14,6 +14,9 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ categories = [], recentPosts = [] }) => {
 	const [searchQuery, setSearchQuery] = useState("");
+	const [newsletterEmail, setNewsletterEmail] = useState("");
+	const [subStatus, setSubStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+	const [subMessage, setSubMessage] = useState("");
 	const router = useRouter();
 
 	const handleSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -25,6 +28,32 @@ export const Sidebar: React.FC<SidebarProps> = ({ categories = [], recentPosts =
 	const handleSearchClick = () => {
 		if (searchQuery.trim()) {
 			router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+		}
+	};
+
+	const handleNewsletterSubscribe = async (e: React.FormEvent) => {
+		e.preventDefault();
+		if (!newsletterEmail) return;
+
+		setSubStatus("loading");
+		try {
+			const res = await fetch("/api/newsletter/subscribe", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ email: newsletterEmail }),
+			});
+
+			const data = await res.json();
+			if (res.ok) {
+				setSubStatus("success");
+				setSubMessage(data.message);
+				setNewsletterEmail("");
+			} else {
+				throw new Error(data.message || "Something went wrong");
+			}
+		} catch (err: any) {
+			setSubStatus("error");
+			setSubMessage(err.message);
 		}
 	};
 
@@ -118,16 +147,30 @@ export const Sidebar: React.FC<SidebarProps> = ({ categories = [], recentPosts =
 				<p className="text-xs text-gray-800 leading-relaxed mb-6 italic">
 					&quot;The spirit flows where it will.&quot; Sign up for monthly meditations.
 				</p>
-				<div className="space-y-3">
+				<form onSubmit={handleNewsletterSubscribe} className="space-y-3">
 					<input
 						type="email"
+						value={newsletterEmail}
+						onChange={(e) => setNewsletterEmail(e.target.value)}
 						placeholder="YOUR EMAIL"
+						required
 						className="w-full bg-white px-4 py-3 text-[10px] tracking-widest placeholder:text-gray-600 border border-gray-200 focus:outline-none focus:border-primary"
 					/>
-					<button className="w-full bg-primary text-white py-3 text-[10px] tracking-widest uppercase font-bold hover:bg-primary/90 transition-colors">
-						Join
+					<button
+						type="submit"
+						disabled={subStatus === "loading"}
+						className="w-full bg-gray-800 text-white py-3 text-[10px] tracking-widest uppercase font-bold hover:bg-gray-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+						{subStatus === "loading" ? (
+							<>
+								Joining <Loader2 className="w-3 h-3 animate-spin" />
+							</>
+						) : (
+							"Join"
+						)}
 					</button>
-				</div>
+					{subStatus === "success" && <p className="text-[10px] text-green-600 mt-2">{subMessage}</p>}
+					{subStatus === "error" && <p className="text-[10px] text-red-600 mt-2">{subMessage}</p>}
+				</form>
 			</section>
 		</aside>
 	);
