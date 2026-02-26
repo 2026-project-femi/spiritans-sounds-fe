@@ -307,16 +307,15 @@ export const RADIO_QUERY = `
 
 // eBooks and Publications
 export const PUBLICATIONS_QUERY = `
-*[_type == "publication"]{
+*[_type == "publication"] | order(publishedAt desc){
+  _id,
   title,
   description,
   price,
-  cover{
-    asset->{url}
-  },
-  file{
-    asset->{url}
-  }
+  "slug": slug.current,
+  "imageUrl": cover.asset->url,
+  "fileUrl": file.asset->url,
+  publishedAt
 }
 `;
 
@@ -360,13 +359,15 @@ seo{
 
 // 📚 Magazine Issues List
 export const MAGAZINE_ISSUES_QUERY = `
-*[_type == "magazineIssue"] | order(publishDate desc){
+*[_type == "magazineIssue"] | order(publishedAt desc){
   _id,
-  issueNumber,
+  title,
+  description,
+  price,
   "slug": slug.current,
-  publishDate,
-  "imageUrl": featuredImage.asset->url,
-  "articleCount": count(articles)
+  "imageUrl": cover.asset->url,
+  "fileUrl": file.asset->url,
+  publishedAt
 }
 `;
 
@@ -374,18 +375,13 @@ export const MAGAZINE_ISSUES_QUERY = `
 export const MAGAZINE_ISSUE_QUERY = `
 *[_type == "magazineIssue" && slug.current == $slug][0]{
   _id,
-  issueNumber,
-  publishDate,
+  title,
+  description,
+  price,
   "slug": slug.current,
-  "imageUrl": featuredImage.asset->url,
-  "articles": articles[]->{
-    _id,
-    title,
-    "slug": slug.current,
-    author,
-    excerpt,
-    publishedAt,
-    "imageUrl": featuredImage.asset->url
-  }
+  "imageUrl": cover.asset->url,
+  "fileUrl": file.asset->url,
+  publishedAt,
+  excerpt
 }
 `;

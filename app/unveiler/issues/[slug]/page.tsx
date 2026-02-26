@@ -2,74 +2,21 @@ import { client } from "@/sanity/lib/client";
 import { MAGAZINE_ISSUE_QUERY } from "@/sanity/lib/queries";
 import Image from "next/image";
 import Link from "next/link";
-import { Calendar, ArrowLeft, User, BookOpen } from "lucide-react";
+import { Calendar, ArrowLeft, BookOpen, Download, ShieldCheck, FileText } from "lucide-react";
 
 export const revalidate = 60;
 
-interface Article {
+interface MagazineIssue {
   _id: string;
   title: string;
   slug: string;
-  author?: string;
+  publishedAt: string;
+  imageUrl?: string;
+  fileUrl?: string;
+  price?: string;
+  description?: string;
   excerpt?: string;
-  publishedAt?: string;
-  imageUrl?: string;
 }
-
-interface MagazineIssue {
-  _id: string;
-  issueNumber: string;
-  slug: string;
-  publishDate: string;
-  imageUrl?: string;
-  articles?: Article[];
-}
-
-// Dummy articles for fallback
-const DUMMY_ARTICLES: Article[] = [
-  {
-    _id: "d1",
-    title: "Finding God in the Creative Process",
-    slug: "finding-god-in-creative-process",
-    author: "Sr. Mary Okafor",
-    excerpt: "How young artists are discovering that creativity is not just self-expression, but a participation in the ongoing work of the Creator.",
-  },
-  {
-    _id: "d2",
-    title: "The Young Creators Award: Stories of Grace",
-    slug: "young-creators-award-stories",
-    author: "Fr. Victor Orilua, CSSp",
-    excerpt: "Reflections on the journeys of this year's award recipients and how their gifts are becoming a blessing to the Church.",
-  },
-  {
-    _id: "d3",
-    title: "Music as Mission: Spiritans Sound Outreach",
-    slug: "music-as-mission",
-    author: "Chukwuemeka Eze",
-    excerpt: "A behind-the-scenes look at how the Spiritans Sound music ministry is reaching young people across Nigeria.",
-  },
-  {
-    _id: "d4",
-    title: "Writing the Word: Youth Voices in Faith",
-    slug: "writing-the-word",
-    author: "Adaeze Nwosu",
-    excerpt: "Young writers share how putting faith into words has deepened their own relationship with God.",
-  },
-  {
-    _id: "d5",
-    title: "From the Editor's Desk",
-    slug: "editors-desk",
-    author: "Editorial Team",
-    excerpt: "A reflection on the theme of this issue and the mission that drives every page of Treasures Unveiler Magazine.",
-  },
-  {
-    _id: "d6",
-    title: "Missionary News: Holy Ghost Fathers in Nigeria",
-    slug: "missionary-news",
-    author: "Spiritans Communications",
-    excerpt: "Updates from the missionary work of the Congregation of the Holy Spirit across the South-West Province of Nigeria.",
-  },
-];
 
 export default async function SingleIssuePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -78,130 +25,132 @@ export default async function SingleIssuePage({ params }: { params: Promise<{ sl
   try {
     issue = await client.fetch(MAGAZINE_ISSUE_QUERY, { slug });
   } catch {
-    // fall through to dummy
+    // fall through
   }
 
-  const isDummy = !issue;
-  const displayIssue: MagazineIssue = issue ?? {
-    _id: "dummy",
-    issueNumber: "Vol. 1, Issue 1",
-    slug,
-    publishDate: "2024-01-01",
-    articles: DUMMY_ARTICLES,
-  };
+  if (!issue) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-6">
+        <BookOpen className="w-16 h-16 text-gray-800 mb-6" />
+        <h1 className="text-3xl font-black text-white mb-4">Issue Not Found</h1>
+        <p className="text-gray-500 mb-8">The magazine issue you are looking for might have been moved or archived.</p>
+        <Link href="/unveiler/issues" className="px-8 py-3 bg-brand-primary text-white font-bold rounded-full hover:bg-red-700 transition-colors">
+            Back to Magazine
+        </Link>
+      </div>
+    );
+  }
 
-  const formattedDate = new Date(displayIssue.publishDate).toLocaleDateString("en-NG", {
+  const formattedDate = new Date(issue.publishedAt).toLocaleDateString("en-NG", {
     year: "numeric",
     month: "long",
+    day: "numeric"
   });
+
+  const isPaid = issue.price === 'Paid';
 
   return (
     <main className="pb-24">
       {/* Back link */}
       <div className="max-w-6xl mx-auto px-6 pt-10">
         <Link href="/unveiler/issues"
-          className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-brand-primary transition-colors">
-          <ArrowLeft className="w-4 h-4" /> Back to Magazine
+          className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-brand-primary transition-colors group">
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Catalog
         </Link>
       </div>
 
-      {/* Issue Header */}
-      <section className="max-w-6xl mx-auto px-6 py-10">
-        <div className="flex flex-col md:flex-row gap-10 items-start">
-          {/* Cover */}
-          <div className="w-full md:w-56 shrink-0">
-            <div className="aspect-3/4 relative rounded-xl overflow-hidden bg-linear-to-br from-red-950/30 to-red-900/40 border border-white/10 shadow-2xl shadow-red-950/20">
-              {displayIssue.imageUrl ? (
-                <Image src={displayIssue.imageUrl} alt={displayIssue.issueNumber} fill className="object-cover" />
+      {/* Issue Detail */}
+      <section className="max-w-6xl mx-auto px-6 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-16 items-start">
+          {/* Left: Cover & Actions */}
+          <div className="space-y-8">
+            <div className="aspect-[3/4] relative rounded-2xl overflow-hidden bg-linear-to-br from-red-950/30 to-red-900/40 border border-white/10 shadow-2xl shadow-red-950/40">
+              {issue.imageUrl ? (
+                <Image src={issue.imageUrl} alt={issue.title} fill className="object-cover" />
               ) : (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center px-4">
-                  <BookOpen className="w-10 h-10 text-brand-primary/40" />
-                  <p className="text-xs text-gray-600 uppercase tracking-widest">Treasures Unveiler</p>
-                  <p className="text-base font-black text-white/20">{displayIssue.issueNumber}</p>
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center px-8 text-white/10">
+                  <BookOpen size={80} />
+                  <p className="text-sm font-black uppercase tracking-widest">{issue.title}</p>
                 </div>
               )}
             </div>
-          </div>
 
-          {/* Info */}
-          <div className="flex-1 space-y-4">
-            {isDummy && (
-              <div className="inline-flex items-center gap-2 text-xs text-amber-400/80 bg-amber-400/10 border border-amber-400/20 px-3 py-1.5 rounded-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                Sample content — add this issue in Sanity Studio
-              </div>
-            )}
-            <span className="text-[10px] tracking-[0.3em] uppercase text-brand-primary font-semibold">
-              Treasures Unveiler Magazine
-            </span>
-            <h1 className="text-4xl md:text-5xl font-extrabold text-white">{displayIssue.issueNumber}</h1>
-            <div className="flex items-center gap-2 text-gray-500 text-sm">
-              <Calendar className="w-4 h-4" />
-              {formattedDate}
+            <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 rounded-xl bg-white/3 border border-white/5 text-center">
+                    <span className="block text-[10px] text-gray-500 uppercase tracking-widest font-black mb-1">Access</span>
+                    <span className={`text-sm font-bold ${isPaid ? 'text-amber-500' : 'text-green-500'}`}>{issue.price || 'Free'}</span>
+                </div>
+                <div className="p-4 rounded-xl bg-white/3 border border-white/5 text-center">
+                    <span className="block text-[10px] text-gray-500 uppercase tracking-widest font-black mb-1">Format</span>
+                    <span className="text-sm font-bold text-white">Digital PDF</span>
+                </div>
             </div>
-            <p className="text-gray-400 leading-relaxed max-w-xl">
-              This issue of Treasures Unveiler Magazine features stories of faith, creativity, and mission — 
-              shining a light on the gifts of young people and the work of Spiritans Sound Outreach.
-            </p>
-            <div className="flex gap-3 pt-2">
-              <button className="px-6 py-2.5 bg-linear-to-r from-brand-primary to-red-700 text-white text-sm font-semibold rounded-full hover:opacity-90 transition-all">
-                Read Online
-              </button>
-              <button className="px-6 py-2.5 border border-white/20 text-white text-sm font-semibold rounded-full hover:bg-white/5 transition-all">
-                Download PDF
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Articles in this Issue */}
-      <section className="max-w-6xl mx-auto px-6">
-        <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
-          <span className="w-1 h-6 rounded-full bg-linear-to-b from-brand-primary to-red-600 inline-block" />
-          In This Issue
-          <span className="text-sm text-gray-600 font-normal ml-1">
-            ({displayIssue.articles?.length ?? 0} articles)
-          </span>
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {(displayIssue.articles ?? []).map((article, i) => (
-            <div key={article._id}
-              className={`group flex flex-col rounded-xl border transition-all duration-300 overflow-hidden ${
-                isDummy
-                  ? "border-white/8 bg-white/3 opacity-70 cursor-not-allowed"
-                  : "border-white/10 bg-white/3 hover:border-brand-primary/30 hover:bg-white/5"
-              }`}>
-              {/* Article image or placeholder */}
-              <div className="aspect-video relative bg-linear-to-br from-red-950/20 to-red-900/20 flex items-center justify-center overflow-hidden">
-                {article.imageUrl ? (
-                  <Image src={article.imageUrl} alt={article.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+            {issue.fileUrl ? (
+                isPaid ? (
+                    <Link href="/contact" className="flex items-center justify-center gap-3 w-full py-4 bg-white text-black font-black rounded-xl hover:bg-brand-primary hover:text-white transition-all uppercase tracking-widest text-sm shadow-xl">
+                        Purchase Issue
+                    </Link>
                 ) : (
-                  <span className="text-4xl font-black text-white/5">{String(i + 1).padStart(2, "0")}</span>
-                )}
-              </div>
-              <div className="p-5 flex flex-col flex-1 gap-2">
-                <h3 className="font-bold text-white leading-tight group-hover:text-red-400 transition-colors">
-                  {article.title}
-                </h3>
-                {article.author && (
-                  <p className="text-xs text-gray-500 flex items-center gap-1.5">
-                    <User className="w-3 h-3" /> {article.author}
-                  </p>
-                )}
-                {article.excerpt && (
-                  <p className="text-sm text-gray-400 leading-relaxed line-clamp-3 flex-1">{article.excerpt}</p>
-                )}
-                {!isDummy && (
-                  <Link href={`/articles/${article.slug}`}
-                    className="text-xs text-brand-primary font-semibold mt-2 hover:text-red-400 transition-colors">
-                    Read Article →
-                  </Link>
-                )}
-              </div>
+                    <a href={`${issue.fileUrl}?dl=${issue.title}.pdf`} className="flex items-center justify-center gap-3 w-full py-4 bg-linear-to-r from-brand-primary to-red-700 text-white font-black rounded-xl hover:opacity-90 transition-all uppercase tracking-widest text-sm shadow-xl shadow-red-900/20">
+                        <Download size={18} /> Download Now
+                    </a>
+                )
+            ) : (
+                <div className="text-center py-4 text-gray-500 font-bold uppercase tracking-widest text-xs border border-dashed border-white/10 rounded-xl">
+                    Coming Soon
+                </div>
+            )}
+          </div>
+
+          {/* Right: Content */}
+          <div className="space-y-10">
+            <div className="space-y-4">
+                <div className="flex items-center gap-2 text-brand-primary font-bold text-xs uppercase tracking-[0.2em]">
+                    <span className="w-8 h-[1px] bg-brand-primary"></span>
+                    Magazine Publication
+                </div>
+                <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tighter">
+                    {issue.title}
+                </h1>
+                <div className="flex flex-wrap gap-6 items-center pt-2">
+                    <div className="flex items-center gap-2 text-gray-400 text-sm font-medium">
+                        <Calendar className="w-4 h-4 text-brand-primary" />
+                        {formattedDate}
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-400 text-sm font-medium">
+                        <ShieldCheck className="w-4 h-4 text-brand-primary" />
+                        Verified Spiritans Sound Content
+                    </div>
+                </div>
             </div>
-          ))}
+
+            <div className="h-[1px] bg-linear-to-r from-white/10 to-transparent"></div>
+
+            <div className="space-y-6">
+                <h3 className="text-xs uppercase tracking-widest font-black text-gray-500 flex items-center gap-2">
+                    <FileText size={14} className="text-brand-primary" />
+                    About This Issue
+                </h3>
+                {issue.description ? (
+                    <div className="prose prose-invert prose-red max-w-none text-gray-400 text-lg leading-relaxed font-light">
+                        {issue.description}
+                    </div>
+                ) : (
+                    <p className="text-gray-400 text-lg font-light italic leading-relaxed">
+                        {issue.excerpt || "No description available for this issue."}
+                    </p>
+                )}
+            </div>
+
+            <div className="bg-linear-to-br from-red-950/20 to-transparent p-8 rounded-3xl border border-white/5 space-y-4">
+                <h4 className="text-white font-bold">Safe & Secure Publishing</h4>
+                <p className="text-sm text-gray-400 leading-relaxed">
+                    Treasures Unveiler is committed to providing holy and inspiring content. 
+                    Every digital distribution is scanned and verified to be safe and true to our missionary values.
+                </p>
+            </div>
+          </div>
         </div>
       </section>
     </main>

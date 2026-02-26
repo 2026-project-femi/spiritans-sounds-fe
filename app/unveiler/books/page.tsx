@@ -1,33 +1,49 @@
-import { BookOpen, ExternalLink, ShoppingCart } from "lucide-react";
+import { client } from "@/sanity/lib/client";
+import { PUBLICATIONS_QUERY } from "@/sanity/lib/queries";
+import { BookCard } from "@/components/magazine/BookCard";
+import { ExternalLink } from "lucide-react";
 
-const books = [
+export const revalidate = 60;
+
+interface Book {
+  _id: string;
+  title: string;
+  description: string;
+  price: string;
+  slug: string;
+  imageUrl?: string;
+  fileUrl?: string;
+  publishedAt?: string;
+}
+
+const DUMMY_BOOKS: Book[] = [
   {
+    _id: "d1",
     title: "Proclaiming Christ Through Art",
-    author: "Rev. Fr. Oluwafemi Victor Orilua, CSSp",
     description: "A reflection on how creativity becomes a vehicle for the Gospel — exploring music, writing, and visual art as sacred expression.",
-    category: "Spirituality & Art",
-    available: true,
     price: "₦2,500",
+    slug: "proclaiming-christ-through-art",
   },
   {
+    _id: "d2",
     title: "Treasures Unveiled: Young Voices",
-    author: "Various Contributors",
     description: "A compilation of writings, poems, and reflections from recipients of the Young Creators Award — voices that shine before others.",
-    category: "Youth & Creativity",
-    available: true,
     price: "₦1,800",
-  },
-  {
-    title: "The Spiritan Charism in Mission",
-    author: "Spiritans Sound Editorial",
-    description: "An exploration of the Holy Ghost Fathers and Brothers' missionary tradition and how it continues to shape youth ministry today.",
-    category: "Mission & History",
-    available: false,
-    price: "Coming Soon",
+    slug: "treasures-unveiled-young-voices",
   },
 ];
 
-export default function BooksPage() {
+export default async function BooksPage() {
+  let books: Book[] = [];
+  try {
+    books = await client.fetch(PUBLICATIONS_QUERY);
+  } catch (err) {
+    console.error("Failed to fetch books:", err);
+  }
+
+  const isDummy = books.length === 0;
+  const displayBooks = isDummy ? DUMMY_BOOKS : books;
+
   return (
     <main className="pb-24">
       {/* Header */}
@@ -45,54 +61,40 @@ export default function BooksPage() {
           Treasures Unveiler publishes books rooted in faith, creativity, and mission — 
           resources for young people, ministers, and all who seek to bring out what is new and old from the treasury.
         </p>
+        
+        {isDummy && (
+          <div className="mt-8 inline-flex items-center gap-2 text-xs text-amber-400/80 bg-amber-400/5 border border-amber-400/10 px-5 py-2.5 rounded-full">
+            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+            Showing sample catalog — items in Sanity Studio will appear here automatically.
+          </div>
+        )}
       </section>
 
       {/* Books Grid */}
-      <section className="max-w-6xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {books.map((book) => (
-            <div key={book.title}
-              className="group flex flex-col rounded-2xl bg-white/5 border border-white/10 hover:border-brand-primary/40 transition-all duration-300 overflow-hidden">
-              {/* Book Cover Placeholder */}
-              <div className="aspect-3/4 bg-linear-to-br from-red-950/40 to-red-900/40 flex items-center justify-center border-b border-white/10">
-                <BookOpen className="w-16 h-16 text-brand-primary/50" />
-              </div>
-              <div className="p-6 flex flex-col flex-1 gap-3">
-                <span className="text-[10px] tracking-widest uppercase text-brand-primary font-semibold">{book.category}</span>
-                <h2 className="text-xl font-bold text-white leading-tight">{book.title}</h2>
-                <p className="text-sm text-gray-500 italic">{book.author}</p>
-                <p className="text-sm text-gray-400 leading-relaxed flex-1">{book.description}</p>
-                <div className="flex items-center justify-between pt-4 border-t border-white/10">
-                  <span className={`font-bold text-lg ${book.available ? "text-brand-primary" : "text-gray-500"}`}>
-                    {book.price}
-                  </span>
-                  {book.available ? (
-                    <button className="flex items-center gap-2 px-4 py-2 bg-linear-to-r from-brand-primary to-red-700 text-white text-sm font-semibold rounded-full hover:opacity-90 transition-all">
-                      <ShoppingCart className="w-4 h-4" /> Order
-                    </button>
-                  ) : (
-                    <span className="text-xs text-gray-500 border border-gray-700 px-3 py-1.5 rounded-full">Upcoming</span>
-                  )}
-                </div>
-              </div>
-            </div>
+      <section className="max-w-7xl mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {displayBooks.map((book) => (
+            <BookCard key={book._id} book={book} />
           ))}
         </div>
       </section>
 
       {/* Publishing Submissions CTA */}
-      <section className="max-w-3xl mx-auto px-6 py-20 text-center">
-        <div className="p-10 rounded-2xl bg-linear-to-br from-red-950/20 to-red-900/20 border border-brand-primary/20">
-          <ExternalLink className="w-10 h-10 text-brand-primary mx-auto mb-4" />
-          <h2 className="text-3xl font-bold text-white mb-4">Want to Publish With Us?</h2>
-          <p className="text-gray-400 mb-8 leading-relaxed">
-            Are you a young creative with a manuscript, a collection of poems, or a faith-filled story to tell? 
-            We'd love to hear from you. Treasures Unveiler is committed to giving young voices a platform.
-          </p>
-          <a href="/contact"
-            className="inline-block px-8 py-3 bg-linear-to-r from-brand-primary to-red-700 text-white font-semibold rounded-full hover:opacity-90 transition-all duration-300 hover:scale-105">
-            Submit Your Manuscript
-          </a>
+      <section className="max-w-4xl mx-auto px-6 py-24 text-center">
+        <div className="relative group overflow-hidden">
+            <div className="absolute inset-0 bg-linear-to-br from-brand-primary to-red-900 blur-[80px] opacity-10 group-hover:opacity-20 transition-opacity" />
+            <div className="relative p-12 rounded-3xl border border-white/5 bg-black/40 backdrop-blur-sm shadow-2xl">
+                <ExternalLink className="w-12 h-12 text-brand-primary mx-auto mb-6" />
+                <h2 className="text-4xl font-black text-white mb-6 tracking-tight">Want to Publish With Us?</h2>
+                <p className="text-gray-400 mb-10 leading-relaxed text-lg font-light max-w-2xl mx-auto">
+                    Are you a young creative with a manuscript, a collection of poems, or a faith-filled story to tell? 
+                    Treasures Unveiler is committed to giving young voices a platform. Join our stable of authors.
+                </p>
+                <a href="/contact"
+                    className="inline-flex px-10 py-4 bg-white text-black text-sm font-black rounded-full hover:bg-brand-primary hover:text-white transition-all duration-300 hover:scale-105 uppercase tracking-widest shadow-xl">
+                    Submit Your Manuscript
+                </a>
+            </div>
         </div>
       </section>
     </main>
