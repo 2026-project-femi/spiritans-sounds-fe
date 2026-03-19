@@ -296,11 +296,14 @@ export const LATEST_SIDEBAR_POSTS_QUERY = `
 }
 `;
 
-// Online Radio
 export const RADIO_QUERY = `
 *[_type == "radio"][0]{
+  tagline,
   streamUrl,
-  schedule,
+  schedule[]{
+    ...,
+    "audioUrl": audio.asset->url
+  },
   currentProgram
 }
 `;
