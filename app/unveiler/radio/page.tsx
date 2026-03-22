@@ -6,16 +6,16 @@ import { RadioPlayer } from "./RadioPlayer";
 export const revalidate = 60;
 
 const defaultSchedule = [
-  { time: "6:00 AM", program: "Morning Offering", host: "Prayer Team", type: "Prayer" },
-  { time: "6:30 AM", program: "My Daily Journey with the Holy Spirit", host: "Spiritans Sound Prayer Team", type: "Prayer" },
-  { time: "7:00 AM", program: "In His Presence", host: "Spiritans Sound Music", type: "Music" },
-  { time: "7:30 AM", program: "Daily Homily", host: "Guest Preachers", type: "Homily" },
-  { time: "9:00 AM", program: "Prayers for Special Intentions", host: "Prayer Team", type: "Prayer" },
-  { time: "12:00 PM", program: "Angelus and Midday Prayer", host: "Community", type: "Prayer" },
-  { time: "3:00 PM", program: "Divine Mercy Chaplet", host: "Community", type: "Prayer" },
-  { time: "6:00 PM", program: "Angelus", host: "Community", type: "Prayer" },
-  { time: "7:00 PM", program: "Talk / Interview Segment", host: "Invited Contributors", type: "Talk" },
-  { time: "10:00 PM", program: "Night Prayer and Worship", host: "Community", type: "Prayer" },
+  { time: "6:00 AM",  endTime: "6:30 AM",  program: "Morning Offering",                        host: "Prayer Team",                   type: "Prayer" },
+  { time: "6:30 AM",  endTime: "7:00 AM",  program: "My Daily Journey with the Holy Spirit",   host: "Spiritans Sound Prayer Team",   type: "Prayer" },
+  { time: "7:00 AM",  endTime: "7:30 AM",  program: "In His Presence",                         host: "Spiritans Sound Music",         type: "Music" },
+  { time: "7:30 AM",  endTime: "9:00 AM",  program: "Daily Homily",                            host: "Guest Preachers",               type: "Homily" },
+  { time: "9:00 AM",  endTime: "12:00 PM", program: "Prayers for Special Intentions",          host: "Prayer Team",                   type: "Prayer" },
+  { time: "12:00 PM", endTime: "3:00 PM",  program: "Angelus and Midday Prayer",               host: "Community",                     type: "Prayer" },
+  { time: "3:00 PM",  endTime: "6:00 PM",  program: "Divine Mercy Chaplet",                    host: "Community",                     type: "Prayer" },
+  { time: "6:00 PM",  endTime: "7:00 PM",  program: "Angelus",                                 host: "Community",                     type: "Prayer" },
+  { time: "7:00 PM",  endTime: "10:00 PM", program: "Talk / Interview Segment",                host: "Invited Contributors",          type: "Talk" },
+  { time: "10:00 PM", endTime: "11:00 PM", program: "Night Prayer and Worship",                host: "Community",                     type: "Prayer" },
 ];
 
 const typeColors: Record<string, string> = {
@@ -88,13 +88,21 @@ export default async function RadioPage() {
               </p>
 
               <div className="space-y-3">
-                {schedule.map((item: { time: string; program: string; host?: string; type?: string; day?: string }, i: number) => {
+                {schedule.map((item: { time: string; endTime?: string; program: string; host?: string; type?: string; day?: string }, i: number) => {
                   const timeStr = item.time || "";
                   const itemHour = parseInt(timeStr.split(":")[0]) || 0;
                   const isPM = timeStr.includes("PM");
                   const hour24 = isPM && itemHour !== 12 ? itemHour + 12 : (itemHour === 12 && !isPM ? 0 : itemHour);
-                  // Highlight program if it's currently that hour or the next hour
-                  const isCurrent = currentHour >= hour24 && currentHour < hour24 + 1.5;
+
+                  let endHour24: number | null = null;
+                  if (item.endTime) {
+                    const endHour = parseInt(item.endTime.split(":")[0]) || 0;
+                    const endIsPM = item.endTime.includes("PM");
+                    endHour24 = endIsPM && endHour !== 12 ? endHour + 12 : (endHour === 12 && !endIsPM ? 0 : endHour);
+                  }
+
+                  const isCurrent = currentHour >= hour24 &&
+                    (endHour24 !== null ? currentHour < endHour24 : currentHour < hour24 + 1.5);
 
                   const typeColor = typeColors[item.type || "Talk"] || "text-gray-400 bg-gray-400/10 border-gray-400/20";
 
@@ -107,7 +115,7 @@ export default async function RadioPage() {
                       }`}>
                       <div className="w-full sm:w-20 md:w-24 shrink-0 flex sm:flex-col justify-between sm:justify-start items-center sm:items-start">
                         <span className={`text-xs md:text-sm font-mono font-bold ${isCurrent ? "text-brand-primary" : "text-gray-500"}`}>
-                          {item.time}
+                          {item.time}{item.endTime ? ` – ${item.endTime}` : ""}
                         </span>
                         {isCurrent && <div className="text-[9px] md:text-[10px] text-brand-primary uppercase tracking-widest mt-0 sm:mt-0.5 animate-pulse">On Air</div>}
                       </div>

@@ -5,6 +5,7 @@ import { Radio, Play, Volume2 } from "lucide-react";
 
 export interface ScheduleItem {
   time: string;
+  endTime?: string; // When the broadcast ends — no playback outside this range
   program: string;
   host?: string;
   type?: string;
@@ -17,39 +18,44 @@ export function RadioPlayer({ streamUrl, schedule }: { streamUrl?: string, sched
   const [activeItem, setActiveItem] = useState<ScheduleItem | null>(null);
 
   useEffect(() => {
-    const processed = schedule.map((item) => {
-      const match = item.time.match(/(\d+):(\d+)\s*(AM|PM)/i);
-      let minutes = 0;
+    const parseTimeToMinutes = (timeStr: string): number => {
+      const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
       if (match) {
         let h = parseInt(match[1]);
         const m = parseInt(match[2]);
         const isPM = match[3].toUpperCase() === "PM";
         if (isPM && h !== 12) h += 12;
         if (!isPM && h === 12) h = 0;
-        minutes = h * 60 + m;
-      } else {
-        const itemHour = parseInt(item.time.split(":")[0]) || 0;
-        const isPM = item.time.includes("PM");
-        const h = isPM && itemHour !== 12 ? itemHour + 12 : (itemHour === 12 && !isPM ? 0 : itemHour);
-        minutes = h * 60;
+        return h * 60 + m;
       }
-      return { ...item, minutes };
-    });
+      const itemHour = parseInt(timeStr.split(":")[0]) || 0;
+      const isPM = timeStr.includes("PM");
+      const h = isPM && itemHour !== 12 ? itemHour + 12 : (itemHour === 12 && !isPM ? 0 : itemHour);
+      return h * 60;
+    };
+
+    const processed = schedule.map((item) => ({
+      ...item,
+      minutes: parseTimeToMinutes(item.time),
+      endMinutes: item.endTime ? parseTimeToMinutes(item.endTime) : null,
+    }));
 
     const updateActive = () => {
       const now = new Date();
       const currentMinutes = now.getHours() * 60 + now.getMinutes();
-      
+
       let found: ScheduleItem | null = null;
-      
+
       for (let i = 0; i < processed.length; i++) {
         const currentItem = processed[i];
         const nextItem = processed[i + 1];
-        
-        if (
-          currentMinutes >= currentItem.minutes &&
-          (!nextItem || currentMinutes < nextItem.minutes)
-        ) {
+
+        const withinStart = currentMinutes >= currentItem.minutes;
+        const withinEnd = currentItem.endMinutes !== null
+          ? currentMinutes < currentItem.endMinutes
+          : (!nextItem || currentMinutes < nextItem.minutes);
+
+        if (withinStart && withinEnd) {
           found = currentItem;
           break;
         }
