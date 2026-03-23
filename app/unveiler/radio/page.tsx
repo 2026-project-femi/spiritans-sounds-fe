@@ -64,15 +64,7 @@ export default async function RadioPage() {
 
             <RadioPlayer streamUrl={streamUrl} schedule={schedule} />
             
-            <div className="mt-8 p-5 md:p-6 bg-red-950/10 border border-brand-primary/20 rounded-xl flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
-              <Clock className="w-8 h-8 text-brand-primary shrink-0 opacity-80" />
-              <div>
-                <h3 className="font-bold text-white mb-2">Seasonal Liturgical Prayers</h3>
-                <p className="text-xs md:text-sm text-gray-400 leading-relaxed">
-                  During the different seasons of the Church, additional prayer sessions may be incorporated into the programme. These may include devotions such as the Novena to the Holy Spirit, Stations of the Cross, and other seasonal prayers.
-                </p>
-              </div>
-            </div>
+            
           </section>
 
           {/* Right Column: Schedule Grid */}
@@ -80,12 +72,10 @@ export default async function RadioPage() {
             <div className="bg-[#121214]/80 backdrop-blur-md border border-white/5 rounded-3xl p-5 sm:p-6 md:p-10 shadow-2xl">
               <div className="flex items-center gap-3 mb-6">
                 <Clock className="w-5 h-5 md:w-6 md:h-6 text-pink-400" />
-                <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-white">Programme Grid</h2>
+                <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-white">Programme</h2>
               </div>
               
-              <p className="text-gray-400 mb-6 md:mb-8 italic text-xs md:text-sm">
-                For the initial phase, Spiritans Sound Internet Radio will operate using pre-recorded audio content that will be scheduled at specific times according to this daily core schedule.
-              </p>
+            
 
               <div className="space-y-3">
                 {schedule.map((item: { time: string; endTime?: string; program: string; host?: string; type?: string; day?: string }, i: number) => {
