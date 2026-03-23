@@ -174,7 +174,7 @@ export default function AboutPage() {
 				</p>
 
 				<Link
-					href="/join-us"
+					href="#subscribe"
 					className="inline-block bg-brand-primary text-white px-10 py-4 text-sm uppercase tracking-widest hover:bg-brand-primary/90 transition-gentle">
 					Become Part of the Journey
 				</Link>

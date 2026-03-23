@@ -124,7 +124,7 @@ const Footer: React.FC = () => {
 					</div>
 
 					<div>
-						<h4 className="text-xs font-semibold tracking-widest uppercase mb-6 text-brand-primary">
+						<h4 className="text-xs font-semibold tracking-widest uppercase mb-6 text-brand-primary" id="subscribe">
 							Newsletter
 						</h4>
 						<p className="text-xs text-gray-200 mb-6 font-light leading-relaxed">
