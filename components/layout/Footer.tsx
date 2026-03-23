@@ -22,6 +22,7 @@ const socialLinks = [
 
 const Footer: React.FC = () => {
 	const [email, setEmail] = useState("");
+	const [firstName, setFirstName] = useState("");
 	const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 	const [message, setMessage] = useState("");
 
@@ -34,7 +35,7 @@ const Footer: React.FC = () => {
 			const res = await fetch("/api/newsletter/subscribe", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ email }),
+				body: JSON.stringify({ email, firstName: firstName || undefined }),
 			});
 
 			const data = await res.json();
@@ -42,6 +43,7 @@ const Footer: React.FC = () => {
 				setStatus("success");
 				setMessage(data.message);
 				setEmail("");
+				setFirstName("");
 			} else {
 				throw new Error(data.message || "Something went wrong");
 			}
@@ -129,6 +131,13 @@ const Footer: React.FC = () => {
 							Get the latest updates and spiritual insights delivered to your inbox.
 						</p>
 						<form onSubmit={handleSubscribe} className="flex flex-col space-y-3">
+							<input
+								type="text"
+								value={firstName}
+								onChange={(e) => setFirstName(e.target.value)}
+								placeholder="First Name (optional)"
+								className="bg-transparent border-b border-gray-700 py-2 text-sm focus:outline-none focus:text-brand-primary transition-gentle"
+							/>
 							<input
 								type="email"
 								value={email}

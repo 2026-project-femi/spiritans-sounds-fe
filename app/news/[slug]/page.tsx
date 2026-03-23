@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { client } from "@/sanity/lib/client";
 import { EVENT_QUERY } from "@/sanity/lib/queries";
+import { PortableText } from "@portabletext/react";
+import { portableTextComponents, YouTubeEmbed } from "@/components/PortableTextComponents";
 import { Sidebar } from "@/components/common/Sidebar"; // Import the new Sidebar component
 import { EventItem } from "@/lib/types";
 
@@ -65,11 +67,17 @@ export default async function SingleEventPage({ params }: { params: Promise<{ sl
 								</div>
 							</header>
 
-							{event?.description && (
-								<div className="prose prose-lg dark:prose-invert max-w-none text-black space-y-8 font-light leading-loose text-lg">
-									<p>{event.description}</p>
-								</div>
+							{event.youtubeUrl && (
+								<YouTubeEmbed url={event.youtubeUrl} />
 							)}
+
+							<div className="prose prose-lg dark:prose-invert max-w-none text-black space-y-8 font-light leading-loose text-lg">
+								{event.body ? (
+									<PortableText value={event.body} components={portableTextComponents} />
+								) : event.description ? (
+									<p>{event.description}</p>
+								) : null}
+							</div>
 						</div>
 					</article>
 

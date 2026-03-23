@@ -5,6 +5,7 @@ import { Users, Loader2 } from "lucide-react";
 
 export const UnveilerNewsletter: React.FC = () => {
     const [email, setEmail] = useState("");
+    const [firstName, setFirstName] = useState("");
     const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
     const [message, setMessage] = useState("");
 
@@ -17,7 +18,7 @@ export const UnveilerNewsletter: React.FC = () => {
             const res = await fetch("/api/newsletter/subscribe", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email }),
+                body: JSON.stringify({ email, firstName: firstName || undefined }),
             });
 
             const data = await res.json();
@@ -25,6 +26,7 @@ export const UnveilerNewsletter: React.FC = () => {
                 setStatus("success");
                 setMessage(data.message);
                 setEmail("");
+                setFirstName("");
             } else {
                 throw new Error(data.message || "Something went wrong");
             }
@@ -44,6 +46,13 @@ export const UnveilerNewsletter: React.FC = () => {
                     Join 2,000+ creators and believers. Get event invites and spiritual treasures in your inbox.
                 </p>
                 <form onSubmit={handleSubscribe} className="space-y-3">
+                    <input
+                        type="text"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        placeholder="Your name (optional)"
+                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-600 focus:outline-none focus:border-brand-primary/50 transition-all text-xs"
+                    />
                     <input
                         type="email"
                         value={email}

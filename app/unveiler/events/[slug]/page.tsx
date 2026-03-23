@@ -2,6 +2,8 @@ import { client } from "@/sanity/lib/client";
 import { EVENT_QUERY } from "@/sanity/lib/queries";
 import Image from "next/image";
 import Link from "next/link";
+import { PortableText } from "@portabletext/react";
+import { portableTextComponents, YouTubeEmbed } from "@/components/PortableTextComponents";
 import { ArrowLeft, CalendarDays, MapPin, Clock } from "lucide-react";
 
 export const revalidate = 60;
@@ -14,6 +16,8 @@ interface Event {
   publishedAt?: string;
   location?: string;
   description?: string;
+  body?: any; // Sanity Portable Text
+  youtubeUrl?: string;
   excerpt?: string;
   imageUrl?: string;
 }
@@ -121,13 +125,22 @@ All are welcome. Come and celebrate the treasures in our midst.`,
           )}
         </div>
 
+        {/* YouTube embed */}
+        {displayEvent.youtubeUrl && (
+          <YouTubeEmbed url={displayEvent.youtubeUrl} />
+        )}
+
         {/* Body */}
         <div className="prose prose-invert prose-red max-w-none">
-          {(displayEvent.description || displayEvent.excerpt || "").split("\n\n").map((para, i) => (
-            <p key={i} className="text-gray-300 leading-relaxed text-lg mb-5">
-              {para}
-            </p>
-          ))}
+          {displayEvent.body ? (
+            <PortableText value={displayEvent.body} components={portableTextComponents} />
+          ) : (
+            (displayEvent.description || displayEvent.excerpt || "").split("\n\n").map((para, i) => (
+              <p key={i} className="text-gray-300 leading-relaxed text-lg mb-5">
+                {para}
+              </p>
+            ))
+          )}
         </div>
 
         {/* CTA for upcoming */}

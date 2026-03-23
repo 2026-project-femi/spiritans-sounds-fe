@@ -2,6 +2,7 @@ import Image from "next/image";
 import { client } from "@/sanity/lib/client";
 import { HOMILY_QUERY } from "@/sanity/lib/queries";
 import { PortableText } from "@portabletext/react";
+import { portableTextComponents, YouTubeEmbed } from "@/components/PortableTextComponents";
 import { Sidebar } from "@/components/common/Sidebar"; // Import the new Sidebar component
 import Comments from "@/components/Comments";
 import { Comment } from "@/lib/types";
@@ -15,6 +16,7 @@ interface Homily {
     date: string;
     scripture: string;
     audio?: string;
+    youtubeUrl?: string;
     content: any; // PortableText
     category?: string;
     seo?: any;
@@ -100,10 +102,13 @@ export default async function SingleHomilyPage({ params }: { params: Promise<{ s
                                 </div>
                             )}
 
+                            {homily.youtubeUrl && (
+                                <YouTubeEmbed url={homily.youtubeUrl} />
+                            )}
+
                             <div className="prose prose-lg dark:prose-invert max-w-none text-black space-y-8 font-light leading-loose text-lg">
-                        
                                 {homily.content && (
-                                    <PortableText value={homily.content} />
+                                    <PortableText value={homily.content} components={portableTextComponents} />
                                 )}
                             </div>
                         </div>

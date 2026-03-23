@@ -58,6 +58,7 @@ export interface Comment {
 
 export interface Homily extends HomilyItem {
 	audio?: string;
+	youtubeUrl?: string;
 	content: any; // Sanity Portable Text
 	publishedAt?: string;
 	seo?: SEO;
@@ -90,6 +91,7 @@ export interface ArticleItem extends BasicItem {
 }
 
 export interface Article extends ArticleItem {
+	youtubeUrl?: string;
 	content: any;
 	seo?: SEO;
 	comments?: Comment[];
@@ -99,6 +101,8 @@ export interface EventItem extends BasicItem {
 	date: string;
 	location?: string;
 	description?: string;
+	body?: any; // Sanity Portable Text
+	youtubeUrl?: string;
 }
 
 export interface Radio {

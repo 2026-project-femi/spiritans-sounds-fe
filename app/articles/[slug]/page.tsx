@@ -2,6 +2,7 @@ import Image from "next/image";
 import { client } from "@/sanity/lib/client";
 import { ARTICLE_QUERY } from "@/sanity/lib/queries";
 import { PortableText } from "@portabletext/react";
+import { portableTextComponents, YouTubeEmbed } from "@/components/PortableTextComponents";
 import { Sidebar } from "@/components/common/Sidebar"; // Import the new Sidebar component
 import Comments from "@/components/Comments";
 import { Comment } from "@/lib/types";
@@ -15,6 +16,7 @@ interface Article {
     author: string;
     imageUrl?: string;
     publishedAt: string;
+    youtubeUrl?: string;
     content: any; // PortableText
     comments?: Comment[];
 }
@@ -82,8 +84,12 @@ export default async function SingleArticlePage({ params }: { params: Promise<{ 
                                 </div>
                             </header>
 
+                            {article.youtubeUrl && (
+                                <YouTubeEmbed url={article.youtubeUrl} />
+                            )}
+
                             <div className="prose prose-lg dark:prose-invert max-w-none text-black space-y-8 font-light leading-loose text-lg">
-                                <PortableText value={article.content} />
+                                <PortableText value={article.content} components={portableTextComponents} />
                             </div>
                         </div>
                         <Comments postId={article._id} comments={article.comments || []} />

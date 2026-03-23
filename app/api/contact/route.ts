@@ -1,16 +1,6 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-
-
-const createTransporter = () => {
-	return nodemailer.createTransport({
-		service: "gmail",
-		auth: {
-			user: process.env.SMTP_USER,
-			pass: process.env.SMTP_PASS,
-		},
-	});
-};
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
 	try {
@@ -21,7 +11,6 @@ export async function POST(request: Request) {
 		const subject = formData.get("subject")?.toString() ?? "";
 		const message = formData.get("message")?.toString() ?? "";
 
-		// Validate essential fields
 		if (!name || !email || !message) {
 			return new Response(
 				JSON.stringify({
@@ -36,11 +25,12 @@ export async function POST(request: Request) {
 			);
 		}
 
-		const transporter = createTransporter();
+		const fromAddress = `Spiritans Sounds <${process.env.SMTP_FROM_EMAIL}>`;
+		const toAddress = process.env.ADMIN_EMAIL || "spiritansounds@gmail.com";
 
-		await transporter.sendMail({
-			from: `"Spiritans Sound" <${email}>`,
-			to: process.env.ADMIN_EMAIL || "spiritansounds@gmail.com",
+		const { error } = await resend.emails.send({
+			from: fromAddress,
+			to: toAddress,
 			replyTo: email,
 			subject: `New Contact Request: ${subject || "No Subject"}`,
 			html: `
@@ -77,17 +67,14 @@ export async function POST(request: Request) {
                             <span class="label">From</span>
                             <div class="value">${name}</div>
                         </div>
-
                         <div class="field-group">
                             <span class="label">Email Address</span>
                             <div class="value"><a href="mailto:${email}">${email}</a></div>
                         </div>
-
                         <div class="field-group">
                             <span class="label">Subject</span>
                             <div class="value">${subject || "No Subject"}</div>
                         </div>
-
                         <div class="field-group">
                             <span class="label">Message</span>
                             <div class="value message-box">${message}</div>
@@ -104,6 +91,17 @@ export async function POST(request: Request) {
             `,
 		});
 
+		if (error) {
+			console.error("Email sending failed:", error);
+			return new Response(
+				JSON.stringify({
+					message: "Internal server error",
+					error: process.env.NODE_ENV === "development" ? error.message : "Something went wrong",
+				}),
+				{ status: 500 },
+			);
+		}
+
 		return new Response(JSON.stringify({ message: "Form submitted successfully" }), { status: 200 });
 	} catch (error: unknown) {
 		if (error instanceof Error) {
@@ -117,7 +115,6 @@ export async function POST(request: Request) {
 			);
 		}
 
-		// fallback if it's not an Error instance
 		return new Response(
 			JSON.stringify({
 				message: "Internal server error",

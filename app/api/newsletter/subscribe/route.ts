@@ -3,7 +3,7 @@ import { apiVersion, dataset, projectId } from "@/sanity/env";
 
 export async function POST(req: Request) {
   try {
-    const { email } = await req.json();
+    const { email, firstName } = await req.json();
 
     if (!email) {
       return Response.json({ message: "Email is required" }, { status: 400 });
@@ -45,6 +45,7 @@ export async function POST(req: Request) {
 
     await client.create({
       _type: "subscriber",
+      ...(firstName ? { firstName: firstName.trim() } : {}),
       email,
       subscribedAt: new Date().toISOString(),
       status: 'active',

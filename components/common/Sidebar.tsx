@@ -15,6 +15,7 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ categories = [], recentPosts = [] }) => {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [newsletterEmail, setNewsletterEmail] = useState("");
+	const [newsletterName, setNewsletterName] = useState("");
 	const [subStatus, setSubStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 	const [subMessage, setSubMessage] = useState("");
 	const router = useRouter();
@@ -40,7 +41,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ categories = [], recentPosts =
 			const res = await fetch("/api/newsletter/subscribe", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ email: newsletterEmail }),
+				body: JSON.stringify({ email: newsletterEmail, firstName: newsletterName || undefined }),
 			});
 
 			const data = await res.json();
@@ -48,6 +49,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ categories = [], recentPosts =
 				setSubStatus("success");
 				setSubMessage(data.message);
 				setNewsletterEmail("");
+				setNewsletterName("");
 			} else {
 				throw new Error(data.message || "Something went wrong");
 			}
@@ -148,6 +150,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ categories = [], recentPosts =
 					&quot;The spirit flows where it will.&quot; Sign up for monthly meditations.
 				</p>
 				<form onSubmit={handleNewsletterSubscribe} className="space-y-3">
+					<input
+						type="text"
+						value={newsletterName}
+						onChange={(e) => setNewsletterName(e.target.value)}
+						placeholder="YOUR NAME (OPTIONAL)"
+						className="w-full bg-white px-4 py-3 text-[10px] tracking-widest placeholder:text-gray-600 border border-gray-200 focus:outline-none focus:border-primary"
+					/>
 					<input
 						type="email"
 						value={newsletterEmail}

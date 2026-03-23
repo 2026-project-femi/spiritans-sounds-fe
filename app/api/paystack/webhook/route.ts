@@ -2,8 +2,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import crypto from "crypto";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { sendAdminNotification, sendThankYouEmail } from "@/lib/emails/sendEmail";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // In-memory store to prevent duplicate processing (replace with Redis/database in production)
 const processedTransactions = new Set<string>();
@@ -182,18 +184,8 @@ async function handleFailedCharge(data: any) {
 	// Notify admin about failed payment if configured
 	if (process.env.ADMIN_EMAIL) {
 		try {
-			const transporter = nodemailer.createTransport({
-				host: process.env.SMTP_HOST,
-				port: Number(process.env.SMTP_PORT),
-				secure: process.env.SMTP_SECURE === "true",
-				auth: {
-					user: process.env.SMTP_USER,
-					pass: process.env.SMTP_PASS,
-				},
-			});
-
-			await transporter.sendMail({
-				from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_FROM_EMAIL}>`,
+			await resend.emails.send({
+				from: `${process.env.SMTP_FROM_NAME || "Spiritans Sounds"} <${process.env.SMTP_FROM_EMAIL}>`,
 				to: process.env.ADMIN_EMAIL,
 				subject: "⚠️ Failed Donation Attempt",
 				html: `
@@ -210,13 +202,12 @@ async function handleFailedCharge(data: any) {
                 <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
               </div>
             </div>
-             <div style="background-color: #f9fafb; padding: 20px; text-align: center; font-size: 12px; color: #9ca3af; border-top: 1px solid #e5e7eb;">
+            <div style="background-color: #f9fafb; padding: 20px; text-align: center; font-size: 12px; color: #9ca3af; border-top: 1px solid #e5e7eb;">
               &copy; ${new Date().getFullYear()} Spiritans Sound
             </div>
           </div>
         `,
 			});
-
 			console.log("✅ Admin notified of failed charge");
 		} catch (error) {
 			console.error("❌ Failed to send admin notification:", error);
@@ -228,7 +219,7 @@ async function handleFailedCharge(data: any) {
 export async function GET() {
 	return NextResponse.json({
 		message: "Paystack webhook endpoint is active",
-		emailProvider: "Gmail via Nodemailer",
+		emailProvider: "Resend",
 		status: "ready",
 		processedTransactions: processedTransactions.size,
 	});
