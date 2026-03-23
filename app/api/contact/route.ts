@@ -2,6 +2,15 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+function escapeHtml(str: string): string {
+	return str
+		.replace(/&/g, "&amp;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;")
+		.replace(/"/g, "&quot;")
+		.replace(/'/g, "&#039;");
+}
+
 export async function POST(request: Request) {
 	try {
 		const formData = await request.formData();
@@ -65,19 +74,19 @@ export async function POST(request: Request) {
                     <div class="content">
                         <div class="field-group">
                             <span class="label">From</span>
-                            <div class="value">${name}</div>
+                            <div class="value">${escapeHtml(name)}</div>
                         </div>
                         <div class="field-group">
                             <span class="label">Email Address</span>
-                            <div class="value"><a href="mailto:${email}">${email}</a></div>
+                            <div class="value"><a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></div>
                         </div>
                         <div class="field-group">
                             <span class="label">Subject</span>
-                            <div class="value">${subject || "No Subject"}</div>
+                            <div class="value">${escapeHtml(subject) || "No Subject"}</div>
                         </div>
                         <div class="field-group">
                             <span class="label">Message</span>
-                            <div class="value message-box">${message}</div>
+                            <div class="value message-box">${escapeHtml(message)}</div>
                         </div>
                     </div>
                     <div class="footer">

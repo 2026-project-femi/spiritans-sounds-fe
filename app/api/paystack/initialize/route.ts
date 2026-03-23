@@ -25,7 +25,7 @@ export async function POST(request: Request) {
 		const headersList = await headers();
 		const origin = headersList.get("origin");
 
-		const allowedOrigins = ["https://spiritual-sounds-fe.vercel.app", "http://localhost:3000"];
+		const allowedOrigins = [process.env.APP_URL, "http://localhost:3000"].filter(Boolean) as string[];
 
 		// Remove trailing slash for comparison
 		const cleanOrigin = origin?.replace(/\/$/, "");

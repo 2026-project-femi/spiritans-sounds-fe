@@ -6,6 +6,7 @@ interface NewsletterEmailProps {
   preheader?: string;
   bodyHtml: string;     // pre-rendered HTML from blockContent
   unsubscribeUrl: string;
+  senderName?: string;
 }
 
 export const NewsletterEmailTemplate: React.FC<Readonly<NewsletterEmailProps>> = ({
@@ -14,6 +15,7 @@ export const NewsletterEmailTemplate: React.FC<Readonly<NewsletterEmailProps>> =
   preheader,
   bodyHtml,
   unsubscribeUrl,
+  senderName,
 }) => (
   <html>
     <head>
@@ -104,7 +106,7 @@ export const NewsletterEmailTemplate: React.FC<Readonly<NewsletterEmailProps>> =
                             In faith,
                           </p>
                           <p style={{ fontSize: "15px", fontWeight: 700, color: "#1e293b", margin: 0 }}>
-                            {process.env.SMTP_FROM_NAME || "Spiritans Sound"}
+                            {senderName || "Spiritans Sound"}
                           </p>
                         </td>
                       </tr>

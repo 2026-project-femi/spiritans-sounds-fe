@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     // 1. Verify origin (CORS protection — mirrors donation route)
     const headersList = await headers();
     const origin = headersList.get("origin");
-    const allowedOrigins = ["https://spiritual-sounds-fe.vercel.app", "http://localhost:3000"];
+    const allowedOrigins = [process.env.APP_URL, "http://localhost:3000"].filter(Boolean) as string[];
     const cleanOrigin = origin?.replace(/\/$/, "");
 
     if (!cleanOrigin || !allowedOrigins.includes(cleanOrigin)) {

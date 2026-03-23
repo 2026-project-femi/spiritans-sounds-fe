@@ -123,6 +123,7 @@ export async function POST(req: Request) {
         preheader: campaign.preheader,
         bodyHtml,
         unsubscribeUrl,
+        senderName: process.env.SMTP_FROM_NAME || "Spiritans Sound",
       }),
       headers: {
         "List-Unsubscribe": `<${unsubscribeUrl}>`,

@@ -162,11 +162,8 @@ async function handleSuccessfulCharge(data: any) {
 			}
 		}
 
-		// Mark as processed
-		processedTransactions.add(reference);
-
-		// Log result
 		if (emailSent) {
+			processedTransactions.add(reference);
 			console.log(`✅ Successfully processed donation ${reference}`);
 		} else {
 			console.error(`❌ Failed to send email for donation ${reference} after 3 retries`);
@@ -216,6 +213,7 @@ async function handleSuccessfulPurchase(data: any) {
 
 		if (!item?.fileUrl) {
 			console.error(`❌ Item or file not found for order ${orderId}`);
+			return;
 		}
 
 		// 3. Mark order as completed
@@ -262,9 +260,8 @@ async function handleSuccessfulPurchase(data: any) {
 			}
 		}
 
-		processedTransactions.add(reference);
-
 		if (emailSent) {
+			processedTransactions.add(reference);
 			console.log(`✅ Purchase confirmation + download link sent for ${reference}`);
 		} else {
 			console.error(`❌ Failed to send purchase email for ${reference} after 3 retries`);
