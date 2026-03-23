@@ -4,8 +4,12 @@ import { render } from "@react-email/render";
 import { ThankYouEmailTemplate } from "./ThankYouEmailPops";
 import { PurchaseConfirmationEmailTemplate } from "./PurchaseConfirmationEmail";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-const FROM = `${process.env.SMTP_FROM_NAME || "Spiritans Sounds"} <${process.env.SMTP_FROM_EMAIL}>`;
+function getResend() {
+	return new Resend(process.env.RESEND_API_KEY);
+}
+function getFrom() {
+	return `${process.env.SMTP_FROM_NAME || "Spiritans Sounds"} <${process.env.SMTP_FROM_EMAIL}>`;
+}
 
 // ── Donation thank-you ────────────────────────────────────────────────────────
 
@@ -33,8 +37,8 @@ export async function sendThankYouEmail(data: EmailData): Promise<boolean> {
 			}),
 		);
 
-		const { error } = await resend.emails.send({
-			from: FROM,
+		const { error } = await getResend().emails.send({
+			from: getFrom(),
 			to: data.to,
 			subject: data.subject,
 			html,
@@ -81,8 +85,8 @@ export async function sendPurchaseConfirmationEmail(data: PurchaseEmailData): Pr
 			}),
 		);
 
-		const { error } = await resend.emails.send({
-			from: FROM,
+		const { error } = await getResend().emails.send({
+			from: getFrom(),
 			to: data.to,
 			subject: data.subject,
 			html,
@@ -105,8 +109,8 @@ export async function sendPurchaseConfirmationEmail(data: PurchaseEmailData): Pr
 
 export async function sendFailedChargeNotification(data: any) {
 	try {
-		const { error } = await resend.emails.send({
-			from: FROM,
+		const { error } = await getResend().emails.send({
+			from: getFrom(),
 			to: process.env.ADMIN_EMAIL!,
 			subject: "⚠️ Failed Donation Attempt",
 			html: `
@@ -142,8 +146,8 @@ export async function sendFailedChargeNotification(data: any) {
 
 export async function sendAdminNotification(donation: any) {
 	try {
-		const { error } = await resend.emails.send({
-			from: FROM,
+		const { error } = await getResend().emails.send({
+			from: getFrom(),
 			to: process.env.ADMIN_EMAIL!,
 			subject: `🎉 New Donation Received: ${donation.currency} ${donation.amount / 100}`,
 			html: `

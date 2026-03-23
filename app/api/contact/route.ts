@@ -1,6 +1,8 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend() {
+	return new Resend(process.env.RESEND_API_KEY);
+}
 
 function escapeHtml(str: string): string {
 	return str
@@ -37,7 +39,7 @@ export async function POST(request: Request) {
 		const fromAddress = `Spiritans Sounds <${process.env.SMTP_FROM_EMAIL}>`;
 		const toAddress = process.env.ADMIN_EMAIL || "spiritansounds@gmail.com";
 
-		const { error } = await resend.emails.send({
+		const { error } = await getResend().emails.send({
 			from: fromAddress,
 			to: toAddress,
 			replyTo: email,
