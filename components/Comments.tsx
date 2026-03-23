@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { User, Send, Loader2 } from "lucide-react";
+//
 
 interface Comment {
   _id?: string;
