@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { client } from "@/sanity/lib/client";
-import { MUSIC_QUERY, MUSIC_COUNT_QUERY } from "@/sanity/lib/queries"; // Import MUSIC_COUNT_QUERY
+import { MUSIC_QUERY, MUSIC_COUNT_QUERY } from "@/sanity/lib/queries";
 import { Sidebar } from "@/components/common/Sidebar";
 import { MusicItem } from "@/lib/types";
 
@@ -10,20 +10,11 @@ export const revalidate = 60;
 const MUSIC_PER_PAGE = 9;
 const MAX_PAGE_BUTTONS = 5;
 
-interface Music {
-	_id: string;
-	title: string;
-	slug: string;
-	artist: string;
-	imageUrl?: string;
-	excerpt?: string;
-}
-
-interface MusicPageProps {
-	searchParams: { [key: string]: string | string[] | undefined };
-}
-
-export default async function MusicPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
+export default async function MusicPage({
+	searchParams,
+}: {
+	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
 	const resolvedSearchParams = await searchParams;
 	const currentPage = parseInt((resolvedSearchParams.page as string) || "1", 10);
 	const startIndex = (currentPage - 1) * MUSIC_PER_PAGE;
@@ -40,121 +31,202 @@ export default async function MusicPage({ searchParams }: { searchParams: Promis
 
 	const pageNumbers: (number | string)[] = [];
 	if (totalPages <= MAX_PAGE_BUTTONS + 2) {
-		for (let i = 1; i <= totalPages; i++) {
-			pageNumbers.push(i);
-		}
+		for (let i = 1; i <= totalPages; i++) pageNumbers.push(i);
 	} else {
 		pageNumbers.push(1);
-
 		const startWindow = Math.max(2, currentPage - Math.floor(MAX_PAGE_BUTTONS / 2));
 		const endWindow = Math.min(totalPages - 1, currentPage + Math.floor(MAX_PAGE_BUTTONS / 2));
-
-		if (startWindow > 2) {
-			pageNumbers.push("...");
-		}
-
+		if (startWindow > 2) pageNumbers.push("...");
 		for (let i = startWindow; i <= endWindow; i++) {
 			if (i < totalPages) pageNumbers.push(i);
 		}
-
-		if (endWindow < totalPages - 1) {
-			pageNumbers.push("...");
-		}
-		if (totalPages > 1 && !pageNumbers.includes(totalPages)) {
-			pageNumbers.push(totalPages);
-		}
+		if (endWindow < totalPages - 1) pageNumbers.push("...");
+		if (totalPages > 1 && !pageNumbers.includes(totalPages)) pageNumbers.push(totalPages);
 	}
 
 	return (
 		<main className="pt-32 pb-20">
+
+			{/* ── Hero Header ────────────────────────────────────────── */}
+			<header className="relative mb-16 px-6 md:px-12 overflow-hidden">
+				<div className="max-w-7xl mx-auto">
+					<div className="relative bg-foreground rounded-2xl px-10 py-16 md:py-20 overflow-hidden">
+
+						{/* Decorative waveform bars */}
+						<div className="absolute right-10 top-1/2 -translate-y-1/2 hidden md:flex items-end gap-[3px] opacity-20">
+							{[40, 64, 28, 80, 48, 96, 32, 72, 56, 88, 24, 60, 44, 76, 36].map((h, i) => (
+								<div
+									key={i}
+									className="w-1.5 bg-brand-primary rounded-full"
+									style={{ height: `${h}px` }}
+								/>
+							))}
+						</div>
+
+						{/* Large background music note */}
+						<svg
+							className="absolute -left-8 top-1/2 -translate-y-1/2 opacity-5 text-white"
+							width="320"
+							height="320"
+							fill="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path d="M9 3v10.55A4 4 0 1 0 11 17V7h4V3H9z" />
+						</svg>
+
+						<div className="relative z-10 max-w-xl">
+							<span className="text-xs font-bold tracking-[0.4em] uppercase text-brand-primary block mb-4">
+								Spiritans Sound
+							</span>
+							<h1 className="text-5xl md:text-7xl serif leading-[1.1] text-white mb-6">
+								Music &<br />Worship
+							</h1>
+							<p className="text-white/60 text-lg font-light leading-relaxed">
+								Songs crafted to lift the spirit, stir the soul, and glorify God.
+							</p>
+
+							{/* Sound wave decoration — small */}
+							<div className="flex items-end gap-[3px] mt-8">
+								{[12, 20, 8, 28, 16, 32, 10, 24, 18, 30].map((h, i) => (
+									<div
+										key={i}
+										className="w-1 bg-brand-primary rounded-full opacity-70"
+										style={{ height: `${h}px` }}
+									/>
+								))}
+							</div>
+						</div>
+					</div>
+				</div>
+			</header>
+
+			{/* ── Main Grid ──────────────────────────────────────────── */}
 			<div className="max-w-7xl mx-auto px-6 md:px-12">
 				<div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
-					{/* Main Content Area */}
+
+					{/* Content */}
 					<div className="lg:col-span-8">
-						<header className="text-center mb-12">
-							<h1 className="text-4xl font-bold tracking-tight lg:text-5xl">Music & Worship</h1>
-							<p className="mt-4 text-lg text-muted-foreground">
-								Explore our collection of worship music and songs.
-							</p>
-						</header>
 
 						{musicItems.length > 0 ? (
-							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 								{musicItems.map((music: MusicItem) => (
 									<Link
 										href={`/music/${music.slug}`}
 										key={music._id}
-										className="block bg-white rounded-lg border shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 group">
-										<article>
-											{music.imageUrl && (
-												<div className="relative aspect-video rounded-t-lg overflow-hidden">
-													<Image
-														src={music.imageUrl}
-														alt={music.title}
-														fill
-														className="object-cover"
-													/>
+										className="group block"
+									>
+										{/* Album art */}
+										<div className="relative aspect-square overflow-hidden rounded-xl bg-gray-100 mb-4">
+											{music.imageUrl ? (
+												<Image
+													src={music.imageUrl}
+													alt={music.title}
+													fill
+													className="object-cover transition-transform duration-500 group-hover:scale-105"
+												/>
+											) : (
+												/* Placeholder when no image */
+												<div className="w-full h-full bg-linear-to-br from-foreground/10 to-foreground/30 flex items-center justify-center">
+													<svg
+														className="w-16 h-16 text-foreground/20"
+														fill="currentColor"
+														viewBox="0 0 24 24"
+													>
+														<path d="M9 3v10.55A4 4 0 1 0 11 17V7h4V3H9z" />
+													</svg>
 												</div>
 											)}
-											<div className="p-6">
-												<h2 className="text-xl font-semibold mb-2 group-hover:text-primary leading-snug">
-													{music.title}
-												</h2>
-												{music.artist && (
-													<p className="text-sm text-muted-foreground mb-1">
-														By {music.artist}
-													</p>
-												)}
-												{music.excerpt && (
-													<p className="mt-4 text-base text-muted-foreground line-clamp-3">
-														{music.excerpt}
-													</p>
-												)}
+
+											{/* Dark gradient overlay */}
+											<div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+											{/* Play button */}
+											<div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+												<div className="w-14 h-14 rounded-full bg-brand-primary flex items-center justify-center shadow-lg">
+													<svg
+														className="w-6 h-6 text-white ml-1"
+														fill="currentColor"
+														viewBox="0 0 24 24"
+													>
+														<path d="M8 5v14l11-7z" />
+													</svg>
+												</div>
 											</div>
-										</article>
+
+											{/* "Music" label */}
+											<div className="absolute top-3 left-3">
+												<span className="bg-brand-primary text-white text-[9px] font-bold tracking-widest uppercase px-2 py-1">
+													Music
+												</span>
+											</div>
+										</div>
+
+										{/* Track info */}
+										<div>
+											<h2 className="text-base font-semibold leading-snug mb-1 group-hover:text-brand-primary transition-colors line-clamp-1">
+												{music.title}
+											</h2>
+											{music.artist && (
+												<p className="text-xs text-foreground/50 tracking-wide uppercase font-medium">
+													{music.artist}
+												</p>
+											)}
+										</div>
 									</Link>
 								))}
 							</div>
 						) : (
-							<p className="text-center text-muted-foreground">No music found.</p>
+							<div className="text-center py-20">
+								<svg
+									className="w-16 h-16 text-foreground/20 mx-auto mb-4"
+									fill="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path d="M9 3v10.55A4 4 0 1 0 11 17V7h4V3H9z" />
+								</svg>
+								<p className="text-foreground/40 text-sm tracking-widest uppercase">No tracks yet</p>
+							</div>
 						)}
 
-						{/* Pagination Controls */}
+						{/* Pagination */}
 						{totalPages > 1 && (
-							<nav className="flex justify-center space-x-4 mt-16">
+							<nav className="flex justify-center items-center gap-1 mt-16">
 								<Link
 									href={`/music?page=${currentPage - 1}`}
-									className={`px-4 py-2 border rounded-lg ${!hasPreviousPage ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-100"}`}
+									className={`px-3 py-2 text-xs tracking-widest uppercase font-bold border border-foreground/10 rounded transition-colors ${!hasPreviousPage ? "opacity-30 pointer-events-none" : "hover:border-brand-primary hover:text-brand-primary"}`}
 									aria-disabled={!hasPreviousPage}
-									tabIndex={!hasPreviousPage ? -1 : undefined}>
-									Previous
+									tabIndex={!hasPreviousPage ? -1 : undefined}
+								>
+									← Prev
 								</Link>
 								{pageNumbers.map((page, index) =>
 									page === "..." ? (
-										<span key={`ellipsis-${index}`} className="px-4 py-2">
-											...
+										<span key={`ellipsis-${index}`} className="px-3 py-2 text-foreground/30">
+											…
 										</span>
 									) : (
 										<Link
 											key={page}
 											href={`/music?page=${page}`}
-											className={`px-4 py-2 border rounded-lg ${page === currentPage ? "bg-primary text-white" : "hover:bg-gray-100"}`}>
+											className={`w-9 h-9 flex items-center justify-center text-sm font-bold rounded transition-colors ${page === currentPage ? "bg-brand-primary text-white" : "border border-foreground/10 hover:border-brand-primary hover:text-brand-primary"}`}
+										>
 											{page}
 										</Link>
 									),
 								)}
 								<Link
 									href={`/music?page=${currentPage + 1}`}
-									className={`px-4 py-2 border rounded-lg ${!hasNextPage ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-100"}`}
+									className={`px-3 py-2 text-xs tracking-widest uppercase font-bold border border-foreground/10 rounded transition-colors ${!hasNextPage ? "opacity-30 pointer-events-none" : "hover:border-brand-primary hover:text-brand-primary"}`}
 									aria-disabled={!hasNextPage}
-									tabIndex={!hasNextPage ? -1 : undefined}>
-									Next
+									tabIndex={!hasNextPage ? -1 : undefined}
+								>
+									Next →
 								</Link>
 							</nav>
 						)}
 					</div>
 
-					{/* Sidebar Area */}
+					{/* Sidebar */}
 					<div className="lg:col-span-4">
 						<div className="sticky top-32 z-20">
 							<Sidebar />

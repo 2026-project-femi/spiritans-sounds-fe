@@ -35,6 +35,14 @@ export const HOME_QUERY = `
       category,
       "imageUrl": featuredImage.asset->url,
       excerpt
+  },
+  "latestMusic": *[_type == "music"] | order(publishedAt desc)[0...3]{
+      _id,
+      title,
+      "slug": slug.current,
+      artist,
+      "imageUrl": featuredImage.asset->url,
+      excerpt
   }
 }
 `;
@@ -176,7 +184,7 @@ export const MUSIC_QUERY = `
   title,
   "slug": slug.current,
   artist,
-  audioUrl,
+  "audioUrl": audio.asset->url,
   lyrics,
   "imageUrl": featuredImage.asset->url,
   excerpt
@@ -195,10 +203,10 @@ export const SINGLE_MUSIC_QUERY = `
   title,
   "slug": slug.current,
   artist,
-  audioUrl,
+  "audioUrl": audio.asset->url,
   lyrics,
   "imageUrl": featuredImage.asset->url,
-  content // Assuming content field for full lyrics/details
+  content
 }
 `;
 
@@ -319,6 +327,7 @@ export const PUBLICATIONS_QUERY = `
   title,
   description,
   price,
+  priceAmount,
   "slug": slug.current,
   "imageUrl": cover.asset->url,
   "fileUrl": file.asset->url,
@@ -371,6 +380,7 @@ export const MAGAZINE_ISSUES_QUERY = `
   title,
   description,
   price,
+  priceAmount,
   "slug": slug.current,
   "imageUrl": cover.asset->url,
   "fileUrl": file.asset->url,
@@ -385,6 +395,7 @@ export const MAGAZINE_ISSUE_QUERY = `
   title,
   description,
   price,
+  priceAmount,
   "slug": slug.current,
   "imageUrl": cover.asset->url,
   "fileUrl": file.asset->url,

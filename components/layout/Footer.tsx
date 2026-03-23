@@ -14,10 +14,10 @@ const navLinks = [
 ];
 
 const socialLinks = [
-	{ href: "#", icon: <FacebookIcon />, label: "FB", name: "Facebook" },
+	{ href: "https://www.facebook.com/profile.php?id=100091452643400", icon: <FacebookIcon />, label: "FB", name: "Facebook" },
 	{ href: "#", icon: <X />, label: "TW", name: "Twitter" },
 	{ href: "#", icon: <Instagram />, label: "IG", name: "Instagram" },
-	{ href: "#", icon: <YoutubeIcon />, label: "YT", name: "YouTube" },
+	{ href: "https://www.facebook.com/share/18AwoC8rSw/", icon: <YoutubeIcon />, label: "YT", name: "YouTube" },
 ];
 
 const Footer: React.FC = () => {
@@ -108,7 +108,7 @@ const Footer: React.FC = () => {
 							</li>
 							<li>
 								<Link
-									href="#/music"
+									href="/music"
 									className="text-sm text-gray-200 hover:text-white transition-gentle font-light">
 									Sacred Music
 								</Link>

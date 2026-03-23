@@ -174,4 +174,5 @@ export interface HomeData {
 	latestPosts: LatestPostItem[];
 	latestHomilies: HomilyItem[];
 	latestPrayers: PrayerItem[];
+	latestMusic: MusicItem[];
 }

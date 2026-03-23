@@ -3,6 +3,7 @@ import { MAGAZINE_ISSUE_QUERY } from "@/sanity/lib/queries";
 import Image from "next/image";
 import Link from "next/link";
 import { Calendar, ArrowLeft, BookOpen, Download, ShieldCheck, FileText } from "lucide-react";
+import { PurchaseButton } from "./PurchaseButton";
 
 export const revalidate = 60;
 
@@ -14,6 +15,7 @@ interface MagazineIssue {
   imageUrl?: string;
   fileUrl?: string;
   price?: string;
+  priceAmount?: number;
   description?: string;
   excerpt?: string;
 }
@@ -88,9 +90,11 @@ export default async function SingleIssuePage({ params }: { params: Promise<{ sl
 
             {issue.fileUrl ? (
                 isPaid ? (
-                    <Link href="/contact" className="flex items-center justify-center gap-3 w-full py-4 bg-white text-black font-black rounded-xl hover:bg-brand-primary hover:text-white transition-all uppercase tracking-widest text-sm shadow-xl">
-                        Purchase Issue
-                    </Link>
+                    <PurchaseButton
+                      itemId={issue._id}
+                      itemTitle={issue.title}
+                      priceAmount={issue.priceAmount ?? 0}
+                    />
                 ) : (
                     <a href={`${issue.fileUrl}?dl=${issue.title}.pdf`} className="flex items-center justify-center gap-3 w-full py-4 bg-linear-to-r from-brand-primary to-red-700 text-white font-black rounded-xl hover:opacity-90 transition-all uppercase tracking-widest text-sm shadow-xl shadow-red-900/20">
                         <Download size={18} /> Download Now

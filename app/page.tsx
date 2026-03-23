@@ -7,6 +7,7 @@ import { HomeCarousel } from "@/components/HomeCarousel";
 import Sidebar from "@/components/common/Sidebar";
 import { getSidebarData } from "@/lib/utils";
 import { HomeData } from "@/lib/types";
+import { HomeFAQ } from "@/components/HomeFAQ";
 
 export const revalidate = 60;
 
@@ -251,6 +252,61 @@ const HomePage: React.FC = async () => {
 							</section>
 						)}
 
+						{/* Music & Worship */}
+						{data.latestMusic && data.latestMusic.length > 0 && (
+							<section className="px-6 md:px-12 mb-10 py-16">
+								<div className="max-w-7xl mx-auto">
+									<div className="flex justify-between items-end mb-16 border-b border-foreground/10 pb-8">
+										<h2 className="text-4xl serif tracking-tight">Music & Worship</h2>
+										<Link
+											href="/music"
+											className="text-xs tracking-widest uppercase text-brand-primary font-bold hover:text-foreground transition-colors">
+											View All
+										</Link>
+									</div>
+
+									<div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+										{data.latestMusic.map((track) => (
+											<Link
+												href={`/music/${track.slug}`}
+												key={track._id}
+												className="group cursor-pointer">
+												<div className="aspect-video mb-8 overflow-hidden bg-gray-100 relative">
+													{track.imageUrl && (
+														<Image
+															src={track.imageUrl}
+															alt={track.title}
+															fill
+															className="w-full h-full object-cover opacity-80 hover:scale-105 transition-all"
+														/>
+													)}
+													<div className="absolute top-4 left-4 bg-white px-3 py-1 text-[9px] font-bold tracking-widest uppercase text-brand-primary">
+														Music
+													</div>
+												</div>
+												<h3 className="text-2xl serif mb-2 group-hover:text-primary transition-colors leading-snug">
+													{track.title}
+												</h3>
+												{track.artist && (
+													<p className="text-sm text-foreground/60 mb-3">By {track.artist}</p>
+												)}
+												{track.excerpt && (
+													<p className="text-sm font-light text-foreground leading-relaxed line-clamp-2">
+														{track.excerpt}
+													</p>
+												)}
+												<div className="mt-6 pt-6 border-t border-foreground/5 opacity-0 group-hover:opacity-100 transition-all">
+													<span className="text-[10px] uppercase tracking-widest font-bold">
+														Listen →
+													</span>
+												</div>
+											</Link>
+										))}
+									</div>
+								</div>
+							</section>
+						)}
+
 						{/* Quote / Meditation Section */}
 						<section className="px-6 md:px-12 py-32 bg-white relative overflow-hidden">
 							<div className="absolute top-0 right-0 w-1/3 h-full bg-gray-100/30 transform skew-x-12 translate-x-1/2"></div>
@@ -281,6 +337,8 @@ const HomePage: React.FC = async () => {
 					</div>
 				</div>
 			</div>
+
+		<HomeFAQ />
 		</main>
 	);
 };

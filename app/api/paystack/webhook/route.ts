@@ -2,10 +2,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import crypto from "crypto";
-import { Resend } from "resend";
-import { sendAdminNotification, sendThankYouEmail } from "@/lib/emails/sendEmail";
+import { sendAdminNotification, sendThankYouEmail, sendPurchaseConfirmationEmail, sendFailedChargeNotification } from "@/lib/emails/sendEmail";
+import { createClient } from "next-sanity";
+import { apiVersion, dataset, projectId } from "@/sanity/env";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const sanityClient = createClient({ projectId, dataset, apiVersion, useCdn: false, token: process.env.SANITY_API_TOKEN });
 
 // In-memory store to prevent duplicate processing (replace with Redis/database in production)
 const processedTransactions = new Set<string>();
@@ -64,7 +65,11 @@ export async function POST(request: NextRequest) {
 		// Handle different events
 		switch (payload.event) {
 			case "charge.success":
-				await handleSuccessfulCharge(payload.data);
+				if ((payload.data?.reference as string)?.startsWith("PUR-")) {
+					await handleSuccessfulPurchase(payload.data);
+				} else {
+					await handleSuccessfulCharge(payload.data);
+				}
 				break;
 			case "charge.failed":
 				await handleFailedCharge(payload.data);
@@ -173,6 +178,102 @@ async function handleSuccessfulCharge(data: any) {
 	}
 }
 
+async function handleSuccessfulPurchase(data: any) {
+	if (processedTransactions.has(data.reference)) {
+		console.log(`⏭️ Purchase ${data.reference} already processed, skipping`);
+		return;
+	}
+
+	try {
+		const { reference, amount, currency, paid_at, customer, metadata } = data;
+
+		const email = customer.email;
+		const buyerName =
+			metadata?.name || metadata?.buyer_name || customer.first_name || email.split("@")[0] || "Valued Customer";
+
+		const orderId: string | undefined = metadata?.orderId;
+		if (!orderId) {
+			console.error(`❌ No orderId in metadata for purchase ${reference}`);
+			return;
+		}
+
+		// 1. Fetch order to get itemType + item reference
+		const order = await sanityClient.fetch(
+			`*[_type == "order" && _id == $orderId][0]{ _id, itemType, buyerEmail, "itemRef": item._ref }`,
+			{ orderId },
+		);
+
+		if (!order) {
+			console.error(`❌ Order not found: ${orderId}`);
+			return;
+		}
+
+		// 2. Fetch the purchased item to get file URL + title
+		const item = await sanityClient.fetch(
+			`*[_type == $itemType && _id == $itemRef][0]{ title, "fileUrl": file.asset->url }`,
+			{ itemType: order.itemType, itemRef: order.itemRef },
+		);
+
+		if (!item?.fileUrl) {
+			console.error(`❌ Item or file not found for order ${orderId}`);
+		}
+
+		// 3. Mark order as completed
+		await sanityClient.patch(orderId).set({ status: "completed", completedAt: new Date().toISOString() }).commit();
+		console.log(`✅ Order ${orderId} marked completed`);
+
+		// 4. Send download email with retry logic
+		const formattedAmount = amount / 100;
+		const formattedDate = new Date(paid_at).toLocaleDateString("en-NG", {
+			year: "numeric",
+			month: "long",
+			day: "numeric",
+			hour: "2-digit",
+			minute: "2-digit",
+		});
+		const downloadUrl = item?.fileUrl
+			? `${item.fileUrl}?dl=${encodeURIComponent((item.title ?? "download") + ".pdf")}`
+			: "";
+
+		let emailSent = false;
+		let retries = 3;
+
+		while (!emailSent && retries > 0) {
+			try {
+				emailSent = await sendPurchaseConfirmationEmail({
+					to: order.buyerEmail || email,
+					subject: `Your Download is Ready — ${item?.title ?? "Purchase Confirmed"}`,
+					buyerName,
+					itemTitle: item?.title ?? "Your purchased item",
+					downloadUrl,
+					amount: formattedAmount,
+					currency,
+					transactionReference: reference,
+					date: formattedDate,
+				});
+				if (emailSent) break;
+			} catch (emailError) {
+				console.error("Email attempt failed:", emailError);
+			}
+
+			retries--;
+			if (retries > 0) {
+				await new Promise((resolve) => setTimeout(resolve, 2000));
+			}
+		}
+
+		processedTransactions.add(reference);
+
+		if (emailSent) {
+			console.log(`✅ Purchase confirmation + download link sent for ${reference}`);
+		} else {
+			console.error(`❌ Failed to send purchase email for ${reference} after 3 retries`);
+		}
+	} catch (error) {
+		console.error("❌ Error in handleSuccessfulPurchase:", error);
+	}
+}
+
 async function handleFailedCharge(data: any) {
 	console.log("⚠️ Failed charge:", {
 		reference: data.reference,
@@ -181,37 +282,8 @@ async function handleFailedCharge(data: any) {
 		currency: data.currency,
 	});
 
-	// Notify admin about failed payment if configured
 	if (process.env.ADMIN_EMAIL) {
-		try {
-			await resend.emails.send({
-				from: `${process.env.SMTP_FROM_NAME || "Spiritans Sounds"} <${process.env.SMTP_FROM_EMAIL}>`,
-				to: process.env.ADMIN_EMAIL,
-				subject: "⚠️ Failed Donation Attempt",
-				html: `
-          <div style="font-family: 'Montserrat', sans-serif; color: #2d3436; max-width: 600px; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
-            <div style="background-color: #ee0303; padding: 20px; text-align: center;">
-              <h2 style="color: #ffffff; margin: 0; font-family: 'Playfair Display', serif;">⚠️ Failed Donation Attempt</h2>
-            </div>
-            <div style="padding: 30px; background-color: #ffffff;">
-              <p style="margin-bottom: 20px;">A donation attempt has failed on Spiritans Sound.</p>
-              <div style="background-color: #fffcf8; padding: 20px; border-radius: 6px; border-left: 4px solid #ee0303;">
-                <p><strong>Email:</strong> ${data.customer?.email || "N/A"}</p>
-                <p><strong>Amount:</strong> ${data.currency || "NGN"} ${(data.amount / 100).toLocaleString()}</p>
-                <p><strong>Reference:</strong> ${data.reference}</p>
-                <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
-              </div>
-            </div>
-            <div style="background-color: #f9fafb; padding: 20px; text-align: center; font-size: 12px; color: #9ca3af; border-top: 1px solid #e5e7eb;">
-              &copy; ${new Date().getFullYear()} Spiritans Sound
-            </div>
-          </div>
-        `,
-			});
-			console.log("✅ Admin notified of failed charge");
-		} catch (error) {
-			console.error("❌ Failed to send admin notification:", error);
-		}
+		await sendFailedChargeNotification(data);
 	}
 }
 

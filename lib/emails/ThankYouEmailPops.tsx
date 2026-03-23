@@ -121,7 +121,7 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
           .donation-card {
             background-color: #f8fafc;
             border-radius: 16px;
-            padding: 32px;
+            padding: 20px;
             margin-bottom: 32px;
             border: 1px solid #e2e8f0;
           }
@@ -158,7 +158,7 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
           .impact {
             background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
             border-radius: 16px;
-            padding: 32px;
+            padding: 20px;
             margin-bottom: 32px;
           }
           
@@ -220,11 +220,11 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
             .header,
             .content,
             .footer {
-              padding: 24px 20px;
+              padding: 10px 10px;
             }
             
             .amount {
-              font-size: 36px;
+              font-size: 30px;
             }
             
             .detail-label {
@@ -349,19 +349,6 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
 														{message ||
 															"Your generosity helps us continue spreading the Gospel to thousands worldwide."}
 													</p>
-												</td>
-											</tr>
-										</table>
-
-										{/* Button */}
-										<table width="100%">
-											<tr>
-												<td align="center">
-													<a
-														href={`${process.env.APP_URL}/my-donations`}
-														style={{ display: "inline-block", backgroundColor: "#ee0303", color: "#ffffff", textDecoration: "none", padding: "14px 32px", borderRadius: "9999px", fontWeight: 600, fontSize: "16px" }}>
-														View Your Giving History
-													</a>
 												</td>
 											</tr>
 										</table>

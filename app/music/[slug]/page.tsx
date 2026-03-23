@@ -75,6 +75,14 @@ export default async function SingleMusicPage({ params }: { params: Promise<{ sl
                                         <source src={music.audioUrl} type="audio/mpeg" />
                                         Your browser does not support the audio element.
                                     </audio>
+                                    <div className="mt-3 text-center">
+                                        <a
+                                            href={`${music.audioUrl}?dl=${encodeURIComponent(music.title + ".mp3")}`}
+                                            className="inline-block text-xs tracking-widest uppercase font-bold text-brand-primary hover:underline"
+                                        >
+                                            Download Audio
+                                        </a>
+                                    </div>
                                 </div>
                             )}
 
