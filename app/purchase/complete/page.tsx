@@ -55,7 +55,7 @@ function PurchaseContent() {
           href="/unveiler/issues"
           className="block w-full py-3 bg-brand-primary text-white font-black text-sm rounded-full hover:bg-red-700 transition-colors"
         >
-          Back to Magazine {countdown > 0 && `(${countdown}s)`}
+          Back to Books {countdown > 0 && `(${countdown}s)`}
         </Link>
 
         <p className="text-xs text-gray-700 italic">
