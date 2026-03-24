@@ -90,7 +90,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ categories = [], recentPosts =
 							<li key={cat} className="group flex items-center justify-between cursor-pointer">
 								<Link
 									href={`/homilies?category=${cat}`}
-									className="text-sm font-light text-gray-700 group-hover:text-primary transition-colors">
+									className="text-sm text-gray-700 group-hover:text-primary transition-colors">
 									{cat}
 								</Link>
 								<span className="text-xs text-gray-300 group-hover:text-primary transition-colors">

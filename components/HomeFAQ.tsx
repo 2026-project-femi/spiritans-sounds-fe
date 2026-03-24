@@ -102,7 +102,7 @@ export function HomeFAQ() {
               <div
                 className={`overflow-hidden transition-all duration-300 ${openIndex === i ? "max-h-96" : "max-h-0"}`}
               >
-                <p className="pb-5 text-sm font-light text-foreground leading-relaxed">
+                <p className="pb-5 text-sm text-foreground leading-relaxed">
                   {faq.a}
                 </p>
               </div>

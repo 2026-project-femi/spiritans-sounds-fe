@@ -124,7 +124,7 @@ const HomePage: React.FC = async () => {
 												<h3 className="text-2xl serif mb-4 group-hover:text-primary transition-colors leading-snug">
 													{post.title}
 												</h3>
-												<p className="text-sm font-light text-foreground leading-relaxed line-clamp-2">
+												<p className="text-sm text-foreground leading-relaxed line-clamp-2">
 													{post.excerpt}
 												</p>
 												<div className="mt-6 pt-6 border-t border-foreground/5 opacity-0 group-hover:opacity-100 transition-all">
@@ -184,7 +184,7 @@ const HomePage: React.FC = async () => {
 												<h3 className="text-2xl serif mb-4 group-hover:text-primary transition-colors leading-snug">
 													{homily.title}
 												</h3>
-												<p className="text-sm font-light text-foregroundleading-relaxed line-clamp-2">
+												<p className="text-sm text-foreground leading-relaxed line-clamp-2">
 													{homily.excerpt}
 												</p>
 												<div className="mt-6 pt-6 border-t border-foreground/5 opacity-0 group-hover:opacity-100 transition-all">
@@ -237,7 +237,7 @@ const HomePage: React.FC = async () => {
 												<h3 className="text-2xl serif mb-4 group-hover:text-primary transition-colors leading-snug">
 													{prayer.title}
 												</h3>
-												<p className="text-sm font-light text-foregroundleading-relaxed line-clamp-2">
+												<p className="text-sm text-foreground leading-relaxed line-clamp-2">
 													{prayer.excerpt}
 												</p>
 												<div className="mt-6 pt-6 border-t border-foreground/5 opacity-0 group-hover:opacity-100 transition-all">
@@ -291,7 +291,7 @@ const HomePage: React.FC = async () => {
 													<p className="text-sm text-foreground/60 mb-3">By {track.artist}</p>
 												)}
 												{track.excerpt && (
-													<p className="text-sm font-light text-foreground leading-relaxed line-clamp-2">
+													<p className="text-sm text-foreground leading-relaxed line-clamp-2">
 														{track.excerpt}
 													</p>
 												)}

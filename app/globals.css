@@ -12,8 +12,9 @@
   --brand-primary-foreground: 255 255 255;
 
   /* Core Theme */
-  --background: 255 252 248;
-  --foreground: 45 52 54;
+  --background: 242 239 234;
+  --foreground: 12 15 17;
+  --muted-foreground: 65 75 82;
 
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
@@ -42,6 +43,7 @@
 
   --color-accent: rgb(var(--accent));
   --color-muted: rgb(var(--muted));
+  --color-muted-foreground: rgb(var(--muted-foreground));
   --color-surface: rgb(var(--surface));
   --color-border: rgb(var(--border));
 
@@ -55,6 +57,7 @@
   --brand-primary: 238 3 3;
   --background: 12 12 14;
   --foreground: 229 231 235;
+  --muted-foreground: 155 165 175;
 }
 
 /* ===============================
