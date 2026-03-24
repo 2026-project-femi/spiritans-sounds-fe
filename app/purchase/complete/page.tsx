@@ -12,7 +12,7 @@ function PurchaseContent() {
 
   useEffect(() => {
     if (countdown === 0) {
-      window.location.href = "/unveiler/issues";
+      window.location.href = "/unveiler/books";
       return;
     }
     const t = setTimeout(() => setCountdown(countdown - 1), 1000);
