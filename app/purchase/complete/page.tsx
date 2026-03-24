@@ -52,7 +52,7 @@ function PurchaseContent() {
         )}
 
         <Link
-          href="/unveiler/issues"
+          href="/unveiler/books"
           className="block w-full py-3 bg-brand-primary text-white font-black text-sm rounded-full hover:bg-red-700 transition-colors"
         >
           Back to Books {countdown > 0 && `(${countdown}s)`}
