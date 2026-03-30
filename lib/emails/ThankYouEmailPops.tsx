@@ -236,11 +236,11 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
         `}
 			</style>
 		</head>
-		<body style={{ margin: 0, padding: "20px", backgroundColor: "#f4f4f7" }}>
+		<body style={{ margin: 0, padding: "8px", backgroundColor: "#f4f4f7" }}>
 			<center>
 				<table width="100%" cellPadding="0" cellSpacing="0" border={0} style={{ backgroundColor: "#f4f4f7" }}>
 					<tr>
-						<td align="center" style={{ padding: "20px" }}>
+						<td align="center" style={{ padding: "8px" }}>
 							<table
 								width="100%"
 								cellPadding="0"
@@ -251,11 +251,11 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
 								<tr>
 									<td
 										className="header"
-										style={{ background: "linear-gradient(135deg, #ee0303 0%, #a50202 100%)", padding: "40px 30px", textAlign: "center" }}>
-										<h1 style={{ color: "#ffffff", fontFamily: "'Playfair Display', Georgia, serif", fontSize: "32px", margin: "0 0 8px 0" }}>
+										style={{ background: "linear-gradient(135deg, #ee0303 0%, #a50202 100%)", padding: "24px 20px", textAlign: "center" }}>
+										<h1 style={{ color: "#ffffff", fontFamily: "'Playfair Display', Georgia, serif", fontSize: "26px", margin: "0 0 6px 0" }}>
 											Thank You for Your Gift! 🙏
 										</h1>
-										<p style={{ color: "rgba(255, 255, 255, 0.9)", fontSize: "18px", margin: 0 }}>
+										<p style={{ color: "rgba(255, 255, 255, 0.9)", fontSize: "15px", margin: 0 }}>
 											Your generosity is changing lives
 										</p>
 									</td>
@@ -263,18 +263,18 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
 
 								{/* Content */}
 								<tr>
-									<td className="content" style={{ padding: "40px 30px", backgroundColor: "#ffffff" }}>
-										<h2 style={{ fontSize: "24px", margin: "0 0 16px 0", color: "#1e293b" }}>
+									<td className="content" style={{ padding: "20px", backgroundColor: "#ffffff" }}>
+										<h2 style={{ fontSize: "20px", margin: "0 0 10px 0", color: "#1e293b" }}>
 											Dear {donorName},
 										</h2>
 
 										{/* Scripture */}
 										<table
 											width="100%"
-											style={{ backgroundColor: "#fffcf8", borderLeft: "4px solid #ee0303", borderRadius: "8px", marginBottom: "32px" }}>
+											style={{ backgroundColor: "#fffcf8", borderLeft: "4px solid #ee0303", borderRadius: "6px", marginBottom: "14px" }}>
 											<tr>
-												<td style={{ padding: "24px" }}>
-													<p style={{ fontSize: "18px", lineHeight: 1.8, color: "#2d3436", fontStyle: "italic", margin: "0 0 12px 0" }}>
+												<td style={{ padding: "12px 14px" }}>
+													<p style={{ fontSize: "14px", lineHeight: 1.6, color: "#2d3436", fontStyle: "italic", margin: "0 0 6px 0" }}>
 														"Each one must give as he has decided
 														in his heart, not reluctantly or under
 														compulsion, for God loves a cheerful
@@ -290,10 +290,10 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
 										{/* Donation Card */}
 										<table
 											width="100%"
-											style={{ backgroundColor: "#f8fafc", borderRadius: "16px", border: "1px solid #e2e8f0", marginBottom: "32px" }}>
+											style={{ backgroundColor: "#f8fafc", borderRadius: "10px", border: "1px solid #e2e8f0", marginBottom: "14px" }}>
 											<tr>
-												<td style={{ padding: "32px" }}>
-													<div style={{ fontSize: "48px", fontWeight: 800, color: "#ee0303", textAlign: "center", marginBottom: "24px" }}>
+												<td style={{ padding: "16px" }}>
+													<div style={{ fontSize: "36px", fontWeight: 800, color: "#ee0303", textAlign: "center", marginBottom: "12px" }}>
 														{currency} {amount.toLocaleString()}
 													</div>
 
@@ -321,31 +321,31 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
 										{/* Impact */}
 										<table
 											width="100%"
-											style={{ background: "linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%)", borderRadius: "16px", marginBottom: "32px" }}>
+											style={{ background: "linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%)", borderRadius: "10px", marginBottom: "14px" }}>
 											<tr>
-												<td style={{ padding: "32px" }}>
-													<h3 style={{ fontSize: "24px", fontWeight: 700, margin: "0 0 16px 0", color: "#9b2c2c" }}>
+												<td style={{ padding: "16px" }}>
+													<h3 style={{ fontSize: "17px", fontWeight: 700, margin: "0 0 10px 0", color: "#9b2c2c" }}>
 														Your Gift Will:
 													</h3>
 													<ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
-														<li style={{ marginBottom: "12px", paddingLeft: "28px", position: "relative", color: "#9b2c2c" }}>
+														<li style={{ marginBottom: "7px", paddingLeft: "22px", position: "relative", color: "#9b2c2c" }}>
 															📖 Help produce daily homilies
 															reaching thousands
 														</li>
-														<li style={{ marginBottom: "12px", paddingLeft: "28px", position: "relative", color: "#9b2c2c" }}>
+														<li style={{ marginBottom: "7px", paddingLeft: "22px", position: "relative", color: "#9b2c2c" }}>
 															🎙 Support online spiritual
 															broadcasts
 														</li>
-														<li style={{ marginBottom: "12px", paddingLeft: "28px", position: "relative", color: "#9b2c2c" }}>
+														<li style={{ marginBottom: "7px", paddingLeft: "22px", position: "relative", color: "#9b2c2c" }}>
 															📚 Provide faith formation
 															resources
 														</li>
-														<li style={{ marginBottom: "12px", paddingLeft: "28px", position: "relative", color: "#9b2c2c" }}>
+														<li style={{ marginBottom: "7px", paddingLeft: "22px", position: "relative", color: "#9b2c2c" }}>
 															🙏 Enable prayer support for
 															families in need
 														</li>
 													</ul>
-													<p style={{ margin: "20px 0 0 0", fontStyle: "italic", color: "#9b2c2c" }}>
+													<p style={{ margin: "10px 0 0 0", fontStyle: "italic", color: "#9b2c2c" }}>
 														{message ||
 															"Your generosity helps us continue spreading the Gospel to thousands worldwide."}
 													</p>
@@ -359,15 +359,15 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
 								<tr>
 									<td
 										className="footer"
-										style={{ backgroundColor: "#f8fafc", padding: "30px", textAlign: "center", borderTop: "1px solid #e2e8f0" }}>
-										<p style={{ color: "#64748b", fontSize: "14px", margin: "0 0 8px 0" }}>
+										style={{ backgroundColor: "#f8fafc", padding: "14px 20px", textAlign: "center", borderTop: "1px solid #e2e8f0" }}>
+										<p style={{ color: "#64748b", fontSize: "13px", margin: "0 0 5px 0" }}>
 											Spiritans Sound • Digital Ministry
 										</p>
-										<p style={{ color: "#64748b", fontSize: "14px", margin: "0 0 20px 0" }}>
+										<p style={{ color: "#64748b", fontSize: "13px", margin: "0 0 8px 0" }}>
 											This receipt serves as your official donation record for tax
 											purposes.
 										</p>
-										<p style={{ color: "#94a3b8", fontSize: "12px", margin: "20px 0 0 0" }}>
+										<p style={{ color: "#94a3b8", fontSize: "11px", margin: "8px 0 0 0" }}>
 											© {new Date().getFullYear()} Spiritans Sound. All rights
 											reserved.
 											<br />
