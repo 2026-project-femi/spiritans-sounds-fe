@@ -5,20 +5,29 @@ import crypto from "crypto";
 import { sendAdminNotification, sendThankYouEmail, sendPurchaseConfirmationEmail, sendFailedChargeNotification } from "@/lib/emails/sendEmail";
 import { createClient } from "next-sanity";
 import { apiVersion, dataset, projectId } from "@/sanity/env";
+import { Redis } from "@upstash/redis";
 
 const sanityClient = createClient({ projectId, dataset, apiVersion, useCdn: false, token: process.env.SANITY_API_TOKEN });
 
-// In-memory store to prevent duplicate processing (replace with Redis/database in production)
-const processedTransactions = new Set<string>();
+// Redis-backed deduplication (falls back to in-memory if Upstash is not configured)
+const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+	? new Redis({ url: process.env.UPSTASH_REDIS_REST_URL, token: process.env.UPSTASH_REDIS_REST_TOKEN })
+	: null;
 
-// Clean up processed transactions every hour
-setInterval(
-	() => {
-		processedTransactions.clear();
-		console.log("🧹 Cleared processed transactions cache");
-	},
-	60 * 60 * 1000,
-);
+const localProcessedTransactions = new Set<string>();
+
+async function isAlreadyProcessed(reference: string): Promise<boolean> {
+	if (redis) return (await redis.exists(`txn:${reference}`)) === 1;
+	return localProcessedTransactions.has(reference);
+}
+
+async function markAsProcessed(reference: string): Promise<void> {
+	if (redis) {
+		await redis.set(`txn:${reference}`, "1", { ex: 86400 }); // 24h TTL
+	} else {
+		localProcessedTransactions.add(reference);
+	}
+}
 
 // Verify Paystack signature
 function verifyPaystackSignature(payload: string, signature: string, secret: string): boolean {
@@ -90,7 +99,7 @@ export async function POST(request: NextRequest) {
 
 async function handleSuccessfulCharge(data: any) {
 	// Prevent duplicate processing
-	if (processedTransactions.has(data.reference)) {
+	if (await isAlreadyProcessed(data.reference)) {
 		console.log(`⏭️ Transaction ${data.reference} already processed, skipping`);
 		return;
 	}
@@ -163,7 +172,7 @@ async function handleSuccessfulCharge(data: any) {
 		}
 
 		if (emailSent) {
-			processedTransactions.add(reference);
+			await markAsProcessed(reference);
 			console.log(`✅ Successfully processed donation ${reference}`);
 		} else {
 			console.error(`❌ Failed to send email for donation ${reference} after 3 retries`);
@@ -176,7 +185,7 @@ async function handleSuccessfulCharge(data: any) {
 }
 
 async function handleSuccessfulPurchase(data: any) {
-	if (processedTransactions.has(data.reference)) {
+	if (await isAlreadyProcessed(data.reference)) {
 		console.log(`⏭️ Purchase ${data.reference} already processed, skipping`);
 		return;
 	}
@@ -261,7 +270,7 @@ async function handleSuccessfulPurchase(data: any) {
 		}
 
 		if (emailSent) {
-			processedTransactions.add(reference);
+			await markAsProcessed(reference);
 			console.log(`✅ Purchase confirmation + download link sent for ${reference}`);
 		} else {
 			console.error(`❌ Failed to send purchase email for ${reference} after 3 retries`);
@@ -290,6 +299,6 @@ export async function GET() {
 		message: "Paystack webhook endpoint is active",
 		emailProvider: "Resend",
 		status: "ready",
-		processedTransactions: processedTransactions.size,
+		processedTransactions: localProcessedTransactions.size,
 	});
 }
