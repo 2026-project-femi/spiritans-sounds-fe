@@ -82,8 +82,8 @@ export default function ContactPage() {
 							<Mail className="w-6 h-6 text-red-600" />
 							<div>
 								<div className="font-semibold">Email</div>
-								<a href="mailto:spiritansounds@gmail.com" className="hover:text-red-600">
-									spiritansounds@gmail.com
+								<a href="mailto:info@spiritanssound.com" className="hover:text-red-600">
+									info@spiritanssound.com
 								</a>
 							</div>
 						</li>
