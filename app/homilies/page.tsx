@@ -37,7 +37,7 @@ export default async function HomiliesPage({ searchParams }: HomiliesPageProps) 
 			_id,
 			title,
 			"slug": slug.current,
-			"imageUrl": image.asset->url,
+			"imageUrl": featuredImage.asset->url,
 			"publishedAt": coalesce(date, publishedAt),
 			"type": _type
 		}
