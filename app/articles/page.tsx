@@ -4,8 +4,20 @@ import { client } from "@/sanity/lib/client";
 import { ARTICLES_QUERY, ARTICLES_COUNT_QUERY } from "@/sanity/lib/queries";
 import { Sidebar } from "@/components/common/Sidebar";
 import { Article } from "@/lib/types";
+import type { Metadata } from "next";
 
-export const revalidate = 60;
+export const revalidate = 3600;
+
+export const metadata: Metadata = {
+	title: "Articles",
+	description: "Insightful articles on faith, theology, and spiritual life from the Spiritans Sound community.",
+	openGraph: {
+		title: "Articles | Spiritans Sound",
+		description: "Insightful articles on faith, theology, and spiritual life from the Spiritans Sound community.",
+		images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
+	},
+	twitter: { card: "summary_large_image" },
+};
 
 const ARTICLES_PER_PAGE = 9;
 const MAX_PAGE_BUTTONS = 5;
@@ -79,6 +91,7 @@ export default async function ArticlesPage({ searchParams }: { searchParams: Pro
 														src={article.imageUrl}
 														alt={article.title}
 														fill
+														sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 														className="object-cover"
 													/>
 												</div>

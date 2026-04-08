@@ -3,8 +3,29 @@ import { client } from "@/sanity/lib/client";
 import { SINGLE_MUSIC_QUERY } from "@/sanity/lib/queries";
 import { PortableText } from "@portabletext/react";
 import { Sidebar } from "@/components/common/Sidebar"; // Import the new Sidebar component
+import type { Metadata } from "next";
 
-export const revalidate = 60;
+export const revalidate = 3600;
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const doc = await client.fetch(SINGLE_MUSIC_QUERY, { slug });
+    if (!doc) return {};
+    const title = doc.title;
+    const description = doc.excerpt || (doc.artist ? `By ${doc.artist}` : "");
+    const imageUrl = doc.imageUrl;
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            type: "article",
+            images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630, alt: title }] : [],
+        },
+        twitter: { card: "summary_large_image", title, description, images: imageUrl ? [imageUrl] : [] },
+    };
+}
 
 interface Music {
     _id: string;

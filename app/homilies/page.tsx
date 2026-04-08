@@ -3,8 +3,20 @@ import Image from "next/image";
 import { client } from "@/sanity/lib/client";
 import { HOMILIES_QUERY, HOMILIES_COUNT_QUERY } from "@/sanity/lib/queries";
 import { Sidebar } from "@/components/common/Sidebar";
+import type { Metadata } from "next";
 
-export const revalidate = 60;
+export const revalidate = 3600;
+
+export const metadata: Metadata = {
+	title: "Homilies & Reflections",
+	description: "Explore our collection of homilies and reflections on the Word of God.",
+	openGraph: {
+		title: "Homilies & Reflections | Spiritans Sound",
+		description: "Explore our collection of homilies and reflections on the Word of God.",
+		images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
+	},
+	twitter: { card: "summary_large_image" },
+};
 
 const HOMILIES_PER_PAGE = 9;
 const MAX_PAGE_BUTTONS = 5;
@@ -123,6 +135,7 @@ export default async function HomiliesPage({ searchParams }: HomiliesPageProps) 
 															src={homily.imageUrl}
 															alt={homily.title}
 															fill
+															sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 															className="object-cover"
 														/>
 													</div>

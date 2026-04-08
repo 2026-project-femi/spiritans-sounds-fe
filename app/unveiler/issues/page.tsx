@@ -1,8 +1,20 @@
 import { client } from "@/sanity/lib/client";
 import { MAGAZINE_ISSUES_QUERY } from "@/sanity/lib/queries";
 import { IssueCard } from "@/components/magazine/IssueCard";
+import type { Metadata } from "next";
 
-export const revalidate = 60;
+export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  title: "Treasures Unveiler Magazine",
+  description: "Every issue, a new treasure. Browse all issues of the Treasures Unveiler Magazine.",
+  openGraph: {
+    title: "Treasures Unveiler Magazine | Spiritans Sound",
+    description: "Every issue, a new treasure. Browse all issues of the Treasures Unveiler Magazine.",
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
+  },
+  twitter: { card: "summary_large_image" },
+};
 
 interface MagazineIssue {
   _id: string;

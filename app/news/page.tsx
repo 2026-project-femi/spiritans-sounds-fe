@@ -4,8 +4,20 @@ import { client } from "@/sanity/lib/client";
 import { EVENTS_QUERY, EVENTS_COUNT_QUERY } from "@/sanity/lib/queries"; // Import EVENTS_COUNT_QUERY
 import { Sidebar } from "@/components/common/Sidebar";
 import { EventItem } from "@/lib/types";
+import type { Metadata } from "next";
 
-export const revalidate = 60;
+export const revalidate = 3600;
+
+export const metadata: Metadata = {
+	title: "News & Events",
+	description: "Stay updated with the latest news and upcoming events from Spiritans Sound.",
+	openGraph: {
+		title: "News & Events | Spiritans Sound",
+		description: "Stay updated with the latest news and upcoming events from Spiritans Sound.",
+		images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
+	},
+	twitter: { card: "summary_large_image" },
+};
 
 const EVENTS_PER_PAGE = 9;
 const MAX_PAGE_BUTTONS = 5;
@@ -79,6 +91,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
 														src={event.imageUrl}
 														alt={event.title}
 														fill
+														sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 														className="object-cover"
 													/>
 												</div>

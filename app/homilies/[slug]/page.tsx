@@ -6,8 +6,29 @@ import { portableTextComponents, YouTubeEmbed } from "@/components/PortableTextC
 import { Sidebar } from "@/components/common/Sidebar"; // Import the new Sidebar component
 import Comments from "@/components/Comments";
 import { Comment } from "@/lib/types";
+import type { Metadata } from "next";
 
-export const revalidate = 60;
+export const revalidate = 3600;
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const doc = await client.fetch(HOMILY_QUERY, { slug });
+    if (!doc) return {};
+    const title = doc.seo?.metaTitle || doc.title;
+    const description = doc.seo?.metaDescription || doc.excerpt || "";
+    const imageUrl = doc.seo?.ogImage?.asset?.url || doc.imageUrl;
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            type: "article",
+            images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630, alt: title }] : [],
+        },
+        twitter: { card: "summary_large_image", title, description, images: imageUrl ? [imageUrl] : [] },
+    };
+}
 
 interface Homily {
     _id: string;

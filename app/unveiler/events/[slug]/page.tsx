@@ -5,8 +5,29 @@ import Link from "next/link";
 import { PortableText } from "@portabletext/react";
 import { portableTextComponents, YouTubeEmbed } from "@/components/PortableTextComponents";
 import { ArrowLeft, CalendarDays, MapPin, Clock } from "lucide-react";
+import type { Metadata } from "next";
 
-export const revalidate = 60;
+export const revalidate = 3600;
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const doc = await client.fetch(EVENT_QUERY, { slug });
+  if (!doc) return {};
+  const title = doc.title;
+  const description = doc.excerpt || doc.description || "";
+  const imageUrl = doc.imageUrl;
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630, alt: title }] : [],
+    },
+    twitter: { card: "summary_large_image", title, description, images: imageUrl ? [imageUrl] : [] },
+  };
+}
 
 interface Event {
   _id: string;

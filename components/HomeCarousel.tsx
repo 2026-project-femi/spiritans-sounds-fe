@@ -32,6 +32,7 @@ export function HomeCarousel({ images }: HomeCarouselProps) {
 								alt={`Slide ${index + 1}`}
 								fill
 								priority={index === 0}
+								sizes="(max-width: 1024px) 100vw, 42vw"
 								className="w-full h-full object-cover  opacity-80  hover:scale-105 transition-all duration-700"
 							/>
 						</div>

@@ -43,7 +43,7 @@ export const portableTextComponents: PortableTextComponents = {
   types: {
     image: ({ value }: { value: { asset?: object; alt?: string; caption?: string; link?: string } }) => {
       if (!value?.asset) return null;
-      const imgUrl = urlFor(value.asset).width(900).fit("max").auto("format").url();
+      const imgUrl = urlFor(value.asset).url();
       const img = (
         <figure className="my-8">
           <div className="overflow-hidden rounded-xl">

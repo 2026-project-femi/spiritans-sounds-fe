@@ -2,8 +2,20 @@ import { client } from "@/sanity/lib/client";
 import { PUBLICATIONS_QUERY } from "@/sanity/lib/queries";
 import { BookCard } from "@/components/magazine/BookCard";
 import { ExternalLink } from "lucide-react";
+import type { Metadata } from "next";
 
-export const revalidate = 60;
+export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  title: "Books & Publications",
+  description: "Faith-rooted books and publications from Treasures Unveiler — resources for young people, ministers, and all who seek.",
+  openGraph: {
+    title: "Books & Publications | Spiritans Sound",
+    description: "Faith-rooted books and publications from Treasures Unveiler — resources for young people, ministers, and all who seek.",
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
+  },
+  twitter: { card: "summary_large_image" },
+};
 
 interface Book {
   _id: string;

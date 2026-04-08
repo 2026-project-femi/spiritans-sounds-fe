@@ -3,7 +3,7 @@ import Image from "next/image";
 import { client } from "@/sanity/lib/client";
 import { Sidebar } from "@/components/common/Sidebar";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 const RESULTS_PER_PAGE = 10;
 

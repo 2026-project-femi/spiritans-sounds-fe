@@ -9,7 +9,7 @@ import { getSidebarData } from "@/lib/utils";
 import { HomeData } from "@/lib/types";
 import { HomeFAQ } from "@/components/HomeFAQ";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 const HomePage: React.FC = async () => {
 	const data: HomeData = await client.fetch(HOME_QUERY);
@@ -81,6 +81,7 @@ const HomePage: React.FC = async () => {
 															src={post.imageUrl}
 															alt={post.title}
 															fill
+															sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 															className="w-full h-full object-cover   opacity-80 hover:scale-105 transition-all"
 														/>
 													)}
@@ -164,6 +165,7 @@ const HomePage: React.FC = async () => {
 															src={homily.imageUrl}
 															alt={homily.title}
 															fill
+															sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 															className="w-full h-full object-cover   opacity-80 hover:scale-105 transition-all"
 														/>
 													)}
@@ -224,6 +226,7 @@ const HomePage: React.FC = async () => {
 															src={prayer.imageUrl}
 															alt={prayer.title}
 															fill
+															sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 															className="w-full h-full object-cover   opacity-80 hover:scale-105 transition-all"
 														/>
 													)}
@@ -277,6 +280,7 @@ const HomePage: React.FC = async () => {
 															src={track.imageUrl}
 															alt={track.title}
 															fill
+															sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 															className="w-full h-full object-cover opacity-80 hover:scale-105 transition-all"
 														/>
 													)}

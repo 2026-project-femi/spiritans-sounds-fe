@@ -5,8 +5,29 @@ import { PortableText } from "@portabletext/react";
 import { Sidebar } from "@/components/common/Sidebar"; // Import the new Sidebar component
 import { Prayer } from "@/lib/types";
 import Comments from "@/components/Comments";
+import type { Metadata } from "next";
 
-export const revalidate = 60;
+export const revalidate = 3600;
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const doc = await client.fetch(PRAYER_QUERY, { slug });
+    if (!doc) return {};
+    const title = doc.title;
+    const description = doc.excerpt || (doc.category ? `${doc.category} — Spiritans Sound` : "");
+    const imageUrl = doc.imageUrl;
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            type: "article",
+            images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630, alt: title }] : [],
+        },
+        twitter: { card: "summary_large_image", title, description, images: imageUrl ? [imageUrl] : [] },
+    };
+}
 
 export default async function SinglePrayerPage({ params }: { params: Promise<{ slug: string }> }) {
 	const resolvedParams = await params;

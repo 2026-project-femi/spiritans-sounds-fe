@@ -20,8 +20,20 @@ import {
   Award,
 } from "lucide-react";
 import { UnveilerNewsletter } from "@/components/UnveilerNewsletter";
+import type { Metadata } from "next";
 
-export const revalidate = 60;
+export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  title: "Unveiler Feed",
+  description: "The pulse of the Treasures Unveiler Youth Development Foundation — news, workshops, celebrations, and missionary stories.",
+  openGraph: {
+    title: "Unveiler Feed | Spiritans Sound",
+    description: "The pulse of the Treasures Unveiler Youth Development Foundation — news, workshops, celebrations, and missionary stories.",
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
+  },
+  twitter: { card: "summary_large_image" },
+};
 
 const POSTS_PER_PAGE = 6;
 
@@ -88,6 +100,7 @@ function HeroEvent({ event, isDummy }: { event: Event; isDummy: boolean }) {
               alt={event.title}
               fill
               priority
+              sizes="(max-width: 1024px) 100vw, 60vw"
               className="object-cover group-hover:scale-105 transition-transform duration-1000"
             />
           ) : (
@@ -176,6 +189,7 @@ function EventCard({ event, isDummy }: { event: Event; isDummy: boolean }) {
             src={event.imageUrl}
             alt={event.title}
             fill
+            sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover group-hover:scale-110 transition-transform duration-700"
           />
         ) : (
@@ -265,6 +279,7 @@ function EventsSidebar({
               src={event.imageUrl}
               alt={event.title}
               fill
+              sizes="64px"
               className="object-cover group-hover:scale-110 transition-transform duration-500"
             />
           ) : (

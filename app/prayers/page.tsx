@@ -4,8 +4,20 @@ import { client } from "@/sanity/lib/client";
 import { PRAYERS_QUERY, PRAYERS_COUNT_QUERY } from "@/sanity/lib/queries"; // Import PRAYERS_COUNT_QUERY
 import { Sidebar } from "@/components/common/Sidebar";
 import { PrayerItem } from "@/lib/types";
+import type { Metadata } from "next";
 
-export const revalidate = 60;
+export const revalidate = 3600;
+
+export const metadata: Metadata = {
+	title: "Prayers & Devotionals",
+	description: "Find solace and inspiration in our collection of prayers and devotionals.",
+	openGraph: {
+		title: "Prayers & Devotionals | Spiritans Sound",
+		description: "Find solace and inspiration in our collection of prayers and devotionals.",
+		images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
+	},
+	twitter: { card: "summary_large_image" },
+};
 
 const PRAYERS_PER_PAGE = 9;
 const MAX_PAGE_BUTTONS = 5;
@@ -92,6 +104,7 @@ export default async function PrayersPage({ searchParams }: { searchParams: Prom
 														src={prayer.imageUrl}
 														alt={prayer.title}
 														fill
+														sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 														className="object-cover"
 													/>
 												</div>

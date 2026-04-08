@@ -94,6 +94,7 @@ export const HOMILY_QUERY = `
   seo,
   "imageUrl": featuredImage.asset->url,
   publishedAt,
+  excerpt,
   "comments": *[_type == "comment" && post._ref == ^._id && approved == true] | order(_createdAt desc){
       _id,
       name,
@@ -130,6 +131,8 @@ export const ARTICLE_QUERY = `
   author,
   "imageUrl": featuredImage.asset->url,
   publishedAt,
+  excerpt,
+  seo,
   youtubeUrl,
   content,
   "comments": *[_type == "comment" && post._ref == ^._id && approved == true] | order(_createdAt desc){
@@ -166,6 +169,7 @@ export const PRAYER_QUERY = `
   title,
   "slug": slug.current,
   category,
+  excerpt,
   "imageUrl": featuredImage.asset->url,
   content,
   "comments": *[_type == "comment" && post._ref == ^._id && approved == true] | order(_createdAt desc){
@@ -203,6 +207,7 @@ export const SINGLE_MUSIC_QUERY = `
   title,
   "slug": slug.current,
   artist,
+  excerpt,
   "audioUrl": audio.asset->url,
   lyrics,
   "imageUrl": featuredImage.asset->url,

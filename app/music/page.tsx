@@ -4,8 +4,20 @@ import { client } from "@/sanity/lib/client";
 import { MUSIC_QUERY, MUSIC_COUNT_QUERY } from "@/sanity/lib/queries";
 import { Sidebar } from "@/components/common/Sidebar";
 import { MusicItem } from "@/lib/types";
+import type { Metadata } from "next";
 
-export const revalidate = 60;
+export const revalidate = 3600;
+
+export const metadata: Metadata = {
+	title: "Music & Worship",
+	description: "Sacred music and worship recordings crafted to lift the spirit and glorify God.",
+	openGraph: {
+		title: "Music & Worship | Spiritans Sound",
+		description: "Sacred music and worship recordings crafted to lift the spirit and glorify God.",
+		images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
+	},
+	twitter: { card: "summary_large_image" },
+};
 
 const MUSIC_PER_PAGE = 9;
 const MAX_PAGE_BUTTONS = 5;
@@ -122,6 +134,7 @@ export default async function MusicPage({
 													src={music.imageUrl}
 													alt={music.title}
 													fill
+													sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 													className="object-cover transition-transform duration-500 group-hover:scale-105"
 												/>
 											) : (

@@ -3,7 +3,7 @@ import { RADIO_QUERY } from "@/sanity/lib/queries";
 import { Clock, Music, Mic } from "lucide-react";
 import { RadioPlayer } from "./RadioPlayer";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 const defaultSchedule = [
   { time: "6:00 AM",  endTime: "6:30 AM",  program: "Morning Offering",                        host: "Prayer Team",                   type: "Prayer" },
