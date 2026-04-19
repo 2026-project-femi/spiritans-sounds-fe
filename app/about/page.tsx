@@ -144,8 +144,8 @@ export default function AboutPage() {
 							</Link>
 						</p>
 						<Link
-							href="/unveiler/articles"
-							className="inline-block border text-brand-primary px-8 py-3 text-sm uppercase tracking-widest text-brand-primary hover:bg-brand-primary hover:text-white transition-gentle">
+							href="/unveiler/issues"
+							className="inline-block border  px-8 py-3 text-sm uppercase tracking-widest text-brand-primary hover:bg-brand-primary hover:text-white transition-gentle">
 							Explore the Journal
 						</Link>
 					</div>
