@@ -6,13 +6,13 @@ import Autoplay from "embla-carousel-autoplay";
 
 export default function AboutPage() {
 	const heroSlides = [
-		{
-			image: { asset: { url: "/assets/about-hero-1.jpg" } },
-			title: "About Spiritual Sound",
-			description: "Journey with us through faith, music, and community.",
-			ctaText: "Learn More",
-			ctaLink: "/about#mission",
-		},
+		// {
+		// 	image: { asset: { url: "/assets/about-hero-1.jpg" } },
+		// 	title: "About Spiritual Sound",
+		// 	description: "Journey with us through faith, music, and community.",
+		// 	ctaText: "Learn More",
+		// 	ctaLink: "/about#mission",
+		// },
 		{
 			image: { asset: { url: "/assets/team/about-hero-7.jpeg" } },
 			title: "Our Mission",
