@@ -1,8 +1,37 @@
 "use client";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { User } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+
+const FallbackImage = ({ src, alt, width, height, className }: any) => {
+	const [error, setError] = useState(false);
+	const isInvalidSrc = !src || src === "/assets/team/" || src === "";
+
+	if (error || isInvalidSrc) {
+		return (
+			<div
+				style={{ width, height }}
+				className={`flex items-center justify-center bg-gray-200/50 text-gray-400 ${className}`}
+			>
+				<User size={64} className="opacity-50" />
+			</div>
+		);
+	}
+
+	return (
+		<Image
+			src={src}
+			alt={alt}
+			width={width}
+			height={height}
+			className={className}
+			onError={() => setError(true)}
+		/>
+	);
+};
 
 export default function AboutPage() {
 	const heroSlides = [
@@ -184,9 +213,7 @@ export default function AboutPage() {
 				<h2 className="serif text-3xl md:text-4xl text-center mb-16">Those Who Guide the Vision</h2>
 
 				<p className="text-lg text-muted-foreground leading-relaxed mb-8">
-					Joining our community offers a transformative experience that goes beyond mere membership. It’s an opportunity
-					to become part of a supportive and nurturing environment where your spiritual, emotional, and personal growth
-					is prioritized. Here are some compelling reasons to join us:
+					Joining our community offers a transformative experience that goes beyond mere membership. It’s an opportunity to become part of a supportive and nurturing environment where your spiritual, emotional, and personal growth is prioritized.
 				</p>
 
 				<div className="grid md:grid-cols-3 gap-12">
@@ -197,12 +224,44 @@ export default function AboutPage() {
 							image: "/assets/team/father-femi.jpeg",
 						},
 						{
+							name: "Mr Martin Eichie",
+							role: "Coordinator",
+							image: "/assets/team/MrMart.jpeg",
+						},
+						{
+							name: "Rev Sister Rosemary Etim, DHS",
+							role: "Assistant Coordinator",
+							image: "/assets/team/RevSr_Etim_Rosemary_DHS_Assistant_Coordinator.resized.jpeg",
+						},
+						{
 							name: "Laura Nnana",
 							role: "Secretary",
 							image: "/assets/team/LauraNnana-secretary.jpeg",
-						},
+						}
+						
+						
+					].map((member) => (
+						<div key={member.name} className="text-center">
+							<FallbackImage
+								src={member.image}
+								alt={member.name}
+								width={300}
+								height={350}
+								className="mx-auto mb-6 object-cover"
+							/>
+
+							<h3 className="serif text-xl mb-2">{member.name}</h3>
+
+							<p className="text-sm uppercase tracking-widest text-brand-primary">{member.role}</p>
+						</div>
+					))}
+				</div>
+
+				<h2 className="serif text-3xl md:text-4xl text-center mb-16 pt-16">Meet our Homilists/Columnists</h2>
+				<div className="grid md:grid-cols-3 gap-12">
+					{[
 						{
-							name: "Rev. Fr. Onyilo Willams",
+							name: "Rev. Fr. Williams Onyilo, CSSp",
 							role: "Homilist & Columnist",
 							image: "/assets/team/Rev Fr. Onyilo Willams- Homilist & Columnist.jpg",
 						},
@@ -213,23 +272,35 @@ export default function AboutPage() {
 						},
 
 						{
-							name: "Rev. Fr. Jude Ekeshiri CSSp",
+							name: "Rev. Fr Jude Emeka Ekeshiri CSSp",
 							role: "Homilist & Columnist",
 							image: "/assets/team/Rev-Fr-Jude-Ekeshiri-CSSp-Homilist &Columnist.jpg",
 						},
+
+
 						{
-							name: "Rev Sister Rosemary Etim, DHS",
-							role: "Assistant Coordinator",
-							image: "/assets/team/RevSr_Etim_Rosemary_DHS_Assistant_Coordinator.resized.jpeg",
+							name: "Rev. Fr Yai Felix CSSp",
+							role: "Homilist & Columnist",
+							image: "/assets/team/",
 						},
 						{
-							name: "Mr Martin Eichie",
-							role: "Coordinator",
-							image: "/assets/team/MrMart.jpeg",
+							name: "Rev. Fr Aghidi Emmanuel CSSp",
+							role: "Homilist & Columnist",
+							image: "/assets/team/",
 						},
+						{
+							name: "Rev. Fr. Achilleus Ile Adole CSSp",
+							role: "Homilist & Columnist",
+							image: "/assets/team/",
+						},
+						{
+							name: "Rev. Fr Joachim Uzochukwu CSSp",
+							role: "Homilist & Columnist",
+							image: "/assets/team/"
+						}
 					].map((member) => (
 						<div key={member.name} className="text-center">
-							<Image
+							<FallbackImage
 								src={member.image}
 								alt={member.name}
 								width={300}
@@ -244,6 +315,10 @@ export default function AboutPage() {
 					))}
 				</div>
 			</section>
+			<p className="text-sm uppercase tracking-widest text-brand-primary">
+
+				Want to contribute to our collection of homilies and enriching reflections? Get in touch with us.
+			</p>
 		</main>
 	);
 }

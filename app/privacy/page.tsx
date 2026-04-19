@@ -6,14 +6,14 @@ export default function PrivacyPolicyPage() {
 				{/* Title block */}
 				<h1 className="text-4xl font-bold text-gray-900 mb-2">Privacy Policy</h1>
 				<p className="text-sm text-gray-400 mb-10 pb-8 border-b border-gray-200">
-					Spiritans Sound Global LTD &mdash; Effective 2025
+					Spiritans sound Outreach &mdash; Effective 2025
 				</p>
 
 				{/* Introduction */}
 				<section className="mb-10">
 					<h2 className="text-xl font-semibold text-gray-900 mb-3">Introduction</h2>
 					<p className="text-gray-600 leading-relaxed">
-						Spiritans Sound Global LTD respects your privacy and is committed to protecting your personal data.
+						Spiritans sound Outreach respects your privacy and is committed to protecting your personal data.
 						This Privacy Policy explains how we collect, use, and safeguard your information when you visit our
 						website.
 					</p>
@@ -81,10 +81,20 @@ export default function PrivacyPolicyPage() {
 
 				{/* Cookies */}
 				<section className="mb-10">
-					<h2 className="text-xl font-semibold text-gray-900 mb-3">Cookies</h2>
+					<h2 className="text-xl font-semibold text-gray-900 mb-3">Advertising and Third-Party Cookies</h2>
 					<p className="text-gray-600 leading-relaxed">
 						Our website uses cookies to enhance your experience. You can choose to disable cookies through your
 						browser settings, but this may affect your ability to use certain features of our site.
+					</p>
+					<p className="text-gray-600 leading-relaxed">
+						We may use third-party advertising services, including Google AdSense, to serve advertisements on our website.
+					</p>
+					<p className="text-gray-600 leading-relaxed">
+						Google and other third-party vendors use cookies (such as the DoubleClick cookie) to serve ads based on a user’s prior visits to this website or other websites.
+					</p>
+					<p className="text-gray-600 leading-relaxed">
+						These cookies enable the display of advertisements that are relevant to users’ interests.
+Users may opt out of personalized advertising by visiting Google Ads Settings. Alternatively, users can opt out of some third-party vendors’ uses of cookies for personalized advertising by visiting www.aboutads.info
 					</p>
 				</section>
 
@@ -103,8 +113,8 @@ export default function PrivacyPolicyPage() {
 					<p className="text-gray-600 leading-relaxed">
 						You have the right to access, correct, or delete your personal information. To exercise these rights,
 						please contact us at{" "}
-						<a href="mailto:support@spiritanssound.com" className="text-blue-600 hover:underline">
-							support@spiritanssound.com
+						<a href="mailto:info@spiritanssound.com" className="text-blue-600 hover:underline">
+							info@spiritanssound.com
 						</a>
 						.
 					</p>
@@ -124,8 +134,8 @@ export default function PrivacyPolicyPage() {
 					<h2 className="text-xl font-semibold text-gray-900 mb-3">Contact Us</h2>
 					<p className="text-gray-600 leading-relaxed">
 						If you have any questions or concerns about this Privacy Policy, please contact us at{" "}
-						<a href="mailto:support@spiritanssound.com" className="text-blue-600 hover:underline">
-							support@spiritanssound.com
+						<a href="mailto:info@spiritanssound.com" className="text-blue-600 hover:underline">
+							info@spiritanssound.com
 						</a>
 						.
 					</p>

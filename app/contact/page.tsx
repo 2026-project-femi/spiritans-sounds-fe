@@ -45,18 +45,18 @@ export default function ContactPage() {
 	return (
 		<section id="contact" className="relative pt-20">
 			{/* Hero banner */}
-			<div className="relative bg-[#1a1a1a] py-20 text-center text-white pt-30">
+			<div className=" relative bg-[#1a1a1a] py-20 text-center text-white pt-30">
 				<motion.h1
 					initial={{ opacity: 0, y: 30 }}
 					whileInView={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8 }}
 					viewport={{ once: true }}
-					className="text-4xl md:text-5xl font-extrabold">
+					className="text-4xl md:text-5xl font-extrabold ">
 					Contact Us
 				</motion.h1>
-				<p className="mt-3 text-red-100 max-w-2xl mx-auto italic font-light">
-					"Silence is the root of everything. If you spiral into its center, you will find the source of your light." — Thomas Merton
-				</p>
+				<p className="mt-3  text-red-100 max-w-xl mx-auto italic font-light">
+					We would love to hear from you.	</p>
+					<p className="max-w-3xl mx-auto text-xl">Whether you have an inquiry, would like to collaborate, participate in our outreach programs, or simply request prayers, feel free to reach out to us through any of the channels below.</p>
 			</div>
 
 			{/* Main section */}

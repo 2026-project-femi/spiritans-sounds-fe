@@ -7,7 +7,7 @@ export default function TermsAndConditionsPage() {
 				<h1 className="text-4xl font-bold text-gray-900 mb-2">Terms of Service</h1>
 				<p className="text-sm text-gray-400 mb-4">Last updated: 3rd July, 2024</p>
 				<p className="text-gray-600 leading-relaxed mb-10 pb-8 border-b border-gray-200">
-					Welcome to Spiritans Sound Global LTD! By accessing or using our website (spiritanssound.com), you agree to be
+					Welcome to Spiritans sound Outreach! By accessing or using our website (spiritanssound.com), you agree to be
 					bound by the following terms of service and conditions (the "Terms"). Please read them carefully.
 				</p>
 
@@ -15,7 +15,7 @@ export default function TermsAndConditionsPage() {
 				<section className="mb-10">
 					<h2 className="text-xl font-semibold text-gray-900 mb-3">1. Acceptance of Terms</h2>
 					<p className="text-gray-600 leading-relaxed">
-						By using Spiritans Sound Global LTD, you agree to comply with and be bound by these Terms. If you do
+						By using Spiritans sound Outreach, you agree to comply with and be bound by these Terms. If you do
 						not agree to these Terms, please do not use our website.
 					</p>
 				</section>
@@ -38,7 +38,7 @@ export default function TermsAndConditionsPage() {
 							<span className="mt-2 w-1.5 h-1.5 rounded-full bg-gray-500 shrink-0" />
 							<p>
 								<span className="font-medium text-gray-800">Eligibility: </span>
-								You must be at least 13 years old to use Spiritans Sound Global LTD. By using the
+								You must be at least 13 years old to use Spiritans sound Outreach. By using the
 								website, you represent and warrant that you are at least 13 years old.
 							</p>
 						</li>
@@ -88,8 +88,8 @@ export default function TermsAndConditionsPage() {
 				<section className="mb-10">
 					<h2 className="text-xl font-semibold text-gray-900 mb-3">5. Intellectual Property</h2>
 					<p className="text-gray-600 leading-relaxed">
-						All content and materials on Spiritans Sound Global LTD, including but not limited to text, graphics,
-						logos, and software, are the property of Spiritans Sound Global LTD or its content suppliers and are
+						All content and materials on Spiritans sound Outreach, including but not limited to text, graphics,
+						logos, and software, are the property of Spiritans sound Outreach or its content suppliers and are
 						protected by intellectual property laws. You may not use, reproduce, or distribute any content from
 						the website without our prior written permission.
 					</p>
@@ -111,7 +111,7 @@ export default function TermsAndConditionsPage() {
 				<section className="mb-10">
 					<h2 className="text-xl font-semibold text-gray-900 mb-3">7. Limitation of Liability</h2>
 					<p className="text-gray-600 leading-relaxed">
-						Spiritans Sound Global LTD is provided on an "as is" and "as available" basis. We make no warranties
+						Spiritans sound Outreach is provided on an "as is" and "as available" basis. We make no warranties
 						or representations about the accuracy or completeness of the website's content or the content of any
 						sites linked to this site. To the fullest extent permitted by law, we disclaim all warranties, express
 						or implied, including, but not limited to, implied warranties of merchantability and fitness for a
@@ -123,7 +123,7 @@ export default function TermsAndConditionsPage() {
 				<section className="mb-10">
 					<h2 className="text-xl font-semibold text-gray-900 mb-3">8. Indemnification</h2>
 					<p className="text-gray-600 leading-relaxed">
-						You agree to indemnify, defend, and hold harmless Spiritans Sound Global LTD, its affiliates,
+						You agree to indemnify, defend, and hold harmless Spiritans sound Outreach, its affiliates,
 						officers, directors, employees, and agents from and against any and all claims, liabilities, damages,
 						losses, or expenses arising out of or in any way connected with your access to or use of the website.
 					</p>
@@ -133,7 +133,7 @@ export default function TermsAndConditionsPage() {
 				<section className="mb-10">
 					<h2 className="text-xl font-semibold text-gray-900 mb-3">9. Termination</h2>
 					<p className="text-gray-600 leading-relaxed">
-						We reserve the right to terminate or suspend your account and access to Spiritans Sound Global LTD at
+						We reserve the right to terminate or suspend your account and access to Spiritans sound Outreach at
 						any time, without prior notice or liability, for any reason, including if you breach these Terms.
 					</p>
 				</section>
