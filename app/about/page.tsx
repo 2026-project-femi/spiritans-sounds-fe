@@ -89,12 +89,13 @@ export default function AboutPage() {
 			<section className="max-w-6xl mx-auto px-6 md:px-12 pt-12">
 				<p className="text-xs tracking-[0.3em] uppercase text-brand-primary mb-6">Our Story</p>
 
-				<h1 className="serif text-4xl md:text-6xl leading-tight mb-8">The Vision & The People</h1>
+				<h1 className="serif text-4xl md:text-6xl leading-tight mb-8">About Spiritans Sound Outreach</h1>
 
 				<p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
-					Spiritans Sound Outreach, founded on December 1st, 2018, by Rev. Fr. Oluwafemi Victor Orilua CSSp, operates as
-					a dynamic arm of the youth apostolate within the Holy Ghost Fathers and Brothers, Province of Nigeria,
-					Southwest.
+					Spiritans Sound Outreach is a faith-based initiative dedicated to evangelization and the holistic development of young people through creative expression. It was founded on December 1st, 2018, by Rev. Fr. Oluwafemi Victor Orilua CSSp, as a dynamic arm of the youth apostolate within the Holy Ghost Fathers and Brothers, Province of Nigeria, Southwest.
+				</p>
+				<p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
+					Rooted in the spirituality and missionary vision of the Congregation of the Holy Spirit (Spiritans), the outreach seeks to proclaim the Gospel while nurturing talents in music, art, IT, drama, and writing and other fields. It provides a platform where faith and creativity meet, forming individuals to become faith-driven leaders in society.
 				</p>
 			</section>
 
@@ -105,15 +106,12 @@ export default function AboutPage() {
 				<h2 className="serif text-3xl md:text-4xl mb-8">Our Mission and Vision</h2>
 
 				<p className="text-lg leading-relaxed text-muted-foreground mb-6">
-					At Spiritans Sound Outreach, our mission is twofold: to proclaim the message of faith and to nurture the
-					creative talents of young individuals in the realms of music, art, and writing. We envision a community where
-					spirituality and artistic expression harmoniously blend, inspiring our members to embody faith-driven
-					leadership through their creative pursuits.
+					Our mission is twofold: to spread the message of faith and to cultivate the creative potential of young people. We envision a community where spirituality and artistic expression harmoniously blend, inspiring personal growth, peace, and collective transformation.
+
 				</p>
 
 				<p className="text-lg leading-relaxed text-muted-foreground">
-					We envision a world where divine wisdom is accessible to all, fostering personal growth, peace, and collective
-					harmony.
+					We also envision a world where divine wisdom is accessible to all, fostering deeper understanding, unity, and a renewed sense of purpose.
 				</p>
 			</section>
 
@@ -126,16 +124,15 @@ export default function AboutPage() {
 						<p className="text-xs tracking-[0.3em] uppercase text-brand-primary mb-4">Treasures Unveiler</p>
 						<h2 className="serif text-3xl md:text-4xl mb-6">Our Magazine:</h2>
 						<p className="text-lg text-muted-foreground leading-relaxed mb-8">
-							“Treasures Unveiler” (TU) magazine, launched in December 2022, stands as a beacon for emerging
-							artists, providing them with a platform to showcase their talents and offering indispensable
-							resources for their development. With a primary focus on music, drama, arts, and crafts, TU
-							magazine also serves as a conduit for news within the Spiritans Congregation, amplifying the
-							voices and achievements of our outreach activities.
+							As part of this vision, Treasures Unveiler (TU) magazine was launched in December 2022. The magazine serves as a platform for emerging talents, especially in music, drama, arts, and crafts, while also providing valuable resources for their growth and development.
 						</p>
-						Beyond artistic expression, TU magazine engages in meaningful dialogue by featuring interviews with
-						esteemed figures from both clergy and laity. These conversations not only highlight insights from
-						within the Catholic Church but also explore perspectives on broader global issues, enriching our
-						readers’ understanding of faith and society.
+						<p className="text-lg text-muted-foreground leading-relaxed mb-8">
+							In addition, the magazine shares news and updates from the Spiritans Congregation and the outreach community, highlighting ongoing activities and impact.
+						</p>
+						<p className="text-lg text-muted-foreground leading-relaxed mb-8">
+
+							Through interviews with both clergy and laity, Treasures Unveiler fosters meaningful dialogue on faith, creativity, and contemporary societal issues, offering readers a richer perspective on life and mission.
+						</p>
 						<p className="text-lg text-muted-foreground leading-relaxed mb-8">
 							Explore more about Spiritans Sound Outreach and discover the vibrant community of creative
 							expression at{" "}

@@ -73,8 +73,8 @@ export default function ContactPage() {
 							<Phone className="w-6 h-6 text-red-600" />
 							<div>
 								<div className="font-semibold">Connect with us</div>
-								<a href="https://wa.me/447576543367" target="_blank" rel="noopener noreferrer" className="hover:text-red-600">
-									+44 7576 543367 (WhatsApp)
+								<a href="https://wa.me/447480120723" target="_blank" rel="noopener noreferrer" className="hover:text-red-600">
+									+44 7480 120723 (WhatsApp)
 								</a>
 							</div>
 						</li>

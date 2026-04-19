@@ -155,8 +155,8 @@ export default function TermsAndConditionsPage() {
 					</p>
 					<p className="text-gray-600">
 						Email:{" "}
-						<a href="mailto:contact@spiritanssound.com" className="text-blue-600 hover:underline">
-							contact@spiritanssound.com
+						<a href="mailto:info@spiritanssound.com" className="text-blue-600 hover:underline">
+							info@spiritanssound.com
 						</a>
 					</p>
 				</section>
