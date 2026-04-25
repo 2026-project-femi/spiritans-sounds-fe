@@ -3,7 +3,8 @@ import { RADIO_QUERY } from "@/sanity/lib/queries";
 import { Clock, Music, Mic } from "lucide-react";
 import { RadioPlayer } from "./RadioPlayer";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const defaultSchedule = [
   { time: "6:00 AM",  endTime: "6:30 AM",  program: "Morning Offering",                        host: "Prayer Team",                   type: "Prayer" },
@@ -30,7 +31,7 @@ const typeColors: Record<string, string> = {
 export default async function RadioPage() {
   let radioData;
   try {
-    radioData = await client.fetch(RADIO_QUERY);
+    radioData = await client.fetch(RADIO_QUERY, {}, { next: { revalidate: 0 } });
   } catch (error) {
     console.error("Failed to fetch radio data:", error);
   }
