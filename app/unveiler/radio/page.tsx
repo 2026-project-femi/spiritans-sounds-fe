@@ -40,8 +40,8 @@ export default async function RadioPage() {
   const streamUrl = radioData?.streamUrl;
   const schedule = (radioData?.schedule && radioData.schedule.length > 0) ? radioData.schedule : defaultSchedule;
 
-  const currentHour = new Date().getHours();
-
+  const now = new Date();
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
   return (
     <main className="pb-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-linear-to-b from-red-950/20 via-[#0c0c0e] to-[#0c0c0e] z-0 pointer-events-none" />
@@ -80,20 +80,27 @@ export default async function RadioPage() {
 
               <div className="space-y-3">
                 {schedule.map((item: { time: string; endTime?: string; program: string; host?: string; type?: string; day?: string }, i: number) => {
-                  const timeStr = item.time || "";
-                  const itemHour = parseInt(timeStr.split(":")[0]) || 0;
-                  const isPM = timeStr.includes("PM");
-                  const hour24 = isPM && itemHour !== 12 ? itemHour + 12 : (itemHour === 12 && !isPM ? 0 : itemHour);
+                  const parseTimeToMinutes = (tStr: string) => {
+                    const match = tStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+                    if (match) {
+                      let h = parseInt(match[1]);
+                      const m = parseInt(match[2]);
+                      const isPMMatch = match[3].toUpperCase() === "PM";
+                      if (isPMMatch && h !== 12) h += 12;
+                      if (!isPMMatch && h === 12) h = 0;
+                      return h * 60 + m;
+                    }
+                    const itemHour = parseInt(tStr.split(":")[0]) || 0;
+                    const isPM = tStr.includes("PM");
+                    const h = isPM && itemHour !== 12 ? itemHour + 12 : (itemHour === 12 && !isPM ? 0 : itemHour);
+                    return h * 60;
+                  };
 
-                  let endHour24: number | null = null;
-                  if (item.endTime) {
-                    const endHour = parseInt(item.endTime.split(":")[0]) || 0;
-                    const endIsPM = item.endTime.includes("PM");
-                    endHour24 = endIsPM && endHour !== 12 ? endHour + 12 : (endHour === 12 && !endIsPM ? 0 : endHour);
-                  }
+                  const startMinutes = parseTimeToMinutes(item.time || "");
+                  const endMinutes = item.endTime ? parseTimeToMinutes(item.endTime) : null;
 
-                  const isCurrent = currentHour >= hour24 &&
-                    (endHour24 !== null ? currentHour < endHour24 : currentHour < hour24 + 1.5);
+                  const isCurrent = currentMinutes >= startMinutes &&
+                    (endMinutes !== null ? currentMinutes < endMinutes : currentMinutes < startMinutes + 90);
 
                   const typeColor = typeColors[item.type || "Talk"] || "text-gray-400 bg-gray-400/10 border-gray-400/20";
 
