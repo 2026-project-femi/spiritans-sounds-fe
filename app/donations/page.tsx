@@ -100,9 +100,17 @@ export default function DonatePage() {
 	};
 
 	return (
-		<main className="max-w-3xl mx-auto py-16 px-6 space-y-12">
+		<main className="max-w-3xl mx-auto py-16 px-6 space-y-12 pt-32">
 			<HeroSection />
 			<ImpactSection />
+			<div className="p-8 bg-white">
+			<blockquote className="italic text-gray-500 max-w-2xl mx-auto">
+				“Each one must give as he has decided in his heart, not reluctantly or under compulsion, for God loves a cheerful
+				giver.”
+				<br />
+				<cite className="not-italic text-sm">— 2 Corinthians 9:7</cite>
+			</blockquote>
+			</div>
 			<DonationForm
 				formData={formData}
 				isLoading={isLoading}
@@ -121,30 +129,25 @@ function HeroSection() {
 			<h1 className="text-4xl md:text-5xl font-bold text-black">Partner With Us in Spreading the Gospel</h1>
 
 			<p className="text-lg text-gray-800 max-w-xl mx-auto">
-				Every homily, reflection, and moment of worship we share is made possible by faithful supporters like you.
+				Spiritans Sound Outreach is dedicated to evangelisation, talent discovery, faith formation, and youth empowerment through music, media, reflections, workshops, and creative outreach programmes.
 			</p>
 
-			<blockquote className="italic text-gray-500 max-w-2xl mx-auto">
-				“Each one must give as he has decided in his heart, not reluctantly or under compulsion, for God loves a cheerful
-				giver.”
-				<br />
-				<cite className="not-italic text-sm">— 2 Corinthians 9:7</cite>
-			</blockquote>
+			
 		</section>
 	);
 }
 
 function ImpactSection() {
 	const impacts = [
-		"📖 Daily homilies and reflections reaching thousands",
-		"🎙 Online spiritual broadcasts and teachings",
-		"📚 Faith formation resources for all ages",
-		"🙏 Prayer support for families and communities in need",
+		"📖 Sharing homilies, reflections, and inspiring articles ",
+		"🎙 Organising workshops, broadcasts, and outreach programmes ",
+		" 🎵 Supporting young and talented creators",
+		"🙏 Reaching lives with hope, faith, and encouragement",
 	];
 
 	return (
 		<section className="bg-gradient-to-br from-gray-50 to-gray-100 p-8 rounded-2xl space-y-4">
-			<h2 className="text-2xl font-semibold text-gray-800">Your Gift Makes This Possible</h2>
+			<h2 className="text-2xl font-semibold text-gray-800">Your support helps us continue:</h2>
 
 			<ul className="space-y-3 text-gray-700">
 				{impacts.map((impact, index) => (
@@ -156,7 +159,7 @@ function ImpactSection() {
 			</ul>
 
 			<p className="italic text-gray-800 pt-2 border-t border-gray-200">
-				When you give, you are not just funding a website. You are helping someone find hope, healing, and Christ.
+				When you give, you become part of a mission that inspires and empowers lives.
 			</p>
 		</section>
 	);
