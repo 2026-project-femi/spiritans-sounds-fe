@@ -108,7 +108,7 @@ async function runMigration() {
       }
 
       await payload.create({
-        collection: 'articles',
+        collection: 'article',
         data: {
           title: article.title,
           slug: article.slug || article._id,
