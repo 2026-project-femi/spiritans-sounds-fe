@@ -2,18 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { Radio, Play, Volume2 } from "lucide-react";
+import { ScheduleItem } from "@/lib/types";
 
-export interface ScheduleItem {
-  time: string;
-  endTime?: string; // When the broadcast ends — no playback outside this range
-  program: string;
-  host?: string;
-  type?: string;
-  day?: string;
-  audioUrl?: string; // Pre-recorded source
-}
 
-export function RadioPlayer({ streamUrl, schedule }: { streamUrl?: string, schedule: ScheduleItem[] }) {
+
+export function   RadioPlayer({ streamUrl, schedule }: { streamUrl: string | null | undefined, schedule: ScheduleItem[] }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeItem, setActiveItem] = useState<ScheduleItem | null>(null);
 

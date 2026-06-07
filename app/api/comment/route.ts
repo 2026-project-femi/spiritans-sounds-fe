@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       collection: 'comments',
       data: {
         post: {relationTo: postType as PostType, value: postId},      // Payload relationship field — just pass the ID
-        postType,
+  
         name,
         email,
         comment,

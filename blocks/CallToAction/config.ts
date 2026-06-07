@@ -6,8 +6,8 @@ import {
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
+import { linkGroup } from '@/payload/fields/linkGroup'
 
-import { linkGroup } from '../../../spriitans-cms/src/fields/linkGroup'
 
 export const CallToAction: Block = {
   slug: 'cta',

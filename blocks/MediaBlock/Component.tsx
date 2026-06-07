@@ -5,7 +5,7 @@ import RichText from '@/components/RichText'
 
 import type { MediaBlock as MediaBlockProps } from '@/payload-types'
 
-import { Media } from '../../../spriitans-cms/src/components/Media'
+import { Media } from '../../components/Media'
 import { cn } from '@/payload/utilities/ui'
 
 type Props = MediaBlockProps & {

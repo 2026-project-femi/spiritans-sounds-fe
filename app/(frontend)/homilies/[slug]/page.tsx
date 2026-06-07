@@ -183,7 +183,7 @@ export default async function SingleHomilyPage({
           <div className="lg:col-span-4">
             <div className="sticky top-32 z-20">
               <Sidebar
-                categories={sidebarData.categories.map((c) => c.title)}
+                categories={sidebarData.categories.map((c) =>c)}
                 recentPosts={sidebarData.recentPosts}
               />
             </div>

@@ -68,7 +68,7 @@ export default async function SingleEventPage({ params }: { params: Promise<{ sl
             ...rawDoc,
             _id: rawDoc.id,
             imageUrl: rawDoc.featuredImage && typeof rawDoc.featuredImage === 'object' ? rawDoc.featuredImage.url : undefined,
-            body: rawDoc.body || rawDoc.content, // Map content to body if defined that way
+            body: rawDoc.body
         } as any;
     }
   } catch {

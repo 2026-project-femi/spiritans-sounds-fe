@@ -23,14 +23,14 @@ export async function POST(req: Request) {
       return Response.json({ message: "You have been unsubscribed." }, { status: 200 });
     }
 
-    if (subscriber.status === "inactive") {
+    if (subscriber.status === "unsubscribed") {
       return Response.json({ message: "You have been unsubscribed." }, { status: 200 });
     }
 
     await payload.update({
       collection: 'subscribers',
       id: subscriber.id,
-      data: { status: 'inactive' }
+      data: { status: 'unsubscribed' }
     });
 
     return Response.json({ message: "You have been unsubscribed." }, { status: 200 });

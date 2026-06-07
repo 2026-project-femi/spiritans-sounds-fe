@@ -1,4 +1,6 @@
 import { buildConfig } from 'payload'
+import { plugins as bundledPlugins } from './payload/plugins'
+
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
@@ -17,12 +19,19 @@ import { Subscribers } from './payload/collections/Subscribers'
 import { EmailCampaigns } from './payload/collections/EmailCampaigns'
 import { Orders } from './payload/collections/Orders'
 
+
 import { Home } from './payload/globals/Home'
 import { DonationPage } from './payload/globals/DonationPage'
 import { ContactPage } from './payload/globals/ContactPage'
 import { Radio } from './payload/globals/Radio'
 import { MagazineLanding } from './payload/globals/MagazineLanding'
 import { s3Storage } from '@payloadcms/storage-s3'
+
+import { Posts } from './payload/collections/Posts'
+import { Pages } from './payload/collections/Pages'
+import { Categories } from './payload/collections/Categories'
+
+
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
@@ -35,7 +44,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [ Users, Media, Articles, Events, Homilies, Prayers, Music, Publications, MagazineIssues, Comments, Subscribers, EmailCampaigns, Orders],
+  collections: [ Users, Media, Articles, Events, Homilies, Prayers, Music, Publications, MagazineIssues, Comments, Subscribers, EmailCampaigns, Orders, Posts, Pages,Categories],
   globals: [Home, DonationPage, ContactPage, Radio, MagazineLanding],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || 'DEVELOPMENT_ONLY_SECRET_STRING_12345',
@@ -49,6 +58,7 @@ export default buildConfig({
     idType: 'uuid',
   }),
   plugins: [
+    ...bundledPlugins,
     ...(isProduction && process.env.S3_BUCKET
       ? [
           s3Storage({
@@ -64,9 +74,10 @@ export default buildConfig({
               },
               region: 'auto',
             },
-          }),
+          })
         ]
       : []),
+      
   ],
   
   

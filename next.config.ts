@@ -3,9 +3,14 @@ import { withPayload } from "@payloadcms/next/withPayload";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["cdn.sanity.io"],
     unoptimized: true,
     minimumCacheTTL: 86400,
+    remotePatterns: [
+    {
+      protocol: 'https',
+      hostname: 'cdn.sanity.io', 
+    },
+  ],
   },
   experimental: { turbopackFileSystemCacheForDev: false },
   serverExternalPackages: ['drizzle-kit'],

@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import { getPayload } from "payload";
 import configPromise from "@/payload.config";
 import { NewsletterEmailTemplate } from "@/lib/emails/NewsletterEmailTemplate";
+import { Subscriber } from "@/payload-types";
 
 // Allow Payload cross origin
 const corsHeaders = {
@@ -75,7 +76,7 @@ export async function POST(req: Request) {
     page: 1,
   });
   
-  const subscribers = subscribersRes.docs.slice(resumeFrom);
+  const subscribers : Subscriber[] = subscribersRes.docs.slice(resumeFrom);
 
   if (!subscribers.length) {
     return Response.json({ message: "No remaining subscribers to send to" }, { status: 200, headers: corsHeaders });
@@ -93,8 +94,8 @@ export async function POST(req: Request) {
   let hitRateLimit = false;
 
   // ── Send loop ─────────────────────────────────────────────────────────────
-  for (const subscriber of subscribers) {
-    const firstName = subscriber.firstName?.trim() || "Friend";
+  for (const subscriber   of subscribers) {
+    const firstName = subscriber.name?.trim() || "Friend";
     const unsubscribeUrl = `${appUrl}/unsubscribe?email=${encodeURIComponent(subscriber.email)}`;
 
     const { error } = await resend.emails.send({

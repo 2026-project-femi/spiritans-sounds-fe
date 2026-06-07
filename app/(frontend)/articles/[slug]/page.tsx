@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const { slug } = await params;
 	const payload = await getPayload({ config: configPromise });
 	const result = await payload.find({
-		collection: "articles",
+		collection: "article",
 		where: { slug: { equals: slug } },
 	});
     const doc = result.docs[0];
@@ -57,7 +57,7 @@ export default async function SingleArticlePage({ params }: { params: Promise<{ 
     const resolvedParams = await params;
 	const payload = await getPayload({ config: configPromise });
 	const result = await payload.find({
-		collection: "articles",
+		collection: "article",
 		where: { slug: { equals: resolvedParams.slug } },
 	});
 	const rawDoc = result.docs[0];
@@ -132,7 +132,7 @@ export default async function SingleArticlePage({ params }: { params: Promise<{ 
                                 {article.content && <RichText data={article.content} />}
                             </div>
                         </div>
-                        <Comments postId={article._id} comments={article.comments || []} />
+                        <Comments postType="article" postId={article._id} comments={article.comments || []} />
                     </article>
 
                     {/* Sidebar Area */}

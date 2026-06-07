@@ -114,7 +114,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ categories = [], recentPosts =
 								href={`/${post.type === "homily" ? "homily" : "articles"}/${post.slug}`}
 								key={post._id}
 								className="group flex items-start space-x-4 cursor-pointer">
-								<div className="w-16 h-16 flex-shrink-0 bg-gray-100 overflow-hidden   transition-all duration-300">
+								<div className="w-16 h-16 shrink-0 bg-gray-100 overflow-hidden   transition-all duration-300">
 									{post.imageUrl && (
 										<Image
 											src={post.imageUrl}

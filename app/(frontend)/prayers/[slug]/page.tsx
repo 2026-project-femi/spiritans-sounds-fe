@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const { slug } = await params;
 	const payload = await getPayload({ config: configPromise });
 	const result = await payload.find({
-		collection: "prayers",
+		collection: "prayer",
 		where: { slug: { equals: slug } },
 	});
     const doc = result.docs[0];
@@ -38,7 +38,7 @@ export default async function SinglePrayerPage({ params }: { params: Promise<{ s
 	const resolvedParams = await params;
 	const payload = await getPayload({ config: configPromise });
 	const result = await payload.find({
-		collection: "prayers",
+		collection: "prayer",
 		where: { slug: { equals: resolvedParams.slug } },
 	});
 	const rawDoc = result.docs[0];
@@ -98,7 +98,7 @@ export default async function SinglePrayerPage({ params }: { params: Promise<{ s
 								{prayer.content && <RichText data={prayer.content} />}
 							</div>
 						</div>
-						<Comments postId={prayer._id} comments={prayer.comments || []} />
+						<Comments postType="prayer" postId={prayer._id} comments={prayer.comments || []} />
 					</article>
 
 					{/* Sidebar Area */}

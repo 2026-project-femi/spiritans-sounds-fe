@@ -2,11 +2,15 @@ import { getPayload } from "payload";
 import configPromise from "@/payload.config";
 import { Clock, Music, Mic } from "lucide-react";
 import { RadioPlayer } from "./RadioPlayer";
+import { ScheduleItem } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const defaultSchedule = [
+
+
+// 2. Explicitly typed the static array to map fields correctly
+const defaultSchedule: ScheduleItem[] = [
   { time: "6:00 AM",  endTime: "6:30 AM",  program: "Morning Offering",                        host: "Prayer Team",                   type: "Prayer" },
   { time: "6:30 AM",  endTime: "7:00 AM",  program: "My Daily Journey with the Holy Spirit",   host: "Spiritans Sound Prayer Team",   type: "Prayer" },
   { time: "7:00 AM",  endTime: "7:30 AM",  program: "In His Presence",                         host: "Spiritans Sound Music",         type: "Music" },
@@ -29,7 +33,7 @@ const typeColors: Record<string, string> = {
 };
 
 export default async function RadioPage() {
-  let radioData;
+  let radioData: any = null;
   try {
     const payload = await getPayload({ config: configPromise });
     radioData = await payload.findGlobal({ slug: "radio" });
@@ -39,7 +43,11 @@ export default async function RadioPage() {
 
   const tagline = radioData?.tagline || "Voices of Faith, Hope, and Mission.";
   const streamUrl = radioData?.streamUrl;
-  const schedule = (radioData?.schedule && radioData.schedule.length > 0) ? radioData.schedule : defaultSchedule;
+  
+  // Cast raw payload schedules cleanly to standard format interface
+  const schedule: ScheduleItem[] = (radioData?.schedule && radioData.schedule.length > 0) 
+    ? (radioData.schedule as ScheduleItem[]) 
+    : defaultSchedule;
 
   const now = new Date();
   const currentMinutes = now.getHours() * 60 + now.getMinutes();
@@ -65,8 +73,6 @@ export default async function RadioPage() {
             </div>
 
             <RadioPlayer streamUrl={streamUrl} schedule={schedule} />
-            
-            
           </section>
 
           {/* Right Column: Schedule Grid */}
@@ -76,11 +82,9 @@ export default async function RadioPage() {
                 <Clock className="w-5 h-5 md:w-6 md:h-6 text-pink-400" />
                 <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-white">Programme</h2>
               </div>
-              
-            
 
               <div className="space-y-3">
-                {schedule.map((item: { time: string; endTime?: string; program: string; host?: string; type?: string; day?: string }, i: number) => {
+                {schedule.map((item: ScheduleItem, i: number) => {
                   const parseTimeToMinutes = (tStr: string) => {
                     const match = tStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
                     if (match) {

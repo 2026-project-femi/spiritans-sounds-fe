@@ -1,13 +1,14 @@
+// app/api/paystack/purchase/init/route.ts
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
-import { createClient } from "next-sanity";
-import { apiVersion, dataset, projectId } from "@/sanity/env";
+import { getPayload } from 'payload';
+import configPromise from '@/payload.config';
 
 interface PurchaseInitRequest {
   email: string;
   name: string;
   itemId: string;
-  itemType: "publication" | "magazineIssue";
+  itemType: "publications" | "magazineIssues"; // 1. Updated to match your plural collection slugs
 }
 
 interface PaystackResponse {
@@ -20,9 +21,15 @@ interface PaystackResponse {
   };
 }
 
+interface PurchasableItem {
+  id: string;
+  price?: string | null;
+  priceAmount?: number | null;
+  title?: string;
+}
+
 export async function POST(request: Request) {
   try {
-    // 1. Verify origin (CORS protection — mirrors donation route)
     const headersList = await headers();
     const origin = headersList.get("origin");
     const allowedOrigins = [process.env.APP_URL, "http://localhost:3000"].filter(Boolean) as string[];
@@ -32,7 +39,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized origin" }, { status: 403 });
     }
 
-    // 2. Parse and validate request body
     const body = (await request.json()) as PurchaseInitRequest;
     const { email, name, itemId, itemType } = body;
 
@@ -43,53 +49,49 @@ export async function POST(request: Request) {
     if (!name?.trim()) {
       return NextResponse.json({ error: "Name is required" }, { status: 400 });
     }
-    if (!itemId || !["publication", "magazineIssue"].includes(itemType)) {
-      return NextResponse.json({ error: "Valid item is required" }, { status: 400 });
+    if (!itemId || !["publications", "magazineIssues"].includes(itemType)) {
+      return NextResponse.json({ error: "Valid item type is required" }, { status: 400 });
     }
 
     const sanitizedName = name.replace(/[<>]/g, "").trim().slice(0, 100);
+    const payloadCms = await getPayload({ config: configPromise });
 
-    const token = process.env.SANITY_API_TOKEN;
-    if (!token) {
-      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
-    }
-
-    const sanityClient = createClient({ projectId, dataset, apiVersion, useCdn: false, token });
-
-    // 3. Fetch item from Sanity — price is always authoritative from the server
-    const item = await sanityClient.fetch(
-      `*[_type == $itemType && _id == $itemId][0]{ _id, title, price, priceAmount }`,
-      { itemType, itemId }
-    );
+    // Cast the dynamic collection to satisfy internal Payload definitions cleanly
+    const item = (await payloadCms.findByID({
+      collection: itemType as any, 
+      id: itemId,
+    })) as unknown as PurchasableItem;
 
     if (!item) {
       return NextResponse.json({ error: "Item not found" }, { status: 404 });
     }
+    
     if (item.price !== "Paid" || !item.priceAmount || item.priceAmount <= 0) {
       return NextResponse.json({ error: "Item is not available for purchase" }, { status: 400 });
     }
 
-    const amountKobo = Math.round(item.priceAmount * 100); // NGN → kobo
-
-    // 4. Create pending order in Sanity before redirecting to Paystack
-    const order = await sanityClient.create({
-      _type: "order",
-      buyerName: sanitizedName,
-      buyerEmail: email,
-      item: { _type: "reference", _ref: itemId },
-      itemType,
-      amountNGN: item.priceAmount,
-      status: "pending",
-      createdAt: new Date().toISOString(),
-    });
-
-    // 5. Generate PUR- prefixed reference (distinguishes from DON- donation references in webhook)
+    const amountKobo = Math.round(item.priceAmount * 100); 
     const reference = `PUR-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
 
-    // 6. Patch order with the reference so the webhook can look it up
-    await sanityClient.patch(order._id).set({ reference }).commit();
+    // 2. Exact match mapping to your 'Orders' schema fields
+    const order = await payloadCms.create({
+      collection: 'orders',
+      data: {
+        customerName: sanitizedName,    // Matches schema
+        customerEmail: email,           // Matches schema
+        amount: item.priceAmount,       // Matches schema
+        status: 'pending',              // Matches schema
+        paystackReference: reference,   // Matches schema
+        items: [                        // Matches relationship array setup
+          {
+            relationTo: itemType as any, 
+            value: itemId,
+          }
+        ],
+      },
+    });
 
-    // 7. Initialize Paystack transaction
+    // Initialize Paystack transaction
     const paystackResponse = await fetch("https://api.paystack.co/transaction/initialize", {
       method: "POST",
       headers: {
@@ -104,7 +106,7 @@ export async function POST(request: Request) {
         metadata: {
           name: sanitizedName,
           buyer_name: sanitizedName,
-          orderId: order._id,
+          orderId: order.id, 
           itemType,
           itemId,
           origin: cleanOrigin,
@@ -117,7 +119,13 @@ export async function POST(request: Request) {
 
     if (!result.status) {
       console.error("Paystack purchase init error:", result.message);
-      await sanityClient.patch(order._id).set({ status: "failed" }).commit();
+      
+      await payloadCms.update({
+        collection: 'orders',
+        id: order.id,
+        data: { status: 'failed' },
+      });
+      
       return NextResponse.json({ error: "Payment initialization failed" }, { status: 400 });
     }
 

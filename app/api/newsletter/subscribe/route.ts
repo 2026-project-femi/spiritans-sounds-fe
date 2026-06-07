@@ -20,14 +20,14 @@ export async function POST(req: Request) {
     const existingSubscriber = existingResult.docs[0];
 
     if (existingSubscriber) {
-      if (existingSubscriber.status === 'active') {
+      if (existingSubscriber.status === 'subscribed') {
         return Response.json({ message: "You are already subscribed!" }, { status: 200 });
       } else {
         // Reactivate subscription
         await payload.update({
           collection: 'subscribers',
           id: existingSubscriber.id,
-          data: { status: 'active' }
+          data: { status: 'subscribed' }
         });
         return Response.json({ message: "Welcome back! Your subscription is reactivated." }, { status: 200 });
       }
@@ -37,8 +37,8 @@ export async function POST(req: Request) {
       collection: 'subscribers',
       data: {
         email,
-        firstName: firstName ? firstName.trim() : undefined,
-        status: 'active'
+        name: firstName ? firstName.trim() : undefined,
+        status: 'subscribed'
       }
     });
 
