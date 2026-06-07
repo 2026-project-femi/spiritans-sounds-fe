@@ -1,43 +1,33 @@
-import { createClient } from "next-sanity";
-import { apiVersion, dataset, projectId } from "@/sanity/env";
+// app/api/comments/route.ts
+import { getPayload } from 'payload'
+import config from '../../../payload.config'
+import { PostType } from '@/lib/types'
 
 export async function POST(req: Request) {
-  const { _id, name, email, comment } = await req.json();
+  const { postId, name, email, comment,postType } = await req.json()
 
-  if (!_id || !name || !email || !comment) {
-      return Response.json({ message: "Missing required fields" }, { status: 400 });
+  if (!postId || !name || !email || !comment || !postType) {
+    return Response.json({ message: 'Missing required fields' }, { status: 400 })
   }
-
-  const token = process.env.SANITY_API_TOKEN;
-  
-  if (!token) {
-     console.error("Missing SANITY_API_TOKEN in environment variables");
-     return Response.json({ message: "Server configuration error" }, { status: 500 });
-  }
-
-  const client = createClient({
-    projectId,
-    dataset,
-    apiVersion,
-    useCdn: false,
-    token,
-  });
 
   try {
-    await client.create({
-      _type: "comment",
-      post: {
-        _type: "reference",
-        _ref: _id,
+    const payload = await getPayload({ config })
+
+    await payload.create({
+      collection: 'comments',
+      data: {
+        post: {relationTo: postType as PostType, value: postId},      // Payload relationship field — just pass the ID
+        postType,
+        name,
+        email,
+        comment,
+        approved: false,   // moderation flag
       },
-      name,
-      email,
-      comment,
-      approved: false, // Moderation: Comments must be approved in Studio
-    });
-    return Response.json({ message: "Comment submitted for approval" }, { status: 200 });
+    })
+
+    return Response.json({ message: 'Comment submitted for approval' }, { status: 200 })
   } catch (err) {
-    console.error(err);
-    return Response.json({ message: "Failed to submit comment" }, { status: 500 });
+    console.error(err)
+    return Response.json({ message: 'Failed to submit comment' }, { status: 500 })
   }
 }

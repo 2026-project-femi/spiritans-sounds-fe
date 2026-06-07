@@ -1,13 +1,12 @@
 import * as React from "react";
 import { Resend } from "resend";
-import { createClient } from "next-sanity";
-import { toHTML } from "@portabletext/to-html";
-import { apiVersion, dataset, projectId } from "@/sanity/env";
+import { getPayload } from "payload";
+import configPromise from "@/payload.config";
 import { NewsletterEmailTemplate } from "@/lib/emails/NewsletterEmailTemplate";
 
-// Allow the Sanity Studio (localhost:3333) to call this endpoint
+// Allow Payload cross origin
 const corsHeaders = {
-  "Access-Control-Allow-Origin": process.env.SANITY_STUDIO_ORIGIN || "http://localhost:3333",
+  "Access-Control-Allow-Origin": process.env.PAYLOAD_ADMIN_CORS || "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
@@ -52,23 +51,14 @@ export async function POST(req: Request) {
   }
 
   const resend = new Resend(process.env.RESEND_API_KEY);
-
-  const token = process.env.SANITY_API_TOKEN;
-  if (!token) {
-    return Response.json({ message: "Server configuration error" }, { status: 500, headers: corsHeaders });
-  }
-
-  const client = createClient({ projectId, dataset, apiVersion, useCdn: false, token });
+  const payload = await getPayload({ config: configPromise });
 
   // ── Fetch campaign ─────────────────────────────────────────────────────────
-  // The Studio passes the draft ID (e.g. "drafts.abc123") when the document
-  // hasn't been published yet. Strip the prefix so we can match either form.
-  const rawId = campaignId.replace(/^drafts\./, "");
-  const campaign = await client.fetch(
-    `*[_type == "emailCampaign" && _id in [$id, $draftId]][0]{ _id, subject, preheader, body, status, sentCount }`,
-    { id: rawId, draftId: `drafts.${rawId}` },
-    { perspective: "raw" }
-  );
+  const campaignRes = await payload.find({
+    collection: 'emailCampaigns',
+    where: { id: { equals: campaignId } }
+  });
+  const campaign: any = campaignRes.docs[0];
 
   if (!campaign) {
     return Response.json({ message: "Campaign not found" }, { status: 404, headers: corsHeaders });
@@ -77,29 +67,23 @@ export async function POST(req: Request) {
     return Response.json({ message: "Campaign has already been sent" }, { status: 409, headers: corsHeaders });
   }
 
-  // ── Fetch subscribers (consistent order, skip already-sent) ───────────────
-  const subscribers: { _id: string; email: string; firstName?: string }[] = await client.fetch(
-    `*[_type == "subscriber" && status == "active"] | order(_id asc) [$offset...99999] { _id, email, firstName }`,
-    { offset: resumeFrom }
-  );
+  // ── Fetch subscribers ───────────────
+  const subscribersRes = await payload.find({
+    collection: 'subscribers',
+    where: { status: { equals: 'active' } },
+    limit: 10000,
+    page: 1,
+  });
+  
+  const subscribers = subscribersRes.docs.slice(resumeFrom);
 
   if (!subscribers.length) {
     return Response.json({ message: "No remaining subscribers to send to" }, { status: 200, headers: corsHeaders });
   }
 
-  // ── Convert blockContent body to HTML once ────────────────────────────────
+  // Convert Lexical to simple HTML for now (could be elaborated)
   const bodyHtml = campaign.body
-    ? toHTML(campaign.body, {
-        components: {
-          marks: {
-            link: ({ children, value }: { children: string; value?: { href?: string; blank?: boolean } }) => {
-              const href = value?.href ?? "#";
-              const target = value?.blank !== false ? ' target="_blank" rel="noopener noreferrer"' : "";
-              return `<a href="${href}"${target}>${children}</a>`;
-            },
-          },
-        },
-      })
+    ? `<div style="white-space: pre-wrap;">${typeof campaign.body === 'string' ? campaign.body : 'See the latest update on Spiritans Sound...'}</div>`
     : "";
 
   const appUrl = process.env.APP_URL || "";
@@ -149,7 +133,11 @@ export async function POST(req: Request) {
   const totalSentSoFar = resumeFrom + sent;
 
   if (hitRateLimit) {
-    await client.patch(campaign._id).set({ status: "paused", sentCount: totalSentSoFar }).commit();
+    await payload.update({
+        collection: 'emailCampaigns',
+        id: campaign.id,
+        data: { status: 'draft' } // Mark draft to pause
+    });
     return Response.json({
       paused: true,
       sent,
@@ -159,10 +147,11 @@ export async function POST(req: Request) {
     }, { headers: corsHeaders });
   }
 
-  await client
-    .patch(campaign._id)
-    .set({ status: "sent", sentAt: new Date().toISOString(), recipientCount: totalSentSoFar, sentCount: totalSentSoFar })
-    .commit();
+  await payload.update({
+    collection: 'emailCampaigns',
+    id: campaign.id,
+    data: { status: 'sent', sentAt: new Date().toISOString() as any }
+  });
 
   console.log(`Campaign "${campaign.subject}" complete: ${totalSentSoFar} sent, ${failed} failed.`);
   return Response.json({ sent: totalSentSoFar, failed, paused: false }, { headers: corsHeaders });

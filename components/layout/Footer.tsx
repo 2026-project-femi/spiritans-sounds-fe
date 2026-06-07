@@ -64,7 +64,7 @@ const Footer: React.FC = () => {
 							<span className="font-bold text-lg text-primary">Spiritans Sound</span>
 						</Link>
 						<p className="text-sm text-gray-200 mb-6 font-light leading-relaxed">
-							Bringing you closer to the divine through homilies, reflections, and music.
+							Bringing you closer to the divine through homily, reflections, and music.
 						</p>
 						<div className="flex space-x-6">
 							{socialLinks.map((social) => (

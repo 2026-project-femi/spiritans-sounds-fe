@@ -9,7 +9,13 @@ interface HomeCarouselProps {
 }
 
 export function HomeCarousel({ images }: HomeCarouselProps) {
+
+	console.log("images received ",images)
 	if (!images || images.length === 0) return null;
+
+	for(let imgurl of images){
+		console.log(imgurl.image.asset.url)
+	}
 
 	return (
 		<Carousel
@@ -28,7 +34,7 @@ export function HomeCarousel({ images }: HomeCarouselProps) {
 					<CarouselItem key={index} className="h-full">
 						<div className="aspect-[4/5] bg-gray-100 overflow-hidden border border-primary/10 relative">
 							<Image
-								src={imageUrl}
+								src={imageUrl?.image?.asset.url}
 								alt={`Slide ${index + 1}`}
 								fill
 								priority={index === 0}

@@ -1,11 +1,14 @@
 import type { NextConfig } from "next";
+import { withPayload } from "@payloadcms/next/withPayload";
 
 const nextConfig: NextConfig = {
-	images: {
-		domains: ["cdn.sanity.io"],
-		unoptimized: true, // TEMPORARY: free-tier quota exhausted — remove once quota resets and permanent fixes are live
-		minimumCacheTTL: 86400, // cache optimized images for 24 hours (permanent)
-	},
+  images: {
+    domains: ["cdn.sanity.io"],
+    unoptimized: true,
+    minimumCacheTTL: 86400,
+  },
+  experimental: { turbopackFileSystemCacheForDev: false },
+  serverExternalPackages: ['drizzle-kit'],
 };
 
-export default nextConfig;
+export default withPayload(nextConfig);

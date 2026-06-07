@@ -329,7 +329,7 @@ export const ThankYouEmailTemplate: React.FC<Readonly<ThankYouEmailProps>> = ({
 													</h3>
 													<ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
 														<li style={{ marginBottom: "7px", paddingLeft: "22px", position: "relative", color: "#9b2c2c" }}>
-															📖 Help produce daily homilies
+															📖 Help produce daily homily
 															reaching thousands
 														</li>
 														<li style={{ marginBottom: "7px", paddingLeft: "22px", position: "relative", color: "#9b2c2c" }}>

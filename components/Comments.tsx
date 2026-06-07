@@ -2,24 +2,22 @@
 
 import { useState } from "react";
 import { User, Send, Loader2 } from "lucide-react";
-//
+import { Comment, PostType } from "@/lib/types";
 
-interface Comment {
-  _id?: string;
-  name: string;
-  comment: string;
-  _createdAt: string;
-}
 
 interface CommentsProps {
   postId: string;
+  postType: PostType;
   comments: Comment[];
 }
 
-export default function Comments({ postId, comments = [] }: CommentsProps) {
+export default function Comments({ postId,postType, comments = [] }: CommentsProps) {
   const [formData, setFormData] = useState({ name: "", email: "", comment: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+
+
+  console.log(comments, 'omments')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +27,7 @@ export default function Comments({ postId, comments = [] }: CommentsProps) {
     try {
       const res = await fetch("/api/comment", {
         method: "POST",
-        body: JSON.stringify({ ...formData, _id: postId }),
+        body: JSON.stringify({ ...formData,postType,  postId }),
       });
 
       const data = await res.json();
@@ -112,7 +110,7 @@ export default function Comments({ postId, comments = [] }: CommentsProps) {
                 <div className="flex items-baseline gap-3">
                   <span className="font-semibold text-lg">{comment.name}</span>
                   <span className="text-xs text-muted-foreground uppercase opacity-70">
-                    {new Date(comment._createdAt).toLocaleDateString(undefined, {
+                    {new Date(comment.createdAt).toLocaleDateString(undefined, {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric'

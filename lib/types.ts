@@ -25,12 +25,12 @@ export interface SidebarRecentPost {
 	title: string;
 	publishedAt: string;
 	imageUrl?: string;
-	type: "homily" | "article"; // To differentiate between homilies and articles
+	type: "homily" | "article"; // To differentiate between homily and articles
 }
 
 export interface SidebarProps {
 	categories: string[]; // List of categories (strings)
-	recentPosts: SidebarRecentPost[]; // List of recent posts (homilies/articles)
+	recentPosts: SidebarRecentPost[]; // List of recent posts (homily/articles)
 }
 
 export interface BasicItem {
@@ -48,12 +48,12 @@ export interface HomilyItem extends BasicItem {
 }
 
 
-
 export interface Comment {
-	_id: string;
-	name: string;
-	comment: string;
-	_createdAt: string;
+  _id: string
+  name: string
+  email: string
+  comment: string
+  createdAt: string
 }
 
 export interface Homily extends HomilyItem {
@@ -176,3 +176,5 @@ export interface HomeData {
 	latestPrayers: PrayerItem[];
 	latestMusic: MusicItem[];
 }
+
+export type PostType = 'homily' | 'article' | 'prayer'

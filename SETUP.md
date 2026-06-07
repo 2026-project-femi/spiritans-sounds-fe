@@ -126,7 +126,7 @@ UPSTASH_REDIS_REST_TOKEN=YOUR_UPSTASH_REDIS_REST_TOKEN
 
 ### 1. Sanity CMS
 
-**Purpose:** Headless content management — homilies, articles, music, publications, newsletter subscribers, email campaigns, orders.
+**Purpose:** Headless content management — homily, articles, music, publications, newsletter subscribers, email campaigns, orders.
 
 **Setup steps:**
 
@@ -287,7 +287,7 @@ spiritans-sounds-fe/
 │   │   │   └── purchase/initialize/route.ts
 │   │   └── comment/route.ts
 │   │
-│   ├── homilies/
+│   ├── homily/
 │   ├── articles/
 │   ├── music/
 │   ├── prayers/
