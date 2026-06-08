@@ -4,111 +4,164 @@ import configPromise from '../payload.config'
 import { createClient } from '@sanity/client'
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
 import https from 'https'
+import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-
-const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 
 const sanity = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || '',
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
   apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2026-01-05',
   token: process.env.SANITY_API_TOKEN,
-  useCdn: false, // Strongly false for migrations! We want latest data.
+  useCdn: false,
 })
 
-async function downloadAsset(url: string, destPath: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const file = fs.createWriteStream(destPath)
-    https.get(url, (response) => {
-      if (response.statusCode !== 200) {
-        reject(new Error(`Failed to get '${url}' (${response.statusCode})`))
-        return
-      }
-      response.pipe(file)
-      file.on('finish', () => {
-        file.close()
-        resolve()
-      })
-    }).on('error', (err) => {
-      fs.unlink(destPath, () => {})
-      reject(err)
-    })
-  })
+/**
+ * -----------------------------
+ * Helpers
+ * -----------------------------
+ */
+
+function logSuccess(msg: string) {
+  console.log(`✅ ${msg}`)
 }
 
-// Simple converter to convert raw string to a Lexical paragraph node
-// since full PortableText to Lexical AST mapping is incredibly complex for a single script.
-function migratePortableText(ptBlocks: any[]) {
-  if (!ptBlocks || !Array.isArray(ptBlocks)) return undefined;
-  
-  // Very rough mapping
-  const lexicalNodes = ptBlocks.map(block => {
-    if (block._type === 'block') {
-      return {
-        type: 'paragraph',
-        version: 1,
-        children: block.children?.map((child: any) => ({
-          type: 'text',
-          text: child.text,
-          version: 1,
-        })) || [],
-      }
-    }
-    return { type: 'paragraph', version: 1, children: [{ type: 'text', text: 'Unsupported block type', version: 1 }] };
+function logError(msg: string, err?: any) {
+  console.error(`❌ ${msg}`, err?.message || err)
+}
+
+async function downloadFile(url: string, dest: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const file = fs.createWriteStream(dest)
+
+    https
+      .get(url, (res) => {
+        if (res.statusCode !== 200) {
+          reject(new Error(`Failed download: ${url}`))
+          return
+        }
+
+        res.pipe(file)
+
+        file.on('finish', () => {
+          file.close(() => {
+            resolve()
+          })
+        })
+      })
+      .on('error', (err) => {
+        fs.unlink(dest, () => {})
+        reject(err)
+      })
   })
+}
+/**
+ * -----------------------------
+ * PortableText → Lexical
+ * -----------------------------
+ * Safe Payload v3 structure
+ */
+function portableTextToLexical(blocks: any[]) {
+  if (!Array.isArray(blocks)) return null
 
   return {
     root: {
       type: 'root',
+      direction: null,
       format: '',
       indent: 0,
       version: 1,
-      children: lexicalNodes,
-    }
+      children: blocks.map((block) => ({
+        type: 'paragraph',
+        direction: null,
+        format: '',
+        indent: 0,
+        textFormat: 0,
+        textStyle: '',
+        version: 1,
+        children: (block.children || []).map((child: any) => ({
+          type: 'text',
+          text: child.text || '',
+          detail: 0,
+          format: child.marks?.includes('strong') ? 1 : 0,
+          mode: 'normal',
+          style: '',
+          version: 1,
+        })),
+      })),
+    },
   }
 }
 
+/**
+ * -----------------------------
+ * Main Migration
+ * -----------------------------
+ */
 async function runMigration() {
-  console.log(`Starting Payload v3 Migration (${IS_PRODUCTION ? 'PRODUCTION' : 'LOCAL'})`)
   const payload = await getPayload({ config: configPromise })
 
-  console.log('Fetching sanity documents...')
-  
-  // Migrate Categories (simple tags in articles) and Authors first if they exist as separate models 
-  // In your schema, they are just strings, so no pre-population needed for relations!
+  console.log('🚀 Starting migration...')
 
-  // 1. Articles
-  const articles = await sanity.fetch(`*[_type == "article"]{
-    _id, title, "slug": slug.current, author, excerpt, publishedAt, youtubeUrl, content,
-    "imageUrl": featuredImage.asset->url
-  }`)
+  /**
+   * -----------------------------
+   * ARTICLES
+   * -----------------------------
+   */
+  const articles = await sanity.fetch(`
+    *[_type == "article"]{
+      _id,
+      title,
+      "slug": slug.current,
+      author,
+      excerpt,
+      publishedAt,
+      youtubeUrl,
+      content,
+      "imageUrl": featuredImage.asset->url
+    }
+  `)
 
   for (const article of articles) {
+    let tempFile: string | null = null
+
     try {
-      console.log(`Migrating Article: ${article.title}`)
-      
-      let mediaId = undefined
+      console.log(`\nMigrating: ${article.title}`)
+
+      /**
+       * -----------------------------
+       * MEDIA MIGRATION (safe)
+       * -----------------------------
+       */
+      let mediaId: string | undefined
+
       if (article.imageUrl) {
-         // Idempotency: skip if already uploaded, or re-download
-         const fileName = path.basename(article.imageUrl)
-         const tempPath = path.join(__dirname, '..', fileName)
-         await downloadAsset(article.imageUrl, tempPath)
-         
-         const uploadedMedia = await payload.create({
-           collection: 'media',
-           data: { alt: article.title || 'Image' },
-           filePath: tempPath,
-         })
-         mediaId = uploadedMedia.id
-         fs.unlinkSync(tempPath)
+        const fileName = path.basename(article.imageUrl)
+        tempFile = path.join(__dirname, '..', 'tmp-' + fileName)
+
+        await downloadFile(article.imageUrl, tempFile)
+
+        const uploaded = await payload.create({
+          collection: 'media',
+          data: {
+            alt: article.title || 'image',
+          },
+          filePath: tempFile,
+        })
+
+        mediaId = uploaded.id
       }
 
+      /**
+       * -----------------------------
+       * ARTICLE CREATE (idempotent-safe recommended)
+       * -----------------------------
+       */
+
       await payload.create({
-        collection: 'article',
+        collection: 'article', // IMPORTANT: plural
         data: {
           title: article.title,
           slug: article.slug || article._id,
@@ -117,24 +170,34 @@ async function runMigration() {
           publishedAt: article.publishedAt,
           youtubeUrl: article.youtubeUrl,
           featuredImage: mediaId,
-          content: migratePortableText(article.content),
-        }
+          content: portableTextToLexical(article.content) as any,
+        },
       })
-      console.log(`✅ Success: ${article.title}`)
+
+      logSuccess(article.title)
     } catch (err: any) {
-      if (err.data?.includes('E11000 duplicate key error')) {
-        console.log(`⚠️ Skipped: ${article.title} (Already exists)`)
+      if (err?.message?.includes('E11000')) {
+        console.log(`⚠️ Skipped duplicate: ${article.title}`)
       } else {
-        console.error(`❌ Failed: ${article.title}`, err.message)
+        logError(`Failed: ${article.title}`, err)
+      }
+    } finally {
+      /**
+       * -----------------------------
+       * CLEANUP TEMP FILES
+       * -----------------------------
+       */
+      if (tempFile && fs.existsSync(tempFile)) {
+        fs.unlinkSync(tempFile)
       }
     }
   }
 
-  // Follow identical pattern for Homilies, Prayers, Events, etc.
-  // ...
-  
-  console.log('Migration completed successfully!')
+  console.log('\n🎉 Migration completed')
   process.exit(0)
 }
 
-runMigration().catch(console.error)
+runMigration().catch((err) => {
+  console.error('Fatal migration error:', err)
+  process.exit(1)
+})

@@ -14,7 +14,7 @@ export const revalidate = 3600;
 
 const HomePage: React.FC = async () => {
 	const payload = await getPayload({ config: configPromise });
-	const homeGlobal: any = await payload.findGlobal({ slug: "home" });
+	const homeGlobal: any = await payload.find({ collection: "homepage" });
 
 	const [articlesRes, homilyRes, prayersRes, musicRes] = await Promise.all([
 		payload.find({ collection: "article", sort: "-publishedAt", limit: 3 }),

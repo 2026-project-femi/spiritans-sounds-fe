@@ -1,6 +1,6 @@
-import { GlobalConfig } from 'payload'
+import { CollectionConfig } from 'payload'
 
-export const MagazineLanding: GlobalConfig = {
+export const MagazineLanding: CollectionConfig = {
   slug: 'magazineLanding',
   fields: [
     {

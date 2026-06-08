@@ -5,7 +5,15 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import Autoplay from "embla-carousel-autoplay";
 
 interface HomeCarouselProps {
-	images: string[];
+	images: Image[];
+}
+
+interface Image {
+	image: {
+		asset: {
+			url: string;
+		};
+	};
 }
 
 export function HomeCarousel({ images }: HomeCarouselProps) {
@@ -14,7 +22,7 @@ export function HomeCarousel({ images }: HomeCarouselProps) {
 	if (!images || images.length === 0) return null;
 
 	for(let imgurl of images){
-		console.log(imgurl.image.asset.url)
+		console.log(imgurl.image.asset.url, "love your")
 	}
 
 	return (

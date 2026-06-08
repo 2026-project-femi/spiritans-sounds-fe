@@ -1,8 +1,8 @@
 import { buildConfig } from 'payload'
-import { plugins as bundledPlugins } from './payload/plugins'
+// import { plugins as bundledPlugins } from './payload/plugins'
 
 import { postgresAdapter } from '@payloadcms/db-postgres'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
+// import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { Users } from './payload/collections/Users'
@@ -20,17 +20,26 @@ import { EmailCampaigns } from './payload/collections/EmailCampaigns'
 import { Orders } from './payload/collections/Orders'
 
 
-import { Home } from './payload/globals/Home'
-import { DonationPage } from './payload/globals/DonationPage'
-import { ContactPage } from './payload/globals/ContactPage'
-import { Radio } from './payload/globals/Radio'
-import { MagazineLanding } from './payload/globals/MagazineLanding'
+import { HomePage } from './payload/collections/Home'
+import { DonationPage } from './payload/collections/DonationPage'
+import { ContactPage } from './payload/collections/ContactPage'
+import { Radio } from './payload/collections/Radio'
+import { MagazineLanding } from './payload/collections/MagazineLanding'
 import { s3Storage } from '@payloadcms/storage-s3'
 
 import { Posts } from './payload/collections/Posts'
 import { Pages } from './payload/collections/Pages'
 import { Categories } from './payload/collections/Categories'
 
+
+
+// =======================================
+import { Footer } from '@/payload/Footer/config'
+import { Header } from '@/payload/Header/config'
+import { plugins } from '@/payload/plugins'
+import { defaultLexical } from '@/payload/fields/defaultLexical'
+import { getServerSideURL } from '@/payload/utilities/getURL'
+// ==============================
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -44,10 +53,11 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [ Users, Media, Articles, Events, Homilies, Prayers, Music, Publications, MagazineIssues, Comments, Subscribers, EmailCampaigns, Orders, Posts, Pages,Categories],
-  globals: [Home, DonationPage, ContactPage, Radio, MagazineLanding],
-  editor: lexicalEditor(),
+  collections: [ Users, Media, Articles, Events, Homilies, Prayers, Music, Publications, MagazineIssues, Comments, Subscribers, EmailCampaigns, Orders, Posts, Pages,Categories,MagazineLanding,Radio,ContactPage,DonationPage,HomePage],
+  globals: [ Footer, Header],
+  editor: defaultLexical,
   secret: process.env.PAYLOAD_SECRET || 'DEVELOPMENT_ONLY_SECRET_STRING_12345',
+  cors: [getServerSideURL()].filter(Boolean),
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
@@ -58,7 +68,7 @@ export default buildConfig({
     idType: 'uuid',
   }),
   plugins: [
-    ...bundledPlugins,
+    ...plugins,
     ...(isProduction && process.env.S3_BUCKET
       ? [
           s3Storage({

@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: spiritans-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: local_dev_password
+      POSTGRES_DB: spiritans_sound_dev
+    ports:
+      - "5435:5432"
+    volumes:
+      - spiritans_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  spiritans_postgres_data:

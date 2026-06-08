@@ -1,8 +1,7 @@
-import { GlobalConfig } from 'payload'
+import { CollectionConfig } from 'payload'
 
-export const Radio: GlobalConfig = {
+export const Radio: CollectionConfig = {
   slug: 'radio',
-  label: 'Online Radio',
   access: {
     read: () => true,
   },

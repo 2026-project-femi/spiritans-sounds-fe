@@ -1,7 +1,7 @@
-import { GlobalConfig } from 'payload'
+import { CollectionConfig } from 'payload'
 
-export const Home: GlobalConfig = {
-  slug: 'home',
+export const HomePage: CollectionConfig = {
+  slug: 'homepage',
   fields: [
     {
       name: 'title',

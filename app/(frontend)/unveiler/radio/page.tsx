@@ -36,7 +36,7 @@ export default async function RadioPage() {
   let radioData: any = null;
   try {
     const payload = await getPayload({ config: configPromise });
-    radioData = await payload.findGlobal({ slug: "radio" });
+    radioData = await payload.find({ collection: "radio" });
   } catch (error) {
     console.error("Failed to fetch radio data:", error);
   }

@@ -1,9 +1,17 @@
 import type { CollectionConfig } from 'payload'
 
+import { authenticated } from '@/access/authenticated'
+import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
+import { Archive } from '@/blocks/ArchiveBlock/config'
+import { CallToAction } from '@/blocks/CallToAction/config'
+import { Content } from '@/blocks/Content/config'
+import { FormBlock } from '@/blocks/Form/config'
+import { MediaBlock } from '@/blocks/MediaBlock/config'
+import { hero } from '@/payload/heros/config'
 import { slugField } from 'payload'
-import { populatePublishedAt } from '../../hooks/populatePublishedAt'
-import { generatePreviewPath } from '../../utilities/generatePreviewPath'
-import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
+import { populatePublishedAt } from '@/payload/hooks/populatePublishedAt'
+import { generatePreviewPath } from '@/payload/utilities/generatePreviewPath'
+import { revalidateDelete, revalidatePage } from '@/payload/collections/Pages/hooks/revalidatePage'
 
 import {
   MetaDescriptionField,
@@ -12,14 +20,6 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
-import { authenticated } from '@/access/authenticated'
-import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
-import { CallToAction } from '@/blocks/CallToAction/config'
-import { MediaBlock } from '@/blocks/MediaBlock/config'
-import { FormBlock } from '@/blocks/Form/config'
-import { Content } from '@/blocks/Content/config'
-import { Archive } from '@/blocks/ArchiveBlock/config'
-import { hero } from '@/payload/heros/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
