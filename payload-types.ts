@@ -368,6 +368,7 @@ export interface Event {
   id: string;
   title: string;
   slug: string;
+  eventType?: ('celebration' | 'workshop' | 'retreat' | 'concert' | 'symposium' | 'news' | 'other') | null;
   date: string;
   location?: string | null;
   description?: string | null;
@@ -570,13 +571,19 @@ export interface Subscriber {
   createdAt: string;
 }
 /**
+ * Create and send email campaigns to all active subscribers.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "emailCampaigns".
  */
 export interface EmailCampaign {
   id: string;
   subject: string;
-  body: {
+  /**
+   * Shown in the inbox preview before the email is opened (50–90 chars).
+   */
+  preheader?: string | null;
+  body?: {
     root: {
       type: string;
       children: {
@@ -590,9 +597,17 @@ export interface EmailCampaign {
       version: number;
     };
     [k: string]: unknown;
-  };
-  status?: ('draft' | 'sent') | null;
+  } | null;
+  status?: ('draft' | 'paused' | 'sent') | null;
   sentAt?: string | null;
+  /**
+   * Total subscribers at time of send.
+   */
+  recipientCount?: number | null;
+  /**
+   * Used as the resume offset if rate-limited.
+   */
+  sentCount?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1675,6 +1690,7 @@ export interface ArticleSelect<T extends boolean = true> {
 export interface EventsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  eventType?: T;
   date?: T;
   location?: T;
   description?: T;
@@ -1802,9 +1818,12 @@ export interface SubscribersSelect<T extends boolean = true> {
  */
 export interface EmailCampaignsSelect<T extends boolean = true> {
   subject?: T;
+  preheader?: T;
   body?: T;
   status?: T;
   sentAt?: T;
+  recipientCount?: T;
+  sentCount?: T;
   updatedAt?: T;
   createdAt?: T;
 }

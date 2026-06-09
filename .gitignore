@@ -41,3 +41,6 @@ yarn-error.log*
 next-env.d.ts
 asset-ignore-git
 ./ROJECT_FEATURES.md
+new-integration.md
+content-migration.md
+public/media
