@@ -5,6 +5,7 @@ import { postgresAdapter } from "@payloadcms/db-postgres";
 // import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from "path";
 import { fileURLToPath } from "url";
+import sharp from "sharp";
 import { Users } from "./payload/collections/Users";
 import { Media } from "./payload/collections/Media";
 import { Articles } from "./payload/collections/Articles";
@@ -44,6 +45,7 @@ const dirname = path.dirname(filename);
 const isProduction = process.env.NODE_ENV === "production";
 
 export default buildConfig({
+	sharp,
 	admin: {
 		user: Users.slug,
 		importMap: {
