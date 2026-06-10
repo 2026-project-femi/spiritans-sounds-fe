@@ -4,8 +4,8 @@ module.exports = {
   apps: [
     {
       name: "spiritans",
-      script: "npm",
-      args: "run start",
+      script: "node_modules/next/dist/bin/next",
+      args: "start",
       cwd: "/var/www/spiritans",   // ← your deploy path on VPS
       instances: 1,
       exec_mode: "fork",

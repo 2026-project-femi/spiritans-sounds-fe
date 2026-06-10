@@ -72,7 +72,8 @@ jobs:
             /usr/local/bin/pnpm payload migrate
 
             echo "── Restarting app ──"
-            /usr/local/bin/pm2 restart ecosystem.config.cjs --env production
+            /usr/local/bin/pm2 delete spiritans || true
+            /usr/local/bin/pm2 start ecosystem.config.cjs --env production
 
             echo "── Done ──"
             /usr/local/bin/pm2 status
