@@ -4,8 +4,8 @@ module.exports = {
   apps: [
     {
       name: "spiritans",
-      script: "node_modules/.bin/cross-env",
-      args: "NODE_OPTIONS=--no-deprecation node_modules/.bin/next start",
+      script: "npm",
+      args: "run start",
       cwd: "/var/www/spiritans",   // ← your deploy path on VPS
       instances: 1,
       exec_mode: "fork",
