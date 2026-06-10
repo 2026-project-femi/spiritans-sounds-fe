@@ -63,7 +63,7 @@ jobs:
             git pull origin main
 
             echo "── Installing dependencies ──"
-            CI=true /usr/local/bin/pnpm install --frozen-lockfile
+            CI=true /usr/local/bin/pnpm install --no-frozen-lockfile
 
             echo "── Building ──"
             /usr/local/bin/pnpm build
