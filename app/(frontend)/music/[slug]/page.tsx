@@ -127,9 +127,15 @@ export default async function SingleMusicPage({ params }: { params: Promise<{ sl
                                 </div>
                             )}
 
-                            {(music.lyrics || music.content) && (
+                            {music.lyrics && typeof music.lyrics === 'string' && (
+                                <div className="mb-8 whitespace-pre-wrap text-lg leading-relaxed text-black font-light">
+                                    {music.lyrics}
+                                </div>
+                            )}
+
+                            {music.content && typeof music.content === 'object' && (
                                 <div className="prose prose-lg dark:prose-invert max-w-none text-black space-y-8 font-light leading-loose text-lg">
-                                    <RichText data={music.lyrics || music.content} />
+                                    <RichText data={music.content} />
                                 </div>
                             )}
                         </div>

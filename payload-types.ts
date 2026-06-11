@@ -501,7 +501,7 @@ export interface Publication {
   title: string;
   slug: string;
   description?: string | null;
-  price?: string | null;
+  price?: ('free' | 'paid') | null;
   priceAmount?: number | null;
   cover?: (string | null) | Media;
   file?: (string | null) | Media;
@@ -519,7 +519,7 @@ export interface MagazineIssue {
   slug: string;
   description?: string | null;
   excerpt?: string | null;
-  price?: string | null;
+  price?: ('free' | 'paid') | null;
   priceAmount?: number | null;
   cover?: (string | null) | Media;
   file?: (string | null) | Media;

@@ -41,12 +41,22 @@ export default async function RadioPage() {
     console.error("Failed to fetch radio data:", error);
   }
 
-  const tagline = radioData?.tagline || "Voices of Faith, Hope, and Mission.";
-  const streamUrl = radioData?.streamUrl;
+  const radioDoc = radioData?.docs?.[0] || null;
+
+  const tagline = radioDoc?.tagline || "Voices of Faith, Hope, and Mission.";
+  const streamUrl = radioDoc?.streamUrl || null;
   
-  // Cast raw payload schedules cleanly to standard format interface
-  const schedule: ScheduleItem[] = (radioData?.schedule && radioData.schedule.length > 0) 
-    ? (radioData.schedule as ScheduleItem[]) 
+  // Map raw payload schedule; extract audio relation → audioUrl string
+  const schedule: ScheduleItem[] = (radioDoc?.schedule && radioDoc.schedule.length > 0)
+    ? radioDoc.schedule.map((item: any) => ({
+        program: item.program,
+        host: item.host,
+        time: item.time,
+        endTime: item.endTime,
+        day: item.day,
+        type: item.type,
+        audioUrl: item.audio && typeof item.audio === 'object' ? item.audio.url : undefined,
+      }))
     : defaultSchedule;
 
   const now = new Date();

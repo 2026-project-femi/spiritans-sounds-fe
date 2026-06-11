@@ -53,14 +53,15 @@ export default async function BooksPage() {
     books = result.docs.map((d: any) => ({
       ...d,
       _id: d.id,
-      imageUrl: d.coverImage && typeof d.coverImage === 'object' ? d.coverImage.url : undefined
+      imageUrl: d.cover && typeof d.cover === 'object' ? d.cover.url : undefined,
+      fileUrl: d.file && typeof d.file === 'object' ? d.file.url : undefined,
     })) as Book[];
   } catch (err) {
     console.error("Failed to fetch books:", err);
   }
 
-  const isDummy = books.length === 0;
-  const displayBooks = isDummy ? DUMMY_BOOKS : books;
+  const isDummy = false;
+  const displayBooks = books;
 
   return (
     <main className="pb-24">
@@ -80,21 +81,21 @@ export default async function BooksPage() {
           resources for young people, ministers, and all who seek to bring out what is new and old from the treasury.
         </p>
         
-        {isDummy && (
-          <div className="mt-8 inline-flex items-center gap-2 text-xs text-amber-400/80 bg-amber-400/5 border border-amber-400/10 px-5 py-2.5 rounded-full">
-            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-            Showing sample catalog — items in Sanity Studio will appear here automatically.
-          </div>
-        )}
       </section>
 
       {/* Books Grid */}
       <section className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {displayBooks.map((book) => (
-            <BookCard key={book._id} book={book} />
-          ))}
-        </div>
+        {displayBooks.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {displayBooks.map((book) => (
+              <BookCard key={book._id} book={book} />
+            ))}
+          </div>
+        ) : (
+          <div className="py-24 text-center">
+            <p className="text-gray-500 text-lg">No books published yet — check back soon.</p>
+          </div>
+        )}
       </section>
 
       {/* Publishing Submissions CTA */}

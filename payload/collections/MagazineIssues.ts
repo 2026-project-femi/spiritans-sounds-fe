@@ -33,7 +33,12 @@ export const MagazineIssues: CollectionConfig = {
     },
     {
       name: 'price',
-      type: 'text',
+      type: 'select',
+      defaultValue: 'free',
+      options: [
+        { label: 'Free', value: 'free' },
+        { label: 'Paid', value: 'paid' },
+      ],
     },
     {
       name: 'priceAmount',

@@ -18,7 +18,7 @@ interface MagazineIssue {
 
 export function IssueCard({ issue, index, isDummy }: { issue: MagazineIssue; index: number; isDummy: boolean }) {
   const isLatest = index === 0;
-  const isPaid = issue.price === "Paid";
+  const isPaid = issue.price?.toLowerCase() === "paid";
   const formattedDate = new Date(issue.publishedAt).toLocaleDateString("en-NG", {
     year: "numeric",
     month: "long",

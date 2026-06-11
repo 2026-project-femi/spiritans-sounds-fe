@@ -17,7 +17,7 @@ interface Book {
 }
 
 export function BookCard({ book }: { book: Book }) {
-  const isPaid = book.price === "Paid";
+  const isPaid = book.price?.toLowerCase() === "paid";
 
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({ name: "", email: "" });

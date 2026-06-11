@@ -79,6 +79,7 @@ export default buildConfig({
 	globals: [Footer, Header],
 	editor: defaultLexical,
 	secret: process.env.PAYLOAD_SECRET || "DEVELOPMENT_ONLY_SECRET_STRING_12345",
+	cookiePrefix: 'spiritans',
 	cors: [getServerSideURL()].filter(Boolean),
 	typescript: {
 		outputFile: path.resolve(dirname, "payload-types.ts"),

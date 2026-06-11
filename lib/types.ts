@@ -167,7 +167,13 @@ export interface LatestPostItem {
 export interface HomeData {
 	title: string;
 	heroText: string;
-	carouselImages?: string[];
+	carouselImages?: {
+		image: {
+			asset: {
+				url: string;
+			};
+		};
+	}[];
 	ctaSection: {
 		buttonText: string;
 		buttonLink: string;

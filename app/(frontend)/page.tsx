@@ -15,6 +15,7 @@ export const revalidate = 3600;
 const HomePage: React.FC = async () => {
 	const payload = await getPayload({ config: configPromise });
 	const homeGlobal: any = await payload.find({ collection: "homepage" });
+	console.log(homeGlobal, 'home global')
 
 	const [articlesRes, homilyRes, prayersRes, musicRes] = await Promise.all([
 		payload.find({ collection: "article", sort: "-publishedAt", limit: 3 }),
@@ -23,9 +24,13 @@ const HomePage: React.FC = async () => {
 		payload.find({ collection: "music", sort: "-publishedAt", limit: 3 }),
 	]);
 
-	const data: any = {
-		...homeGlobal,
-		carouselImages: homeGlobal.carouselImages?.map((img: any) => ({
+	const homeDoc = homeGlobal.docs?.[0] || {};
+
+	const data: HomeData = {
+		title: homeDoc.title || "Spiritual Journey",
+		heroText: homeDoc.heroText || "Welcome",
+		ctaSection: homeDoc.ctaSection || { buttonText: "", buttonLink: "" },
+		carouselImages: homeDoc.carouselImages?.map((img: any) => ({
 			image: { asset: { url: img.image?.url } }
 		})),
 		latestPosts: articlesRes.docs.map((doc: any) => ({
@@ -42,10 +47,12 @@ const HomePage: React.FC = async () => {
 		})),
 		latestMusic: musicRes.docs.map((doc: any) => ({
 			...doc, _id: doc.id, type: "music",
-			imageUrl: getImageUrlFromResponse(doc)
+			imageUrl: getImageUrlFromResponse(doc),
+			audioUrl: doc.audio && typeof doc.audio === 'object' ? doc.audio.url : undefined
 		}))
 	};
 
+	console.log(data, "data completed")
 	const sidebarData = await getSidebarData(); // Fetch sidebar data
 	if (!data) return null;
 
@@ -59,9 +66,9 @@ const HomePage: React.FC = async () => {
 						<span className="text-xs font-bold tracking-[0.4em] uppercase text-brand-primary">
 							A Spiritual Journey
 						</span>
-						<h1 className="text-5xl md:text-7xl lg:text-8xl serif leading-[1.1] text-foreground">{data.title}</h1>
+						<h1 className="text-5xl md:text-7xl lg:text-8xl serif leading-[1.1] text-foreground">{data?.title}</h1>
 						<p className="text-lg md:text-xl font-light text-foreground max-w-xl leading-relaxed">
-							{data.heroText}
+							{data?.heroText}
 						</p>
 						{data?.ctaSection?.buttonLink && (
 							<div className="pt-6">
@@ -326,6 +333,13 @@ const HomePage: React.FC = async () => {
 												</h3>
 												{track.artist && (
 													<p className="text-sm text-foreground/60 mb-3">By {track.artist}</p>
+												)}
+												{track.audioUrl && (
+													<div className="mb-3">
+														<audio controls className="w-full h-8">
+															<source src={track.audioUrl} type="audio/mpeg" />
+														</audio>
+													</div>
 												)}
 												{track.excerpt && (
 													<p className="text-sm text-foreground leading-relaxed line-clamp-2">

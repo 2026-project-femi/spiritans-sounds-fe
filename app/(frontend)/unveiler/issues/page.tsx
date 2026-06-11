@@ -53,14 +53,15 @@ export default async function MagazinePage() {
     issues = result.docs.map((d: any) => ({
       ...d,
       _id: d.id,
-      imageUrl: d.coverImage && typeof d.coverImage === 'object' ? d.coverImage.url : undefined
+      imageUrl: d.cover && typeof d.cover === 'object' ? d.cover.url : undefined,
+      fileUrl: d.file && typeof d.file === 'object' ? d.file.url : undefined
     })) as MagazineIssue[];
   } catch {
-    // Silently fall back to dummy content
+    //
   }
 
-  const isDummy = issues.length === 0;
-  const displayIssues = isDummy ? DUMMY_ISSUES : issues;
+  const isDummy = false;
+  const displayIssues = issues;
 
   return (
     <main className="pb-24">
@@ -80,21 +81,21 @@ export default async function MagazinePage() {
           and challenges of the young, tells the story of Spiritans Sound Outreach, and shares news 
           from the missionary work of the Holy Ghost Fathers and Brothers.
         </p>
-        {isDummy && (
-          <div className="mt-6 inline-flex items-center gap-2 text-sm text-amber-400/80 bg-amber-400/10 border border-amber-400/20 px-4 py-2 rounded-full">
-            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-            Showing sample content — add issues in Sanity Studio to display real issues
-          </div>
-        )}
       </section>
 
       {/* Issues Grid */}
       <section className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {displayIssues.map((issue, i) => (
-            <IssueCard key={issue._id} issue={issue} index={i} isDummy={isDummy} />
-          ))}
-        </div>
+        {displayIssues.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {displayIssues.map((issue, i) => (
+              <IssueCard key={issue._id} issue={issue} index={i} isDummy={false} />
+            ))}
+          </div>
+        ) : (
+          <div className="py-24 text-center">
+            <p className="text-gray-500 text-lg">No issues published yet — check back soon.</p>
+          </div>
+        )}
       </section>
 
       {/* Subscribe CTA */}
