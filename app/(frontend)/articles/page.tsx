@@ -7,7 +7,7 @@ import { Article } from "@/lib/types";
 import type { Metadata } from "next";
 import { getImageUrlFromResponse } from "@/lib/utils";
 
-export const revalidate = 3600;
+
 
 export const metadata: Metadata = {
 	title: "Articles",

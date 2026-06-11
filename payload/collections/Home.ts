@@ -1,7 +1,14 @@
+import { revalidatePath } from 'next/cache';
 import { CollectionConfig } from 'payload'
 
 export const HomePage: CollectionConfig = {
   slug: 'homepage',
+  hooks: {
+    afterChange: [({doc})=>{
+      revalidatePath('/');
+      return doc;
+    }]
+  },
   fields: [
     {
       name: 'title',

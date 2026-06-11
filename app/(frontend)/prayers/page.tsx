@@ -6,7 +6,6 @@ import { Sidebar } from "@/components/common/Sidebar";
 import { PrayerItem } from "@/lib/types";
 import type { Metadata } from "next";
 
-export const revalidate = 3600;
 
 export const metadata: Metadata = {
 	title: "Prayers & Devotionals",

@@ -17,7 +17,7 @@ import {
 import { UnveilerNewsletter } from "@/components/UnveilerNewsletter";
 import type { Metadata } from "next";
 
-export const revalidate = 3600;
+
 
 export const metadata: Metadata = {
   title: "Unveiler Feed",

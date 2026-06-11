@@ -10,7 +10,6 @@ import { HomeFAQ } from "@/components/HomeFAQ";
 import { getSidebarData } from "@/lib/payload";
 import { getImageUrlFromResponse } from "@/lib/utils";
 
-export const revalidate = 3600;
 
 const HomePage: React.FC = async () => {
 	const payload = await getPayload({ config: configPromise });

@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache';
 import { CollectionConfig } from 'payload'
 
 export const Music: CollectionConfig = {
@@ -7,6 +8,13 @@ export const Music: CollectionConfig = {
   },
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [({doc})=>{
+      revalidatePath('/music');
+      revalidatePath('/')
+      return doc;
+    }]
   },
   fields: [
     {

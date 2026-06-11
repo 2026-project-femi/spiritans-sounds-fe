@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache';
 import { CollectionConfig } from 'payload'
 
 export const MagazineIssues: CollectionConfig = {
@@ -7,6 +8,12 @@ export const MagazineIssues: CollectionConfig = {
   },
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [({doc})=>{
+      revalidatePath('/unveiler/issues');
+      return doc;
+    }]
   },
   fields: [
     {

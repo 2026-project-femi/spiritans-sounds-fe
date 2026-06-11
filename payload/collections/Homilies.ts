@@ -2,6 +2,7 @@ import { Banner } from '@/blocks/Banner/config'
 import { Code } from '@/blocks/Code/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
 import { BlocksFeature, FixedToolbarFeature, HeadingFeature, HorizontalRuleFeature, InlineToolbarFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
+import { revalidatePath } from 'next/cache'
 import { CollectionConfig } from 'payload'
 
 export const Homilies: CollectionConfig = {
@@ -11,6 +12,13 @@ export const Homilies: CollectionConfig = {
   },
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [({doc})=>{
+      revalidatePath('/homilies');
+      revalidatePath('/')
+      return doc;
+    }]
   },
   fields: [
     {

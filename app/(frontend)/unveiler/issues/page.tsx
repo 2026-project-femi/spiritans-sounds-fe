@@ -3,7 +3,7 @@ import configPromise from "@/payload.config";
 import { IssueCard } from "@/components/magazine/IssueCard";
 import type { Metadata } from "next";
 
-export const revalidate = 3600;
+
 
 export const metadata: Metadata = {
   title: "Treasures Unveiler Magazine",

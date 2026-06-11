@@ -1,9 +1,16 @@
+import { revalidatePath } from 'next/cache';
 import { CollectionConfig } from 'payload'
 
 export const Radio: CollectionConfig = {
   slug: 'radio',
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [({doc})=>{
+      revalidatePath('/unveiler/radio');
+      return doc;
+    }]
   },
   fields: [
     {

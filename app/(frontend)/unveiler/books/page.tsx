@@ -4,7 +4,7 @@ import { BookCard } from "@/components/magazine/BookCard";
 import { ExternalLink } from "lucide-react";
 import type { Metadata } from "next";
 
-export const revalidate = 3600;
+
 
 export const metadata: Metadata = {
   title: "Books & Publications",

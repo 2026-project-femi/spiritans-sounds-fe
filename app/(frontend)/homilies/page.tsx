@@ -5,7 +5,7 @@ import configPromise from "@/payload.config";
 import { Sidebar } from "@/components/common/Sidebar";
 import type { Metadata } from "next";
 
-export const revalidate = 3600;
+
 
 export const metadata: Metadata = {
 	title: "Homilies & Reflections",

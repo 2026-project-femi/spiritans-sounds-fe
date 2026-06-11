@@ -7,7 +7,7 @@ import { YouTubeEmbed } from "@/components/PortableTextComponents";
 import { ArrowLeft, CalendarDays, MapPin, Clock } from "lucide-react";
 import type { Metadata } from "next";
 
-export const revalidate = 3600;
+
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;

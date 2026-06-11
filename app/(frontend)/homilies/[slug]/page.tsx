@@ -10,7 +10,6 @@ import { getSidebarData } from '@/lib/payload'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 
-export const revalidate = 3600
 
 export async function generateMetadata({
   params,

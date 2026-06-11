@@ -10,6 +10,7 @@ import {
 	lexicalEditor,
 	UploadFeature,
 } from "@payloadcms/richtext-lexical";
+import { revalidatePath } from "next/cache";
 import { CollectionConfig } from "payload";
 
 export const Events: CollectionConfig = {
@@ -19,6 +20,12 @@ export const Events: CollectionConfig = {
 	},
 	access: {
 		read: () => true,
+	},
+	hooks: {
+		afterChange: [({doc})=>{
+			revalidatePath('/unveiler');``
+			return doc;
+		}]
 	},
 	fields: [
 		{

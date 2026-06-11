@@ -4,7 +4,7 @@ import { getPayload, type Where } from "payload"; // 1. Imported Where type
 import configPromise from "@/payload.config";
 import { Sidebar } from "@/components/common/Sidebar";
 
-export const revalidate = 3600;
+
 
 const RESULTS_PER_PAGE = 10;
 

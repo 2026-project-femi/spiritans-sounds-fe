@@ -6,7 +6,7 @@ import { Calendar, ArrowLeft, BookOpen, Download, ShieldCheck, FileText } from "
 import { PurchaseButton } from "./PurchaseButton";
 import type { Metadata } from "next";
 
-export const revalidate = 3600;
+
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
