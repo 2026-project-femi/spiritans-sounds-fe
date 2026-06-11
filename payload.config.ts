@@ -52,6 +52,7 @@ export default buildConfig({
 			baseDir: path.resolve(dirname),
 		},
 	},
+	serverURL: process.env.NEXT_PUBLIC_SERVER_URL || 'https://spiritanssound.com',
 	collections: [
 		Users,
 		Media,
