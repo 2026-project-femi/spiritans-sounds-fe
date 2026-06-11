@@ -17,9 +17,10 @@ export const Events: CollectionConfig = {
 	slug: "events",
 	admin: {
 		useAsTitle: "title",
+		hidden: ({user})=>user.role === 'contributor'
 	},
 	access: {
-		read: () => true,
+		read: () => true,	
 	},
 	hooks: {
 		afterChange: [({doc})=>{

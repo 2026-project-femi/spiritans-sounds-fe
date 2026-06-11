@@ -5,6 +5,8 @@ export const MagazineIssues: CollectionConfig = {
   slug: 'magazineIssues',
   admin: {
     useAsTitle: 'title',
+    hidden: ({user})=>user.role === 'contributor' 
+
   },
   access: {
     read: () => true,

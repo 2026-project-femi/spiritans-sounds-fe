@@ -27,6 +27,10 @@ export const plugins: Plugin[] = [
   redirectsPlugin({
     collections: ['pages', 'posts'],
     overrides: {
+      // TODO: Remove this entire admin block to un-hide the Redirects collection
+      admin: {
+        hidden: true,
+      },
       // @ts-expect-error - This is a valid override, mapped fields don't resolve to the same type
       fields: ({ defaultFields }) => {
         return defaultFields.map((field) => {
@@ -59,6 +63,10 @@ export const plugins: Plugin[] = [
       payment: false,
     },
     formOverrides: {
+      // TODO: Remove this entire admin block to un-hide the Forms collection
+      admin: {
+        hidden: true,
+      },
       fields: ({ defaultFields }) => {
         return defaultFields.map((field) => {
           if ('name' in field && field.name === 'confirmationMessage') {
@@ -79,11 +87,21 @@ export const plugins: Plugin[] = [
         })
       },
     },
+    formSubmissionOverrides: {
+      // TODO: Remove this entire admin block to un-hide the Form Submissions collection
+      admin: {
+        hidden: true,
+      },
+    },
   }),
   searchPlugin({
     collections: ['posts'],
     beforeSync: beforeSyncWithSearch,
     searchOverrides: {
+      // TODO: Remove this entire admin block to un-hide the Search Results collection
+      admin: {
+        hidden: true,
+      },
       fields: ({ defaultFields }) => {
         return [...defaultFields, ...searchFields]
       },

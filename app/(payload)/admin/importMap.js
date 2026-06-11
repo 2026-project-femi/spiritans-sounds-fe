@@ -26,6 +26,10 @@ import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from 
 import { FolderTypeField as FolderTypeField_2b8867833a34864a02ddf429b0728a40 } from '@payloadcms/next/client'
 import { RowLabel as RowLabel_b1d02ac03d11f7b38650c3919ff7a625 } from '@/payload/Footer/RowLabel'
 import { RowLabel as RowLabel_ef1777998f20cb87d581e9fb460d55bb } from '@/payload/Header/RowLabel'
+import { AdminIcon as AdminIcon_39abe1808d04cf03ebff7ec7c40f754a } from '@/components/Admin/AdminIcon'
+import { AdminLogo as AdminLogo_b328b4a465e4e093b868a53491591fa0 } from '@/components/Admin/AdminLogo'
+import { WelcomeMessage as WelcomeMessage_51fa6d89e070db68d0c37b04bd000b67 } from '@/components/Admin/WelcomeMessage'
+import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 /** @type import('payload').ImportMap */
@@ -58,5 +62,9 @@ export const importMap = {
   "@payloadcms/next/client#FolderTypeField": FolderTypeField_2b8867833a34864a02ddf429b0728a40,
   "@/payload/Footer/RowLabel#RowLabel": RowLabel_b1d02ac03d11f7b38650c3919ff7a625,
   "@/payload/Header/RowLabel#RowLabel": RowLabel_ef1777998f20cb87d581e9fb460d55bb,
+  "@/components/Admin/AdminIcon#AdminIcon": AdminIcon_39abe1808d04cf03ebff7ec7c40f754a,
+  "@/components/Admin/AdminLogo#AdminLogo": AdminLogo_b328b4a465e4e093b868a53491591fa0,
+  "@/components/Admin/WelcomeMessage#WelcomeMessage": WelcomeMessage_51fa6d89e070db68d0c37b04bd000b67,
+  "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

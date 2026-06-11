@@ -44,6 +44,7 @@ export const EmailCampaigns: CollectionConfig = {
 	admin: {
 		useAsTitle: "subject",
 		defaultColumns: ["subject", "status", "sentAt", "sentCount"],
+		hidden: ({user})=>user.role === 'contributor',
 		// Inject the Send Campaign button into the document toolbar
 		components: {
 			edit: {

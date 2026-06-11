@@ -1,3 +1,5 @@
+import { anyone } from '@/access/anyone'
+import { isAdmin, isAdminOrEditor } from '@/access/roles'
 import { Banner } from '@/blocks/Banner/config'
 import { Code } from '@/blocks/Code/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
@@ -9,9 +11,14 @@ export const Prayers: CollectionConfig = {
   slug: 'prayer',
   admin: {
     useAsTitle: 'title',
+    hidden: ({user})=>user.role === 'contributor' 
+
   },
   access: {
-    read: () => true,
+    read: anyone,
+    update: isAdminOrEditor,
+    delete: isAdmin,
+    create: isAdminOrEditor,
   },
   hooks: {
     afterChange: [({doc})=>{

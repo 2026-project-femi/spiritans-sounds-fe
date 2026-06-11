@@ -48,6 +48,19 @@ export default buildConfig({
 	sharp,
 	admin: {
 		user: Users.slug,
+		meta: {
+			titleSuffix: ' | Spiritans Sound',
+			icons: [{ url: '/favicon-32x32.png' }],
+		},
+		components: {
+			graphics: {
+				Logo: '@/components/Admin/AdminLogo#AdminLogo',
+				Icon: '@/components/Admin/AdminIcon#AdminIcon',
+			},
+			beforeDashboard: [
+				'@/components/Admin/WelcomeMessage#WelcomeMessage',
+			],
+		},
 		importMap: {
 			baseDir: path.resolve(dirname),
 		},

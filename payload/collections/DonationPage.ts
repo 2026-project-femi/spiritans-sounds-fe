@@ -2,6 +2,7 @@ import { CollectionConfig } from 'payload'
 
 export const DonationPage: CollectionConfig = {
   slug: 'donationPage',
+  admin: {hidden: true},
   fields: [
     {
       name: 'message',

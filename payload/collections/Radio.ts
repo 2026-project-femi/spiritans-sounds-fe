@@ -1,10 +1,19 @@
+import { isAdminOrEditor } from '@/access/roles';
 import { revalidatePath } from 'next/cache';
 import { CollectionConfig } from 'payload'
 
 export const Radio: CollectionConfig = {
   slug: 'radio',
+  admin: {
+    hidden: ({user})=>user.role === 'contributor' 
+
+  },
   access: {
-    read: () => true,
+    read: isAdminOrEditor,
+    update: isAdminOrEditor,
+    delete: isAdminOrEditor,
+    create: isAdminOrEditor,
+    
   },
   hooks: {
     afterChange: [({doc})=>{

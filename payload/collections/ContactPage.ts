@@ -2,6 +2,7 @@ import { CollectionConfig } from 'payload'
 
 export const ContactPage: CollectionConfig = {
   slug: 'contactPage',
+  admin: {hidden: true},
   fields: [
     {
       name: 'address',

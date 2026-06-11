@@ -9,6 +9,8 @@ export const Homilies: CollectionConfig = {
   slug: 'homily',
   admin: {
     useAsTitle: 'title',
+    hidden: ({user})=>user.role === 'contributor' 
+
   },
   access: {
     read: () => true,

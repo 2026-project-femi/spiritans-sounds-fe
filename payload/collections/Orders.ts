@@ -1,12 +1,19 @@
+import { anyone } from '@/access/anyone'
+import { isAdmin, isAdminOrEditor } from '@/access/roles'
 import { CollectionConfig } from 'payload'
 
 export const Orders: CollectionConfig = {
   slug: 'orders',
   admin: {
     useAsTitle: 'id',
+    hidden: ({user})=>user.role === 'contributor' 
+
   },
   access: {
-    read: () => true,
+      read: isAdminOrEditor,
+        update: isAdminOrEditor,
+        delete: isAdmin,
+        create: anyone,
   },
   fields: [
     {

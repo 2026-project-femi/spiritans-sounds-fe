@@ -2,6 +2,9 @@ import { CollectionConfig } from 'payload'
 
 export const MagazineLanding: CollectionConfig = {
   slug: 'magazineLanding',
+  admin: {
+    hidden: true
+  },
   fields: [
     {
       name: 'title',

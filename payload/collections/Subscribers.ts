@@ -1,12 +1,18 @@
+import { isAdmin } from '@/access/roles'
 import { CollectionConfig } from 'payload'
 
 export const Subscribers: CollectionConfig = {
   slug: 'subscribers',
   admin: {
     useAsTitle: 'email',
+    hidden: ({user})=>user.role === 'contributor' 
+
   },
   access: {
     read: () => true,
+    update: () => true,
+    delete: isAdmin,
+    
   },
   fields: [
     {

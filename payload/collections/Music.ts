@@ -1,3 +1,4 @@
+import { isAdmin, isAdminOrEditor } from '@/access/roles';
 import { revalidatePath } from 'next/cache';
 import { CollectionConfig } from 'payload'
 
@@ -5,9 +6,14 @@ export const Music: CollectionConfig = {
   slug: 'music',
   admin: {
     useAsTitle: 'title',
+    hidden: ({user})=>user.role === 'contributor' 
+
   },
   access: {
     read: () => true,
+    update: isAdminOrEditor,
+    delete: isAdmin,
+    create: isAdminOrEditor,
   },
   hooks: {
     afterChange: [({doc})=>{

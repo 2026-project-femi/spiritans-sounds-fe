@@ -9,6 +9,9 @@ export const HomePage: CollectionConfig = {
       return doc;
     }]
   },
+  admin: {
+    hidden: ({user})=>user.role === 'contributor'
+  },
   fields: [
     {
       name: 'title',

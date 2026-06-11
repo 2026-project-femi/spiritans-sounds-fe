@@ -1,3 +1,4 @@
+import { anyone } from '@/access/anyone'
 import { Banner } from '@/blocks/Banner/config'
 import { Code } from '@/blocks/Code/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
@@ -9,6 +10,7 @@ export const Articles: CollectionConfig = {
   slug: 'article',
   admin: {
     useAsTitle: 'title',
+    hidden: ({user})=>user.role === 'contributor' 
   },
   access: {
     read: () => true,
