@@ -2,10 +2,10 @@ import canUseDOM from './canUseDOM'
 
 export const getServerSideURL = () => {
   return (
-    process.env.NEXT_PUBLIC_SERVER_URL ||
-    (process.env.VERCEL_PROJECT_PRODUCTION_URL
-      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-      : 'http://localhost:3000')
+    process.env.NEXT_PUBLIC_SERVER_URL || "https://spiritanssound.com"
+    // (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    //   ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    //   : 'http://localhost:3000')
   )
 }
 
@@ -22,5 +22,5 @@ export const getClientSideURL = () => {
     return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
   }
 
-  return process.env.NEXT_PUBLIC_SERVER_URL || ''
+  return process.env.NEXT_PUBLIC_SERVER_URL || 'https://spiritanssound.com'
 }
