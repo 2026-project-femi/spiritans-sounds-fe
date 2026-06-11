@@ -111,7 +111,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ categories = [], recentPosts =
 					<div className="space-y-8">
 						{recentPosts.map((post) => (
 							<Link
-								href={`/${post.type === "homily" ? "homily" : "articles"}/${post.slug}`}
+								href={`/${post.type === "homily" ? "homilies" : "articles"}/${post.slug}`}
 								key={post._id}
 								className="group flex items-start space-x-4 cursor-pointer">
 								<div className="w-16 h-16 shrink-0 bg-gray-100 overflow-hidden   transition-all duration-300">
