@@ -196,7 +196,9 @@ async function handleSuccessfulPurchase(data: any, payloadCms: any) {
         }
 
         // 2. Safely parse file URL from populated media document
-        const item = order.item; 
+        const firstItem = order.items?.[0];
+        // Polymorphic relations wrap the document in a 'value' key
+        const item = firstItem?.value || firstItem; 
         const fileDoc = item?.file; // Assuming 'file' relates to a media collection
         
         if (!fileDoc || !fileDoc.url) {

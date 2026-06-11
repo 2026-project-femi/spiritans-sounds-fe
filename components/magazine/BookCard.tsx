@@ -36,7 +36,7 @@ export function BookCard({ book }: { book: Book }) {
           email: form.email,
           name: form.name,
           itemId: book._id,
-          itemType: "publication",
+          itemType: "publications",
         }),
       });
       const data = await res.json();

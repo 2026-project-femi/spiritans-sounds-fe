@@ -66,7 +66,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Item not found" }, { status: 404 });
     }
     
-    if (item.price !== "Paid" || !item.priceAmount || item.priceAmount <= 0) {
+    if (item.price?.toLowerCase() !== "paid" || !item.priceAmount || item.priceAmount <= 0) {
       return NextResponse.json({ error: "Item is not available for purchase" }, { status: 400 });
     }
 

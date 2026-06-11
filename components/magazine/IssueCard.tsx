@@ -41,7 +41,7 @@ export function IssueCard({ issue, index, isDummy }: { issue: MagazineIssue; ind
           email: form.email,
           name: form.name,
           itemId: issue._id,
-          itemType: "magazineIssue",
+          itemType: "magazineIssues",
         }),
       });
       const data = await res.json();
