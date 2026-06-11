@@ -80,7 +80,18 @@ export default buildConfig({
 	editor: defaultLexical,
 	secret: process.env.PAYLOAD_SECRET || "DEVELOPMENT_ONLY_SECRET_STRING_12345",
 	cookiePrefix: 'spiritans',
-	cors: [getServerSideURL()].filter(Boolean),
+	cors: [
+		getServerSideURL(),
+		"https://spiritanssound.com",
+		"https://www.spiritanssound.com",
+		process.env.APP_URL
+	].filter(Boolean) as string[],
+	csrf: [
+		getServerSideURL(),
+		"https://spiritanssound.com",
+		"https://www.spiritanssound.com",
+		process.env.APP_URL
+	].filter(Boolean) as string[],
 	typescript: {
 		outputFile: path.resolve(dirname, "payload-types.ts"),
 	},
