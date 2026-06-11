@@ -48,3 +48,6 @@ public/media
 
 production-export-2026-06-10t23-36-28-418z
 sanity-export.tar.gz
+
+# Payload auto-generated files
+app/(payload)/admin/importMap.js
