@@ -120,7 +120,12 @@ export default buildConfig({
 			? [
 					s3Storage({
 						collections: {
-							media: true,
+							media: {
+								prefix: "",
+								generateFileURL: (args: any) => {
+									return `https://assets.spiritanssound.com/${args.prefix ? args.prefix + "/" : ""}${args.filename}`;
+								},
+							},
 						},
 						bucket: process.env.S3_BUCKET!,
 						config: {
