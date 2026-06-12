@@ -163,7 +163,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                                 <div className="space-y-6 md:space-y-8">
                                     {results.map((result) => (
                                         <Link
-                                            href={`/${result.type === "homily" ? "homily" : result.type === "article" ? "articles" : "prayers"}/${result.slug}`}
+                                            href={`/${result.type === "homily" ? "homilies" : result.type === "article" ? "articles" : "prayers"}/${result.slug}`}
                                             key={result._id}
                                             className="block group bg-white rounded-lg border shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden">
                                             <article className="flex flex-col md:grid md:grid-cols-12 gap-0">
