@@ -49,7 +49,7 @@ export default async function MagazinePage() {
   let issues: MagazineIssue[] = [];
   try {
     const payload = await getPayload({ config: configPromise });
-    const result = await payload.find({ collection: 'magazineIssues', sort: '-publishedAt', limit: 100 });
+    const result = await payload.find({ collection: 'magazineIssues', where: { _status: { equals: 'published' } }, sort: '-publishedAt', limit: 100 });
     issues = result.docs.map((d: any) => ({
       ...d,
       _id: d.id,

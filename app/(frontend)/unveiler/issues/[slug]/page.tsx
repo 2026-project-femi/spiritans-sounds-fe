@@ -12,8 +12,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const payload = await getPayload({ config: configPromise });
   const result = await payload.find({
-      collection: "magazineIssues",
-      where: { slug: { equals: slug } }
+    collection: "magazineIssues",
+    where: {
+      and: [
+        { slug: { equals: slug } },
+        { _status: { equals: 'published' } }
+      ]
+    },
   });
   const doc: any = result.docs[0];
   if (!doc) return {};
@@ -53,8 +58,13 @@ export default async function SingleIssuePage({ params }: { params: Promise<{ sl
   try {
     const payload = await getPayload({ config: configPromise });
     const result = await payload.find({
-        collection: "magazineIssues",
-        where: { slug: { equals: slug } }
+      collection: "magazineIssues",
+      where: {
+        and: [
+          { slug: { equals: slug } },
+          { _status: { equals: 'published' } }
+        ]
+      },
     });
     const d: any = result.docs[0];
     if (d) {

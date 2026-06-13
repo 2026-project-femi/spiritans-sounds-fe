@@ -10,6 +10,7 @@ import {
 	lexicalEditor,
 	UploadFeature,
 } from "@payloadcms/richtext-lexical";
+import { authenticated } from "@/access/authenticated";
 import { authenticatedOrPublished } from "@/access/authenticatedOrPublished";
 import { publishedAtField } from "@/payload/fields/statusField";
 import { revalidatePath } from "next/cache";
@@ -23,7 +24,11 @@ export const Events: CollectionConfig = {
 		defaultColumns: ['title', '_status', 'date', 'publishedAt', 'updatedAt'],
 	},
 	access: {
-		read: authenticatedOrPublished,	
+		read: authenticatedOrPublished,
+		readVersions: authenticated,
+		create: authenticated,
+		update: authenticated,
+		delete: authenticated,
 	},
 	hooks: {
 		afterChange: [({doc})=>{

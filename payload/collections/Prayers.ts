@@ -1,4 +1,5 @@
 import { anyone } from '@/access/anyone'
+import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { isAdmin, isAdminOrEditor } from '@/access/roles'
 import { Banner } from '@/blocks/Banner/config'
@@ -18,6 +19,7 @@ export const Prayers: CollectionConfig = {
   },
   access: {
     read: authenticatedOrPublished,
+    readVersions: authenticated,
     update: isAdminOrEditor,
     delete: isAdmin,
     create: isAdminOrEditor,

@@ -1,3 +1,4 @@
+import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { Banner } from '@/blocks/Banner/config'
 import { Code } from '@/blocks/Code/config'
@@ -16,6 +17,10 @@ export const Homilies: CollectionConfig = {
   },
   access: {
     read: authenticatedOrPublished,
+    readVersions: authenticated,
+    create: authenticated,
+    update: authenticated,
+    delete: authenticated,
   },
   hooks: {
     afterChange: [({doc})=>{

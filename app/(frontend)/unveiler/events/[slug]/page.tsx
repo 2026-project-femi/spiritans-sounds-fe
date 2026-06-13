@@ -13,8 +13,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const payload = await getPayload({ config: configPromise });
   const result = await payload.find({
-      collection: "events",
-      where: { slug: { equals: slug } },
+    collection: "events",
+    where: {
+      and: [
+        { slug: { equals: slug } },
+        { _status: { equals: 'published' } }
+      ]
+    },
   });
   const doc = result.docs[0];
   if (!doc) return {};
@@ -53,14 +58,20 @@ function isUpcoming(dateStr: string) {
 }
 
 export default async function SingleEventPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
 
   let event: Event | null = null;
   try {
 	const payload = await getPayload({ config: configPromise });
 	const result = await payload.find({
 		collection: "events",
-		where: { slug: { equals: slug } },
+		where: {
+			and: [
+				{ slug: { equals: slug } },
+				{ _status: { equals: 'published' } }
+			]
+		},
 	});
 	const rawDoc = result.docs[0];
     if (rawDoc) {

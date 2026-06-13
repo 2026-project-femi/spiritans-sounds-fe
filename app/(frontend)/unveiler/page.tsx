@@ -439,19 +439,19 @@ export default async function UnveilerHomePage({
 	const payload = await getPayload({ config: configPromise });
     
     // Attempt fetching a featured event
-    const featuredRes = await payload.find({ collection: 'events', limit: 1, sort: '-date' }); // Fallback sorting, maybe no isFeatured in schema yet
+    const featuredRes = await payload.find({ collection: 'events', where: { _status: { equals: 'published' } }, limit: 1, sort: '-date' }); // Fallback sorting, maybe no isFeatured in schema yet
     if (featuredRes.docs.length > 0) {
         const d = featuredRes.docs[0];
         featuredEvent = { ...d, _id: d.id, imageUrl: d.featuredImage && typeof d.featuredImage === 'object' ? d.featuredImage.url : undefined } as any;
     }
 
-    const popularRes = await payload.find({ collection: 'events', limit: 4, sort: '-date' });
+    const popularRes = await payload.find({ collection: 'events', where: { _status: { equals: 'published' } }, limit: 4, sort: '-date' });
     popularEvents = popularRes.docs.map((d: any) => ({ ...d, _id: d.id, imageUrl: d.featuredImage && typeof d.featuredImage === 'object' ? d.featuredImage.url : undefined })) as any[];
 
     const start = (currentPage - 1) * POSTS_PER_PAGE;
     const end = start + POSTS_PER_PAGE;
 
-    const allRes = await payload.find({ collection: 'events', limit: 100, sort: '-date' });
+    const allRes = await payload.find({ collection: 'events', where: { _status: { equals: 'published' } }, limit: 100, sort: '-date' });
     const allRecent = allRes.docs.map((d: any) => ({ ...d, _id: d.id, imageUrl: d.featuredImage && typeof d.featuredImage === 'object' ? d.featuredImage.url : undefined })) as any[];
     totalCount = allRes.totalDocs;
 

@@ -31,6 +31,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
 	const payload = await getPayload({ config: configPromise });
 	const result = await payload.find({
 		collection: "events",
+		where: { _status: { equals: 'published' } },
 		limit: EVENTS_PER_PAGE,
 		page: currentPage,
 		sort: "-date",

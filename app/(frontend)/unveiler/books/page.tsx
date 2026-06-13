@@ -49,7 +49,7 @@ export default async function BooksPage() {
   let books: Book[] = [];
   try {
     const payload = await getPayload({ config: configPromise });
-    const result = await payload.find({ collection: 'publications', sort: '-publishedAt', limit: 100 });
+    const result = await payload.find({ collection: 'publications', where: { _status: { equals: 'published' } }, sort: '-publishedAt', limit: 100 });
     books = result.docs.map((d: any) => ({
       ...d,
       _id: d.id,

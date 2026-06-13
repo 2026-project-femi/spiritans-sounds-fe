@@ -1,3 +1,4 @@
+import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished';
 import { publishedAtField } from '@/payload/fields/statusField';
 import { revalidatePath } from 'next/cache';
@@ -12,6 +13,10 @@ export const MagazineIssues: CollectionConfig = {
   },
   access: {
     read: authenticatedOrPublished,
+    readVersions: authenticated,
+    create: authenticated,
+    update: authenticated,
+    delete: authenticated,
   },
   hooks: {
     afterChange: [({doc})=>{

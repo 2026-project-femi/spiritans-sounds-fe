@@ -11,7 +11,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 	const payload = await getPayload({ config: configPromise });
 	const result = await payload.find({
 		collection: "music",
-		where: { slug: { equals: slug } },
+		where: {
+			and: [
+				{ slug: { equals: slug } },
+				{ _status: { equals: 'published' } }
+			]
+		},
 	});
     const doc = result.docs[0];
     if (!doc) return {};
@@ -53,7 +58,12 @@ export default async function SingleMusicPage({ params }: { params: Promise<{ sl
 	const payload = await getPayload({ config: configPromise });
 	const result = await payload.find({
 		collection: "music",
-		where: { slug: { equals: resolvedParams.slug } },
+		where: {
+			and: [
+				{ slug: { equals: resolvedParams.slug } },
+				{ _status: { equals: 'published' } }
+			]
+		},
 	});
 	const rawDoc = result.docs[0];
     

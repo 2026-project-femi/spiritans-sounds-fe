@@ -32,6 +32,7 @@ export default async function ArticlesPage({ searchParams }: { searchParams: Pro
 	const payload = await getPayload({ config: configPromise });
 	const result = await payload.find({
 		collection: "article",
+		where: { _status: { equals: 'published' } },
 		limit: ARTICLES_PER_PAGE,
 		page: currentPage,
 		sort: "-publishedAt",

@@ -35,6 +35,7 @@ export default async function MusicPage({
 	const payload = await getPayload({ config: configPromise });
 	const result = await payload.find({
 		collection: "music",
+		where: { _status: { equals: 'published' } },
 		limit: MUSIC_PER_PAGE,
 		page: currentPage,
 	});

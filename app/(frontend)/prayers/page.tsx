@@ -43,6 +43,7 @@ export default async function PrayersPage({ searchParams }: { searchParams: Prom
 	const payload = await getPayload({ config: configPromise });
 	const result = await payload.find({
 		collection: "prayer",
+		where: { _status: { equals: 'published' } },
 		limit: PRAYERS_PER_PAGE,
 		page: currentPage,
 		sort: "-publishedAt",

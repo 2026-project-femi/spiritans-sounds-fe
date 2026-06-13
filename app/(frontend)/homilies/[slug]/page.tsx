@@ -20,7 +20,12 @@ export async function generateMetadata({
   const payload = await getPayload({ config: configPromise })
   const result = await payload.find({
     collection: 'homily',
-    where: { slug: { equals: slug } },
+    where: {
+      and: [
+        { slug: { equals: slug } },
+        { _status: { equals: 'published' } }
+      ]
+    },
     depth: 1,
   })
   const doc = result.docs[0]
@@ -64,7 +69,12 @@ export default async function SingleHomilyPage({
 
   const result = await payload.find({
     collection: 'homily',
-    where: { slug: { equals: slug } },
+    where: {
+      and: [
+        { slug: { equals: slug } },
+        { _status: { equals: 'published' } }
+      ]
+    },
     depth: 1, // populates featuredImage, audio as objects
   })
 
@@ -73,7 +83,7 @@ export default async function SingleHomilyPage({
 
      // Now fetch approved comments for this specific doc
   const commentsResult = await payload.find({
-    collection: 'comments',
+    collection: "comments",
     where: {
       and: [
         { 'post.value': { equals: doc.id } },

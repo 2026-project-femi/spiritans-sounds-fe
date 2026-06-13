@@ -45,6 +45,7 @@ export default async function HomiliesPage({ searchParams }: HomiliesPageProps) 
 	const payload = await getPayload({ config: configPromise });
 	const result = await payload.find({
 		collection: "homily",
+		where: { _status: { equals: 'published' } },
 		limit: HOMILIES_PER_PAGE,
 		page: currentPage,
 		sort: "-date",
@@ -52,11 +53,13 @@ export default async function HomiliesPage({ searchParams }: HomiliesPageProps) 
 
 	const recentHomiliesResult = await payload.find({
 		collection: "homily",
+		where: { _status: { equals: 'published' } },
 		limit: 3,
 		sort: "-date",
 	});
 	const recentArticlesResult = await payload.find({
 		collection: "article",
+		where: { _status: { equals: 'published' } },
 		limit: 2,
 		sort: "-publishedAt",
 	});

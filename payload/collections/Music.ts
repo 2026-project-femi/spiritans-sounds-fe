@@ -1,3 +1,4 @@
+import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { isAdmin, isAdminOrEditor } from '@/access/roles';
 import { publishedAtField } from '@/payload/fields/statusField';
@@ -13,6 +14,7 @@ export const Music: CollectionConfig = {
   },
   access: {
     read: authenticatedOrPublished,
+    readVersions: authenticated,
     update: isAdminOrEditor,
     delete: isAdmin,
     create: isAdminOrEditor,

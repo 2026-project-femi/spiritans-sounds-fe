@@ -44,9 +44,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         };
         
         const [homily, articles, prayers] = await Promise.all([
-            payload.find({ collection: 'homily', where: searchWhere, limit: 50 }),
-            payload.find({ collection: 'article', where: searchWhere, limit: 50 }),
-            payload.find({ collection: 'prayer', where: searchWhere, limit: 50 }),
+            payload.find({ collection: 'homily', where: { and: [searchWhere, { _status: { equals: 'published' } }] }, limit: 50 }),
+            payload.find({ collection: 'article', where: { and: [searchWhere, { _status: { equals: 'published' } }] }, limit: 50 }),
+            payload.find({ collection: 'prayer', where: { and: [searchWhere, { _status: { equals: 'published' } }] }, limit: 50 }),
         ]);
 
         const mapResults = (docs: any[], type: "homily" | "article" | "prayer") => docs.map(d => ({
@@ -111,9 +111,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
     const pageNumbers = getPageNumbers();
 
-    const homilyRes = await payload.find({ collection: 'homily', limit: 100 });
-    const recentHomiliesRes = await payload.find({ collection: 'homily', sort: '-date', limit: 5 });
-    const recentArticlesRes = await payload.find({ collection: 'article', sort: '-publishedAt', limit: 5 });
+    const homilyRes = await payload.find({ collection: 'homily', where: { _status: { equals: 'published' } }, limit: 100 });
+    const recentHomiliesRes = await payload.find({ collection: 'homily', where: { _status: { equals: 'published' } }, sort: '-date', limit: 5 });
+    const recentArticlesRes = await payload.find({ collection: 'article', where: { _status: { equals: 'published' } }, sort: '-publishedAt', limit: 5 });
 
     // Safely extract names for sidebar tracking strings
     const categories = Array.from(new Set(

@@ -17,10 +17,10 @@ const HomePage: React.FC = async () => {
 	console.log(homeGlobal, 'home global')
 
 	const [articlesRes, homilyRes, prayersRes, musicRes] = await Promise.all([
-		payload.find({ collection: "article", sort: "-publishedAt", limit: 3 }),
-		payload.find({ collection: "homily", sort: "-date", limit: 3 }),
-		payload.find({ collection: "prayer", sort: "-publishedAt", limit: 3 }),
-		payload.find({ collection: "music", sort: "-publishedAt", limit: 3 }),
+		payload.find({ collection: "article", where: { _status: { equals: 'published' } }, sort: "-publishedAt", limit: 3 }),
+		payload.find({ collection: "homily", where: { _status: { equals: 'published' } }, sort: "-date", limit: 3 }),
+		payload.find({ collection: "prayer", where: { _status: { equals: 'published' } }, sort: "-publishedAt", limit: 3 }),
+		payload.find({ collection: "music", where: { _status: { equals: 'published' } }, sort: "-publishedAt", limit: 3 }),
 	]);
 
 	const homeDoc = homeGlobal.docs?.[0] || {};
