@@ -28,7 +28,7 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
     try {
       await db.execute(
         sql.raw(
-          `UPDATE "${table}" SET "_status" = 'published' WHERE "_status" IS NULL OR "_status" = ''`
+          `UPDATE "${table}" SET "_status" = 'published' WHERE "_status" IS NULL`
         )
       )
     } catch (e: any) {
