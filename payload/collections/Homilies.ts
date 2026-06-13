@@ -51,7 +51,18 @@ export const Homilies: CollectionConfig = {
     },
     {
       name: 'category',
-      type: 'text', // You could change this to select or relationship
+      type: 'select',
+      options: [
+        { label: 'Sunday', value: 'Sunday' },
+        { label: 'Feast Day', value: 'Feast Day' },
+        { label: 'Special', value: 'Special' },
+        { label: 'Weekday', value: 'Weekday' },
+        { label: 'Memorial', value: 'Memorial' },
+        { label: 'Solemnity', value: 'Solemnity' },
+      ],
+      admin: {
+        description: 'Select the homily category',
+      },
     },
     {
       name: 'featuredImage',

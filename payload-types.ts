@@ -367,7 +367,10 @@ export interface Homily {
   title: string;
   date: string;
   scripture?: string | null;
-  category?: string | null;
+  /**
+   * Select the homily category
+   */
+  category?: ('Sunday' | 'Feast Day' | 'Special' | 'Weekday' | 'Memorial' | 'Solemnity') | null;
   featuredImage?: (string | null) | Media;
   excerpt?: string | null;
   content?: {
