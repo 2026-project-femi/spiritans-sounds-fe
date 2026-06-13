@@ -10,6 +10,8 @@ import {
 	lexicalEditor,
 	UploadFeature,
 } from "@payloadcms/richtext-lexical";
+import { authenticatedOrPublished } from "@/access/authenticatedOrPublished";
+import { publishedAtField } from "@/payload/fields/statusField";
 import { revalidatePath } from "next/cache";
 import { CollectionConfig } from "payload";
 
@@ -20,7 +22,7 @@ export const Events: CollectionConfig = {
 		hidden: ({user})=>user.role === 'contributor'
 	},
 	access: {
-		read: () => true,	
+		read: authenticatedOrPublished,	
 	},
 	hooks: {
 		afterChange: [({doc})=>{
@@ -136,9 +138,13 @@ export const Events: CollectionConfig = {
 			type: "upload",
 			relationTo: "media",
 		},
-		{
-			name: "publishedAt",
-			type: "date",
-		},
+		publishedAtField,
 	],
+	versions: {
+		drafts: {
+			autosave: false,
+			schedulePublish: true,
+		},
+		maxPerDoc: 25,
+	},
 };

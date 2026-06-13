@@ -1,8 +1,10 @@
 import { anyone } from '@/access/anyone'
+import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { isAdmin, isAdminOrEditor } from '@/access/roles'
 import { Banner } from '@/blocks/Banner/config'
 import { Code } from '@/blocks/Code/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
+import { publishedAtField } from '@/payload/fields/statusField'
 import { BlocksFeature, FixedToolbarFeature, HeadingFeature, HorizontalRuleFeature, InlineToolbarFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import { revalidatePath } from 'next/cache'
 import { CollectionConfig } from 'payload'
@@ -15,7 +17,7 @@ export const Prayers: CollectionConfig = {
 
   },
   access: {
-    read: anyone,
+    read: authenticatedOrPublished,
     update: isAdminOrEditor,
     delete: isAdmin,
     create: isAdminOrEditor,
@@ -77,9 +79,13 @@ export const Prayers: CollectionConfig = {
       }),
       label: 'Content text',
     },
-    {
-      name: 'publishedAt',
-      type: 'date',
-    },
+    publishedAtField,
   ],
+  versions: {
+    drafts: {
+      autosave: false,
+      schedulePublish: true,
+    },
+    maxPerDoc: 25,
+  },
 }

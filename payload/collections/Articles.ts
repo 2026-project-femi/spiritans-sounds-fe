@@ -1,7 +1,8 @@
-import { anyone } from '@/access/anyone'
+import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { Banner } from '@/blocks/Banner/config'
 import { Code } from '@/blocks/Code/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
+import { publishedAtField } from '@/payload/fields/statusField'
 import { BlocksFeature, FixedToolbarFeature, HeadingFeature, HorizontalRuleFeature, InlineToolbarFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import { revalidatePath } from 'next/cache'
 import { CollectionConfig } from 'payload'
@@ -13,7 +14,7 @@ export const Articles: CollectionConfig = {
     hidden: ({user})=>user.role === 'contributor' 
   },
   access: {
-    read: () => true,
+    read: authenticatedOrPublished,
   },
   hooks: {
     afterChange: [({doc})=>{
@@ -76,9 +77,13 @@ export const Articles: CollectionConfig = {
       name: 'excerpt',
       type: 'textarea',
     },
-    {
-      name: 'publishedAt',
-      type: 'date',
-    },
+    publishedAtField,
   ],
+  versions: {
+    drafts: {
+      autosave: false,
+      schedulePublish: true,
+    },
+    maxPerDoc: 25,
+  },
 }

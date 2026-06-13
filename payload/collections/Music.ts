@@ -1,4 +1,6 @@
+import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { isAdmin, isAdminOrEditor } from '@/access/roles';
+import { publishedAtField } from '@/payload/fields/statusField';
 import { revalidatePath } from 'next/cache';
 import { CollectionConfig } from 'payload'
 
@@ -10,7 +12,7 @@ export const Music: CollectionConfig = {
 
   },
   access: {
-    read: () => true,
+    read: authenticatedOrPublished,
     update: isAdminOrEditor,
     delete: isAdmin,
     create: isAdminOrEditor,
@@ -63,9 +65,13 @@ export const Music: CollectionConfig = {
       name: 'content',
       type: 'richText',
     },
-    {
-      name: 'publishedAt',
-      type: 'date',
-    },
+    publishedAtField,
   ],
+  versions: {
+    drafts: {
+      autosave: false,
+      schedulePublish: true,
+    },
+    maxPerDoc: 25,
+  },
 }

@@ -1,4 +1,6 @@
+import { authenticatedOrPublished } from '@/access/authenticatedOrPublished';
 import { isAdmin, isAdminOrEditor } from '@/access/roles';
+import { publishedAtField } from '@/payload/fields/statusField';
 import { revalidatePath } from 'next/cache';
 import { CollectionConfig } from 'payload'
 
@@ -10,7 +12,7 @@ export const Publications: CollectionConfig = {
 
   },
   access: {
-    read: isAdminOrEditor,
+    read: authenticatedOrPublished,
     update: isAdmin,
     delete: isAdmin,
     create: isAdminOrEditor,
@@ -67,9 +69,13 @@ export const Publications: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
     },
-    {
-      name: 'publishedAt',
-      type: 'date',
-    },
+    publishedAtField,
   ],
+  versions: {
+    drafts: {
+      autosave: false,
+      schedulePublish: true,
+    },
+    maxPerDoc: 25,
+  },
 }

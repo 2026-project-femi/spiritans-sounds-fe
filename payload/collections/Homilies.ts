@@ -1,6 +1,8 @@
+import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { Banner } from '@/blocks/Banner/config'
 import { Code } from '@/blocks/Code/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
+import { publishedAtField } from '@/payload/fields/statusField'
 import { BlocksFeature, FixedToolbarFeature, HeadingFeature, HorizontalRuleFeature, InlineToolbarFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import { revalidatePath } from 'next/cache'
 import { CollectionConfig } from 'payload'
@@ -13,7 +15,7 @@ export const Homilies: CollectionConfig = {
 
   },
   access: {
-    read: () => true,
+    read: authenticatedOrPublished,
   },
   hooks: {
     afterChange: [({doc})=>{
@@ -81,10 +83,7 @@ export const Homilies: CollectionConfig = {
       name: 'youtubeUrl',
       type: 'text',
     },
-    {
-      name: 'publishedAt',
-      type: 'date',
-    },
+    publishedAtField,
     {
       name: 'slug',
       type: 'text',
@@ -105,7 +104,14 @@ export const Homilies: CollectionConfig = {
               .slice(0, 96)
           },
         ],
+      },
     },
-  },
   ],
+  versions: {
+    drafts: {
+      autosave: false,
+      schedulePublish: true,
+    },
+    maxPerDoc: 25,
+  },
 }

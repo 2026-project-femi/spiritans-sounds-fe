@@ -1,3 +1,5 @@
+import { authenticatedOrPublished } from '@/access/authenticatedOrPublished';
+import { publishedAtField } from '@/payload/fields/statusField';
 import { revalidatePath } from 'next/cache';
 import { CollectionConfig } from 'payload'
 
@@ -9,7 +11,7 @@ export const MagazineIssues: CollectionConfig = {
 
   },
   access: {
-    read: () => true,
+    read: authenticatedOrPublished,
   },
   hooks: {
     afterChange: [({doc})=>{
@@ -67,9 +69,13 @@ export const MagazineIssues: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
     },
-    {
-      name: 'publishedAt',
-      type: 'date',
-    },
+    publishedAtField,
   ],
+  versions: {
+    drafts: {
+      autosave: false,
+      schedulePublish: true,
+    },
+    maxPerDoc: 25,
+  },
 }
