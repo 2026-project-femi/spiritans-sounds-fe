@@ -4,6 +4,13 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
    CREATE TYPE "public"."enum_homily_category" AS ENUM('Sunday', 'Feast Day', 'Special', 'Weekday', 'Memorial', 'Solemnity');
   CREATE TYPE "public"."enum__homily_v_version_category" AS ENUM('Sunday', 'Feast Day', 'Special', 'Weekday', 'Memorial', 'Solemnity');
+  
+  UPDATE "homily" SET "category" = 'Sunday' WHERE "category" ILIKE '%Sunday%';
+  UPDATE "homily" SET "category" = NULL WHERE "category" NOT IN ('Sunday', 'Feast Day', 'Special', 'Weekday', 'Memorial', 'Solemnity') AND "category" IS NOT NULL;
+  
+  UPDATE "_homily_v" SET "version_category" = 'Sunday' WHERE "version_category" ILIKE '%Sunday%';
+  UPDATE "_homily_v" SET "version_category" = NULL WHERE "version_category" NOT IN ('Sunday', 'Feast Day', 'Special', 'Weekday', 'Memorial', 'Solemnity') AND "version_category" IS NOT NULL;
+
   ALTER TABLE "homily" ALTER COLUMN "category" SET DATA TYPE "public"."enum_homily_category" USING "category"::"public"."enum_homily_category";
   ALTER TABLE "_homily_v" ALTER COLUMN "version_category" SET DATA TYPE "public"."enum__homily_v_version_category" USING "version_category"::"public"."enum__homily_v_version_category";`)
 }
