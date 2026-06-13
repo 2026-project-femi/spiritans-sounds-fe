@@ -75,11 +75,13 @@ jobs:
             echo "── Installing dependencies ──"
             CI=true /usr/local/bin/pnpm install --no-frozen-lockfile
 
+            echo "── Running migrations ──"
+            /usr/local/bin/pnpm payload migrate
+
             echo "── Building ──"
             /usr/local/bin/pnpm build
 
-            echo "── Running migrations ──"
-            /usr/local/bin/pnpm payload migrate
+            
 
             echo "── Restarting app ──"
             /usr/local/bin/pm2 delete spiritans || true
