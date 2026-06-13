@@ -19,7 +19,8 @@ export const Events: CollectionConfig = {
 	slug: "events",
 	admin: {
 		useAsTitle: "title",
-		hidden: ({user})=>user.role === 'contributor'
+		hidden: ({user})=>user.role === 'contributor',
+		defaultColumns: ['title', '_status', 'date', 'publishedAt', 'updatedAt'],
 	},
 	access: {
 		read: authenticatedOrPublished,	

@@ -7,8 +7,8 @@ export const MagazineIssues: CollectionConfig = {
   slug: 'magazineIssues',
   admin: {
     useAsTitle: 'title',
-    hidden: ({user})=>user.role === 'contributor' 
-
+    hidden: ({user})=>user.role === 'contributor',
+    defaultColumns: ['title', '_status', 'publishedAt', 'updatedAt'],
   },
   access: {
     read: authenticatedOrPublished,

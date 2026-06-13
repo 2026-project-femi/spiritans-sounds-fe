@@ -11,8 +11,8 @@ export const Homilies: CollectionConfig = {
   slug: 'homily',
   admin: {
     useAsTitle: 'title',
-    hidden: ({user})=>user.role === 'contributor' 
-
+    hidden: ({user})=>user.role === 'contributor',
+    defaultColumns: ['title', '_status', 'publishedAt', 'updatedAt'],
   },
   access: {
     read: authenticatedOrPublished,
