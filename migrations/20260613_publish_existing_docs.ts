@@ -15,9 +15,9 @@ import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
  */
 export async function up({ db }: MigrateUpArgs): Promise<void> {
   const tables = [
-    'articles',
-    'homilies',
-    'prayers',
+    'article',
+    'homily',
+    'prayer',
     'music',
     'events',
     'magazine_issues',
