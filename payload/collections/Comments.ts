@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { CollectionConfig } from "payload";
 
 export const Comments: CollectionConfig = {
@@ -6,10 +7,25 @@ export const Comments: CollectionConfig = {
 		useAsTitle: "name",
 		defaultColumns: ["name", "comment", "approved", "createdAt"],
 		description: "Comments won't show on the site without approval",
+		hidden: ({user})=>user.role === 'contributor'
 	},
 	access: {
 		read: () => true,
 	},
+	  hooks: {
+		afterChange: [({doc})=>{
+		  revalidatePath('/articles');
+		  revalidatePath('/homilies');
+		  revalidatePath('/prayers');
+		  return doc;
+		}],
+		afterDelete: [({doc})=>{
+		  revalidatePath('/articles');
+		  revalidatePath('/homilies');
+		  revalidatePath('/prayers');
+		  return doc;
+		}]
+	  },
 	fields: [
 		{
 			name: "name",

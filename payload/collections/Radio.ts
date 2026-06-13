@@ -19,7 +19,11 @@ export const Radio: CollectionConfig = {
     afterChange: [({doc})=>{
       revalidatePath('/unveiler/radio');
       return doc;
-    }]
+    }],
+    afterDelete: [({doc})=>{
+      revalidatePath('/unveiler/radio');
+      return doc;
+    }], 
   },
   fields: [
     {

@@ -19,7 +19,11 @@ export const Publications: CollectionConfig = {
     afterChange: [({doc})=>{
       revalidatePath('/unveiler/books');
       return doc;
-    }]
+    }],
+    afterDelete: [({doc})=>{
+      revalidatePath('/unveiler/books');
+      return doc;
+    }],
   },
   fields: [
     {

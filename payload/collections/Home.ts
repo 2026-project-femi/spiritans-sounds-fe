@@ -7,7 +7,11 @@ export const HomePage: CollectionConfig = {
     afterChange: [({doc})=>{
       revalidatePath('/');
       return doc;
-    }]
+    }],
+		afterDelete: [({doc})=>{
+			revalidatePath('/');
+			return doc;
+		}]
   },
   admin: {
     hidden: ({user})=>user.role === 'contributor'

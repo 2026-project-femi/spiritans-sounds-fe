@@ -24,7 +24,11 @@ export const Events: CollectionConfig = {
 	},
 	hooks: {
 		afterChange: [({doc})=>{
-			revalidatePath('/unveiler');``
+			revalidatePath('/unveiler');
+			return doc;
+		}],
+		afterDelete: [({doc})=>{
+			revalidatePath('/unveiler');
 			return doc;
 		}]
 	},

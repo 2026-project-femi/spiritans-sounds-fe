@@ -15,7 +15,11 @@ export const MagazineIssues: CollectionConfig = {
     afterChange: [({doc})=>{
       revalidatePath('/unveiler/issues');
       return doc;
-    }]
+    }],
+    afterDelete: [({doc})=>{
+      revalidatePath('/unveiler/issues');
+      return doc;
+    }],
   },
   fields: [
     {

@@ -25,7 +25,12 @@ export const Prayers: CollectionConfig = {
       revalidatePath('/prayers');
       revalidatePath('/')
       return doc;
-    }]
+    }],
+    afterDelete: [({doc})=>{
+      revalidatePath('/prayers');
+      revalidatePath('/')
+      return doc;
+    }], 
   },
   fields: [
     {

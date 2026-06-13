@@ -20,7 +20,12 @@ export const Homilies: CollectionConfig = {
       revalidatePath('/homilies');
       revalidatePath('/')
       return doc;
-    }]
+    }],
+    afterDelete: [({doc})=>{
+      revalidatePath('/homilies');
+      revalidatePath('/')
+      return doc;
+    }],
   },
   fields: [
     {

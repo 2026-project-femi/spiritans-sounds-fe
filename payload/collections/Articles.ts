@@ -20,6 +20,11 @@ export const Articles: CollectionConfig = {
       revalidatePath('/articles');
       revalidatePath('/')
       return doc;
+    }],
+    afterDelete: [({doc})=>{
+      revalidatePath('/articles');
+      revalidatePath('/')
+      return doc;
     }]
   },
   fields: [
