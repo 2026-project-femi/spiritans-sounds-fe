@@ -25,9 +25,15 @@
 
 set -euo pipefail
 
-# ── Config ────────────────────────────────────────────────────────────────────
 
-RETAIN="${BACKUP_RETAIN_COUNT:-14}"
+# 1. Load the .env file into the current shell
+# This resolves variables like ${POSTGRES_USER} correctly
+set -a
+source /var/www/spiritans/.env
+set +a
+
+# ── Config ────────────────────────────────────────────────────────────────────
+RETAIN="${BACKUP_RETAIN_COUNT:-5}"
 PREFIX="${BACKUP_PREFIX:-db-backups}"
 TIMESTAMP="$(date -u +%Y-%m-%dT%H-%M-%SZ)"
 FILENAME="backup-${TIMESTAMP}.sql.gz"
