@@ -78,6 +78,19 @@ export const Articles: CollectionConfig = {
       admin: {
         position: 'sidebar',
       },
+       hooks: {
+        beforeValidate: [
+          ({ value, data }) => {
+            if (value) return value
+            const title = data?.title ?? ''
+            return title
+              .toLowerCase()
+              .replace(/\s+/g, '-')
+              .replace(/[^\w-]/g, '')
+              .slice(0, 96)
+          },
+        ],
+      },
     },
     {
       name: 'excerpt',
