@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { getPayload } from "payload";
 import configPromise from "@/payload.config";
-import { RichText } from '@payloadcms/richtext-lexical/react';
+import RichText from '@/components/RichText';
 import { YouTubeEmbed } from "@/components/PortableTextComponents";
 import { Sidebar } from "@/components/common/Sidebar";
 import Comments from "@/components/Comments";

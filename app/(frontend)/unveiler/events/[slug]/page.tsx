@@ -2,7 +2,7 @@ import { getPayload } from "payload";
 import configPromise from "@/payload.config";
 import Image from "next/image";
 import Link from "next/link";
-import { RichText } from '@payloadcms/richtext-lexical/react';
+import RichText from '@/components/RichText';
 import { YouTubeEmbed } from "@/components/PortableTextComponents";
 import { ArrowLeft, CalendarDays, MapPin, Clock } from "lucide-react";
 import type { Metadata } from "next";

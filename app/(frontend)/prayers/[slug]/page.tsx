@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { getPayload } from "payload";
 import configPromise from "@/payload.config";
-import { RichText } from '@payloadcms/richtext-lexical/react';
+import RichText from '@/components/RichText';
 import { Sidebar } from "@/components/common/Sidebar"; // Import the new Sidebar component
 import { Prayer } from "@/lib/types";
 import Comments from "@/components/Comments";
