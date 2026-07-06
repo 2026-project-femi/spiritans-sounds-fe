@@ -88,6 +88,7 @@ export interface Config {
     contactPage: ContactPage;
     donationPage: DonationPage;
     homepage: Homepage;
+    'lyrics-of-light': LyricsOfLight;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -126,6 +127,7 @@ export interface Config {
     contactPage: ContactPageSelect<false> | ContactPageSelect<true>;
     donationPage: DonationPageSelect<false> | DonationPageSelect<true>;
     homepage: HomepageSelect<false> | HomepageSelect<true>;
+    'lyrics-of-light': LyricsOfLightSelect<false> | LyricsOfLightSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1185,6 +1187,59 @@ export interface Homepage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lyrics-of-light".
+ */
+export interface LyricsOfLight {
+  id: string;
+  title: string;
+  slug: string;
+  /**
+   * Audio file for the song (MP3)
+   */
+  audio?: (string | null) | Media;
+  /**
+   * YouTube Video ID or Full URL (e.g. "https://www.youtube.com/watch?v=...")
+   */
+  youtubeLink?: string | null;
+  /**
+   * Title of the booklet
+   */
+  bookletTitle?: string | null;
+  /**
+   * Cover image of the booklet
+   */
+  bookletImage?: (string | null) | Media;
+  /**
+   * Short description of the booklet
+   */
+  bookletDescription?: string | null;
+  /**
+   * Link for "Buy Now" or "Request Copy" (can be internal like /contact or external)
+   */
+  bookletBuyLink?: string | null;
+  lyrics?: string | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1456,6 +1511,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'homepage';
         value: string | Homepage;
+      } | null)
+    | ({
+        relationTo: 'lyrics-of-light';
+        value: string | LyricsOfLight;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2041,6 +2100,26 @@ export interface HomepageSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lyrics-of-light_select".
+ */
+export interface LyricsOfLightSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  audio?: T;
+  youtubeLink?: T;
+  bookletTitle?: T;
+  bookletImage?: T;
+  bookletDescription?: T;
+  bookletBuyLink?: T;
+  lyrics?: T;
+  content?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects_select".
  */
 export interface RedirectsSelect<T extends boolean = true> {
@@ -2472,6 +2551,10 @@ export interface TaskSchedulePublish {
       | ({
           relationTo: 'pages';
           value: string | Page;
+        } | null)
+      | ({
+          relationTo: 'lyrics-of-light';
+          value: string | LyricsOfLight;
         } | null);
     global?: string | null;
     user?: (string | null) | User;

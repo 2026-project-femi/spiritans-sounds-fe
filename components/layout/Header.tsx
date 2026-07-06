@@ -9,6 +9,7 @@ const navLinks = [
 	{ href: "/homilies", label: "Homilies" },
 	{ href: "/articles", label: "Articles" },
 	{ href: "/unveiler", label: "Treasures  Unveiler" },
+	{ href: "/lyrics-of-light", label: "Lyrics of Light" },
 	{ href: "/about", label: "About" },
 ];
 

@@ -25,6 +25,7 @@ import { DonationPage } from "./payload/collections/DonationPage";
 import { ContactPage } from "./payload/collections/ContactPage";
 import { Radio } from "./payload/collections/Radio";
 import { MagazineLanding } from "./payload/collections/MagazineLanding";
+import { LyricsOfLight } from "./payload/collections/LyricsOfLight";
 import { s3Storage } from "@payloadcms/storage-s3";
 
 import { Posts } from "./payload/collections/Posts";
@@ -88,6 +89,7 @@ export default buildConfig({
 		ContactPage,
 		DonationPage,
 		HomePage,
+		LyricsOfLight,
 	],
 	globals: [Footer, Header],
 	editor: defaultLexical,
