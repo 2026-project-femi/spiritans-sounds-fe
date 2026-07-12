@@ -100,9 +100,17 @@ export const LyricsOfLight: CollectionConfig = {
       }
     },
     {
-      name: 'lyrics',
-      type: 'textarea',
+      name: 'bookletFile',
+      type: 'upload',
+      relationTo: 'media',
+      admin: {
+        description: 'Upload the PDF E-Book for free download',
+      }
     },
+    // {
+    //   name: 'lyrics',
+    //   type: 'textarea',
+    // },
     {
       name: 'content',
       type: 'richText',

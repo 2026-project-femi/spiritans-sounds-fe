@@ -19,12 +19,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         { _status: { equals: 'published' } }
       ]
     },
+    depth: 1,
   });
   const doc: any = result.docs[0];
   if (!doc) return {};
   const title = doc.title;
   const description = doc.excerpt || doc.description || "";
-  const imageUrl = doc.imageUrl;
+  const imageUrl = doc.coverImage && typeof doc.coverImage === 'object' ? doc.coverImage.url : null;
   return {
     title,
     description,

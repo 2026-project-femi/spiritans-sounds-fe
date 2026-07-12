@@ -18,7 +18,7 @@ const moreLinks = [
 	{ href: "/unveiler/issues", label: "Magazine Issues" },
 	{ href: "/unveiler/books", label: "Book Publishing" },
 	{ href: "/unveiler/radio", label: "Internet Radio" },
-	{ href: "/unveiler/adverts", label: "Advertising" },
+	// { href: "/unveiler/adverts", label: "Advertising" },
 ];
 
 const Header: React.FC = () => {

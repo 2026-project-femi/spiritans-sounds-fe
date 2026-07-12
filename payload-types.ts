@@ -1217,7 +1217,10 @@ export interface LyricsOfLight {
    * Link for "Buy Now" or "Request Copy" (can be internal like /contact or external)
    */
   bookletBuyLink?: string | null;
-  lyrics?: string | null;
+  /**
+   * Upload the PDF E-Book for free download
+   */
+  bookletFile?: (string | null) | Media;
   content?: {
     root: {
       type: string;
@@ -2111,7 +2114,7 @@ export interface LyricsOfLightSelect<T extends boolean = true> {
   bookletImage?: T;
   bookletDescription?: T;
   bookletBuyLink?: T;
-  lyrics?: T;
+  bookletFile?: T;
   content?: T;
   publishedAt?: T;
   updatedAt?: T;
