@@ -78,6 +78,14 @@ export const MagazineIssues: CollectionConfig = {
       type: 'number',
     },
     {
+      name: 'priceAmountUSD',
+      type: 'number',
+    },
+    {
+      name: 'priceAmountGBP',
+      type: 'number',
+    },
+    {
       name: 'cover',
       type: 'upload',
       relationTo: 'media',

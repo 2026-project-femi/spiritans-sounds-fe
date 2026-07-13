@@ -48,6 +48,16 @@ export const Orders: CollectionConfig = {
       hasMany: true,
     },
     {
+      name: 'currency',
+      type: 'select',
+      options: [
+        { label: 'NGN', value: 'NGN' },
+        { label: 'USD', value: 'USD' },
+        { label: 'GBP', value: 'GBP' },
+      ],
+      defaultValue: 'NGN',
+    },
+    {
       name: 'paystackReference',
       type: 'text',
     },

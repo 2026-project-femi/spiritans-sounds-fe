@@ -5,8 +5,9 @@ import { headers } from "next/headers";
 // Types
 interface InitializeRequest {
 	email: string;
-	amount: number; // In kobo (multiply NGN by 100)
+	amount: number; // In sub-units (kobo/cents)
 	name?: string;
+	currency?: string; // NGN, USD, GBP
 }
 
 interface PaystackResponse {
@@ -36,7 +37,7 @@ export async function POST(request: Request) {
 
 		// 2. Parse and validate request body
 		const body = (await request.json()) as InitializeRequest;
-		const { email, amount, name } = body;
+		const { email, amount, name, currency = "NGN" } = body;
 
 		// Email validation
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -44,12 +45,47 @@ export async function POST(request: Request) {
 			return NextResponse.json({ error: "Valid email is required" }, { status: 400 });
 		}
 
-		// Amount validation (in kobo: ₦100 = 10000 kobo minimum)
-		const MIN_AMOUNT = 10000; // ₦100
-		const MAX_AMOUNT = 1000000000; // ₦10,000,000
+		// Currency & Amount validation
+		const minAmounts: Record<string, number> = {
+			NGN: 10000, // ₦100
+			USD: 100,   // $1
+			GBP: 100,   // £1
+		};
+		const MIN_AMOUNT = minAmounts[currency] || 10000;
+		const MAX_AMOUNT = 1000000000; // Large arbitrary limit
 
 		if (!amount || amount < MIN_AMOUNT || amount > MAX_AMOUNT) {
-			return NextResponse.json({ error: `Amount must be between ₦${MIN_AMOUNT / 100} and ₦${MAX_AMOUNT / 100}` }, { status: 400 });
+			const symbols: Record<string, string> = { NGN: "₦", USD: "$", GBP: "£" };
+			const symbol = symbols[currency] || "₦";
+			return NextResponse.json(
+				{ error: `Amount must be between ${symbol}${MIN_AMOUNT / 100} and ${symbol}${MAX_AMOUNT / 100}` },
+				{ status: 400 }
+			);
+		}
+
+		let paystackCurrency = currency;
+		let finalAmount = amount;
+
+		// Convert GBP to USD since Paystack NG doesn't natively support GBP
+		if (currency === "GBP") {
+			let gbpToUsdRate = 1.3; // Fallback rate
+			try {
+				// Fetch real-time exchange rate (cached for 1 hour to prevent rate limiting)
+				const fxResponse = await fetch("https://open.er-api.com/v6/latest/GBP", { 
+					next: { revalidate: 3600 } 
+				});
+				if (fxResponse.ok) {
+					const fxData = await fxResponse.json();
+					if (fxData?.rates?.USD) {
+						gbpToUsdRate = fxData.rates.USD;
+					}
+				}
+			} catch (e) {
+				console.error("Failed to fetch live exchange rate, using fallback.", e);
+			}
+
+			finalAmount = Math.round(amount * gbpToUsdRate);
+			paystackCurrency = "USD";
 		}
 
 		// Sanitize name (prevent XSS)
@@ -68,13 +104,14 @@ export async function POST(request: Request) {
 			},
 			body: JSON.stringify({
 				email,
-				amount, // Already in kobo
-				currency: "NGN",
+				amount: finalAmount, // Already in sub-units
+				currency: paystackCurrency,
 				reference: `DON-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
 				metadata: {
 					name: sanitizedName,
 					donor_name: sanitizedName,
 					origin: cleanOrigin,
+					original_currency: currency,
 				},
 				callback_url: `${cleanOrigin}/donations/complete`, // Where to redirect after payment
 			}),
@@ -85,7 +122,7 @@ export async function POST(request: Request) {
 		// 4. Handle Paystack response
 		if (!result.status) {
 			console.error("Paystack error:", result.message);
-			return NextResponse.json({ error: "Payment initialization failed" }, { status: 400 });
+			return NextResponse.json({ error: result.message || "Payment initialization failed" }, { status: 400 });
 		}
 
 		// 5. Return the authorization URL to the frontend

@@ -473,6 +473,8 @@ export interface Publication {
   description?: string | null;
   price?: ('free' | 'paid') | null;
   priceAmount?: number | null;
+  priceAmountUSD?: number | null;
+  priceAmountGBP?: number | null;
   cover?: (string | null) | Media;
   file?: (string | null) | Media;
   publishedAt?: string | null;
@@ -492,6 +494,8 @@ export interface MagazineIssue {
   excerpt?: string | null;
   price?: ('free' | 'paid') | null;
   priceAmount?: number | null;
+  priceAmountUSD?: number | null;
+  priceAmountGBP?: number | null;
   cover?: (string | null) | Media;
   file?: (string | null) | Media;
   publishedAt?: string | null;
@@ -605,6 +609,7 @@ export interface Order {
           }
       )[]
     | null;
+  currency?: ('NGN' | 'USD' | 'GBP') | null;
   paystackReference?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -1752,6 +1757,8 @@ export interface PublicationsSelect<T extends boolean = true> {
   description?: T;
   price?: T;
   priceAmount?: T;
+  priceAmountUSD?: T;
+  priceAmountGBP?: T;
   cover?: T;
   file?: T;
   publishedAt?: T;
@@ -1770,6 +1777,8 @@ export interface MagazineIssuesSelect<T extends boolean = true> {
   excerpt?: T;
   price?: T;
   priceAmount?: T;
+  priceAmountUSD?: T;
+  priceAmountGBP?: T;
   cover?: T;
   file?: T;
   publishedAt?: T;
@@ -1826,6 +1835,7 @@ export interface OrdersSelect<T extends boolean = true> {
   amount?: T;
   status?: T;
   items?: T;
+  currency?: T;
   paystackReference?: T;
   updatedAt?: T;
   createdAt?: T;

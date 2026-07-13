@@ -2,14 +2,18 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { BookOpen, ShoppingCart, Download, Calendar } from "lucide-react";
+import { BookOpen, ShoppingCart, Download, Calendar, Eye } from "lucide-react";
+import { PdfPreviewModal } from "./PdfPreviewModal";
+import { useCurrency } from "@/hooks/useCurrency";
 
 interface Book {
   _id: string;
   title: string;
   description: string;
-  price: string;
+  price?: string;
   priceAmount?: number;
+  priceAmountUSD?: number;
+  priceAmountGBP?: number;
   slug: string;
   imageUrl?: string;
   fileUrl?: string;
@@ -20,9 +24,19 @@ export function BookCard({ book }: { book: Book }) {
   const isPaid = book.price?.toLowerCase() === "paid";
 
   const [showModal, setShowModal] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const [form, setForm] = useState({ name: "", email: "" });
   const [isProcessing, setIsProcessing] = useState(false);
   const [modalError, setModalError] = useState<string | null>(null);
+
+  const { currency, symbol } = useCurrency();
+
+  let displayPrice = book.priceAmount;
+  if (currency === "USD" && book.priceAmountUSD) {
+    displayPrice = book.priceAmountUSD;
+  } else if (currency === "GBP" && book.priceAmountGBP) {
+    displayPrice = book.priceAmountGBP;
+  }
 
   async function handlePurchase(e: React.FormEvent) {
     e.preventDefault();
@@ -37,6 +51,7 @@ export function BookCard({ book }: { book: Book }) {
           name: form.name,
           itemId: book._id,
           itemType: "publications",
+          currency: currency,
         }),
       });
       const data = await res.json();
@@ -102,38 +117,60 @@ export function BookCard({ book }: { book: Book }) {
             {book.description}
           </p>
 
-          <div className="flex items-center justify-between pt-5 border-t border-white/5">
-            <div className="flex flex-col">
-              <span className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Investment</span>
-              <span className={`font-bold text-lg ${isPaid ? "text-amber-400" : "text-green-500"}`}>
-                {isPaid && book.priceAmount
-                  ? `₦${book.priceAmount.toLocaleString()}`
-                  : book.price || "Free"}
-              </span>
+          <div className="flex flex-col gap-2 pt-5 border-t border-white/5">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex flex-col">
+                <span className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Investment</span>
+                <span className={`font-bold text-lg ${isPaid ? "text-amber-400" : "text-green-500"}`}>
+                  {isPaid && displayPrice
+                    ? `${symbol}${displayPrice.toLocaleString()}`
+                    : book.price || "Free"}
+                </span>
+              </div>
             </div>
 
-            {isPaid ? (
-              <button
-                onClick={() => setShowModal(true)}
-                className="flex items-center gap-2 px-5 py-2.5 bg-white text-black text-xs font-black rounded-full hover:bg-brand-primary hover:text-white transition-all uppercase tracking-widest"
-              >
-                <ShoppingCart size={14} /> Buy
-              </button>
-            ) : book.fileUrl ? (
-              <a
-                href={`${book.fileUrl}?dl=${book.title}.pdf`}
-                className="flex items-center gap-2 px-5 py-2.5 bg-linear-to-r from-brand-primary to-red-700 text-white text-xs font-black rounded-full hover:opacity-90 transition-all uppercase tracking-widest shadow-lg shadow-red-900/20"
-              >
-                <Download size={14} /> Download
-              </a>
-            ) : (
-              <span className="text-[10px] font-bold uppercase tracking-widest text-gray-600 border border-white/10 px-4 py-2 rounded-full">
-                Coming Soon
-              </span>
-            )}
+            <div className="flex items-center gap-2 w-full">
+              {book.fileUrl && (
+                <button
+                  onClick={() => setShowPreview(true)}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-white/10 text-white text-xs font-black rounded-full hover:bg-white/20 transition-all uppercase tracking-widest"
+                >
+                  <Eye size={14} /> Preview
+                </button>
+              )}
+
+              {isPaid ? (
+                <button
+                  onClick={() => setShowModal(true)}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-white text-black text-xs font-black rounded-full hover:bg-brand-primary hover:text-white transition-all uppercase tracking-widest"
+                >
+                  <ShoppingCart size={14} /> Buy
+                </button>
+              ) : book.fileUrl ? (
+                <a
+                  href={`${book.fileUrl}?dl=${book.title}.pdf`}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-linear-to-r from-brand-primary to-red-700 text-white text-xs font-black rounded-full hover:opacity-90 transition-all uppercase tracking-widest shadow-lg shadow-red-900/20"
+                >
+                  <Download size={14} /> Download
+                </a>
+              ) : (
+                <span className="flex-1 text-center text-[10px] font-bold uppercase tracking-widest text-gray-600 border border-white/10 px-4 py-2.5 rounded-full">
+                  Coming Soon
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Preview Modal */}
+      {showPreview && book.fileUrl && (
+        <PdfPreviewModal
+          fileUrl={book.fileUrl}
+          title={book.title}
+          onClose={() => setShowPreview(false)}
+        />
+      )}
 
       {/* Buy modal */}
       {showModal && (
@@ -147,7 +184,7 @@ export function BookCard({ book }: { book: Book }) {
           >
             <h3 className="text-base font-black text-white mb-1 line-clamp-2">{book.title}</h3>
             <p className="text-sm text-gray-500 mb-6">
-              {book.priceAmount ? `₦${book.priceAmount.toLocaleString()}` : ""} — enter your details to proceed to payment
+              {displayPrice ? `${symbol}${displayPrice.toLocaleString()}` : ""} — enter your details to proceed to payment
             </p>
 
             {modalError && (

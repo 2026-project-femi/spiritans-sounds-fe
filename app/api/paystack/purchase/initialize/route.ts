@@ -8,7 +8,8 @@ interface PurchaseInitRequest {
   email: string;
   name: string;
   itemId: string;
-  itemType: "publications" | "magazineIssues"; // 1. Updated to match your plural collection slugs
+  itemType: "publications" | "magazineIssues"; 
+  currency?: string; // NGN, USD, GBP
 }
 
 interface PaystackResponse {
@@ -25,6 +26,8 @@ interface PurchasableItem {
   id: string;
   price?: string | null;
   priceAmount?: number | null;
+  priceAmountUSD?: number | null;
+  priceAmountGBP?: number | null;
   title?: string;
 }
 
@@ -40,7 +43,7 @@ export async function POST(request: Request) {
     }
 
     const body = (await request.json()) as PurchaseInitRequest;
-    const { email, name, itemId, itemType } = body;
+    const { email, name, itemId, itemType, currency = "NGN" } = body;
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || !emailRegex.test(email)) {
@@ -66,11 +69,43 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Item not found" }, { status: 404 });
     }
     
-    if (item.price?.toLowerCase() !== "paid" || !item.priceAmount || item.priceAmount <= 0) {
-      return NextResponse.json({ error: "Item is not available for purchase" }, { status: 400 });
+    let selectedPrice = item.priceAmount;
+    if (currency === "USD" && item.priceAmountUSD) {
+      selectedPrice = item.priceAmountUSD;
+    } else if (currency === "GBP" && item.priceAmountGBP) {
+      selectedPrice = item.priceAmountGBP;
     }
 
-    const amountKobo = Math.round(item.priceAmount * 100); 
+    if (item.price?.toLowerCase() !== "paid" || !selectedPrice || selectedPrice <= 0) {
+      return NextResponse.json({ error: "Item is not available for purchase or price not set for this currency" }, { status: 400 });
+    }
+
+    let paystackCurrency = currency;
+    let finalAmount = selectedPrice;
+
+    // Convert GBP to USD since Paystack NG doesn't natively support GBP
+    if (currency === "GBP") {
+      let gbpToUsdRate = 1.3; // Fallback rate
+      try {
+        // Fetch real-time exchange rate (cached for 1 hour to prevent rate limiting)
+        const fxResponse = await fetch("https://open.er-api.com/v6/latest/GBP", { 
+          next: { revalidate: 3600 } 
+        });
+        if (fxResponse.ok) {
+          const fxData = await fxResponse.json();
+          if (fxData?.rates?.USD) {
+            gbpToUsdRate = fxData.rates.USD;
+          }
+        }
+      } catch (e) {
+        console.error("Failed to fetch live exchange rate, using fallback.", e);
+      }
+
+      finalAmount = Math.round(selectedPrice * gbpToUsdRate);
+      paystackCurrency = "USD";
+    }
+
+    const amountSubUnits = Math.round(finalAmount * 100); 
     const reference = `PUR-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
 
     // 2. Exact match mapping to your 'Orders' schema fields
@@ -79,7 +114,8 @@ export async function POST(request: Request) {
       data: {
         customerName: sanitizedName,    // Matches schema
         customerEmail: email,           // Matches schema
-        amount: item.priceAmount,       // Matches schema
+        amount: selectedPrice,          // Record the original price shown to user
+        currency: currency as any,      // Record the original currency shown to user
         status: 'pending',              // Matches schema
         paystackReference: reference,   // Matches schema
         items: [                        // Matches relationship array setup
@@ -100,8 +136,8 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         email,
-        amount: amountKobo,
-        currency: "NGN",
+        amount: amountSubUnits,
+        currency: paystackCurrency,
         reference,
         metadata: {
           name: sanitizedName,
@@ -110,6 +146,7 @@ export async function POST(request: Request) {
           itemType,
           itemId,
           origin: cleanOrigin,
+          original_currency: currency,
         },
         callback_url: `${cleanOrigin}/purchase/complete`,
       }),
@@ -118,7 +155,7 @@ export async function POST(request: Request) {
     const result = (await paystackResponse.json()) as PaystackResponse;
 
     if (!result.status) {
-      console.error("Paystack purchase init error:", result.message);
+      console.error("Paystack error:", result.message);
       
       await payloadCms.update({
         collection: 'orders',
@@ -126,7 +163,7 @@ export async function POST(request: Request) {
         data: { status: 'failed' },
       });
       
-      return NextResponse.json({ error: "Payment initialization failed" }, { status: 400 });
+      return NextResponse.json({ error: result.message || "Payment initialization failed" }, { status: 400 });
     }
 
     return NextResponse.json({

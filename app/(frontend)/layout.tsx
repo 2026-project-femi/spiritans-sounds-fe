@@ -95,6 +95,8 @@ export const viewport = {
 	themeColor: "#000000",
 };
 
+import { CurrencyProvider } from "@/hooks/useCurrency";
+
 export default function RootLayout({
 	children,
 }: Readonly<{
@@ -103,9 +105,11 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={`${playfair.variable} ${montserrat.variable}`}>
-				<Header />
-				{children}
-				<Footer />
+				<CurrencyProvider>
+					<Header />
+					{children}
+					<Footer />
+				</CurrencyProvider>
 			</body>
 		</html>
 	);

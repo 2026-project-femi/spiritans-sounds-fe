@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Calendar, ArrowLeft, BookOpen, Download, ShieldCheck, FileText } from "lucide-react";
 import { PurchaseButton } from "./PurchaseButton";
+import { PreviewButton } from "@/components/magazine/PreviewButton";
 import type { Metadata } from "next";
 
 
@@ -48,6 +49,8 @@ interface MagazineIssue {
   fileUrl?: string;
   price?: string;
   priceAmount?: number;
+  priceAmountUSD?: number;
+  priceAmountGBP?: number;
   description?: string;
   excerpt?: string;
 }
@@ -144,11 +147,17 @@ export default async function SingleIssuePage({ params }: { params: Promise<{ sl
                       itemId={issue._id}
                       itemTitle={issue.title}
                       priceAmount={issue.priceAmount ?? 0}
+                      priceAmountUSD={issue.priceAmountUSD}
+                      priceAmountGBP={issue.priceAmountGBP}
+                      fileUrl={issue.fileUrl}
                     />
                 ) : (
-                    <a href={`${issue.fileUrl}?dl=${issue.title}.pdf`} className="flex items-center justify-center gap-3 w-full py-4 bg-linear-to-r from-brand-primary to-red-700 text-white font-black rounded-xl hover:opacity-90 transition-all uppercase tracking-widest text-sm shadow-xl shadow-red-900/20">
-                        <Download size={18} /> Download Now
-                    </a>
+                    <div className="flex flex-col gap-3 w-full">
+                        <a href={`${issue.fileUrl}?dl=${issue.title}.pdf`} className="flex items-center justify-center gap-3 w-full py-4 bg-linear-to-r from-brand-primary to-red-700 text-white font-black rounded-xl hover:opacity-90 transition-all uppercase tracking-widest text-sm shadow-xl shadow-red-900/20">
+                            <Download size={18} /> Download Now
+                        </a>
+                        <PreviewButton fileUrl={issue.fileUrl} title={issue.title} />
+                    </div>
                 )
             ) : (
                 <div className="text-center py-4 text-gray-500 font-bold uppercase tracking-widest text-xs border border-dashed border-white/10 rounded-xl">
