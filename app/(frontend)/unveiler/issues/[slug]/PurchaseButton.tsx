@@ -1,26 +1,41 @@
 "use client";
 
 import { useState } from "react";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Eye } from "lucide-react";
+import { PdfPreviewModal } from "../../../../../components/magazine/PdfPreviewModal";
+import { useCurrency } from "@/hooks/useCurrency";
 
 interface Props {
   itemId: string;
   itemTitle: string;
   priceAmount: number;
+  priceAmountUSD?: number;
+  priceAmountGBP?: number;
+  fileUrl?: string;
 }
 
-export function PurchaseButton({ itemId, itemTitle, priceAmount }: Props) {
+export function PurchaseButton({ itemId, itemTitle, priceAmount, priceAmountUSD, priceAmountGBP, fileUrl }: Props) {
   const [showModal, setShowModal] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const [form, setForm] = useState({ name: "", email: "" });
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const { currency, symbol } = useCurrency();
+
+  let displayPrice = priceAmount;
+  if (currency === "USD" && priceAmountUSD) {
+    displayPrice = priceAmountUSD;
+  } else if (currency === "GBP" && priceAmountGBP) {
+    displayPrice = priceAmountGBP;
+  }
 
   async function handlePurchase(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setIsProcessing(true);
     try {
-      const res = await fetch("/api/paystack/purchase/initialize", {
+      const res = await fetch("/api/checkout/purchase", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -28,6 +43,7 @@ export function PurchaseButton({ itemId, itemTitle, priceAmount }: Props) {
           name: form.name,
           itemId,
           itemType: "magazineIssue",
+          currency: currency,
         }),
       });
       const data = await res.json();
@@ -42,12 +58,32 @@ export function PurchaseButton({ itemId, itemTitle, priceAmount }: Props) {
 
   return (
     <>
-      <button
-        onClick={() => setShowModal(true)}
-        className="flex items-center justify-center gap-3 w-full py-4 bg-white text-black font-black rounded-xl hover:bg-brand-primary hover:text-white transition-all uppercase tracking-widest text-sm shadow-xl"
-      >
-        <ShoppingCart size={18} /> Purchase — ₦{priceAmount.toLocaleString()}
-      </button>
+      <div className="flex flex-col gap-3">
+        <button
+          onClick={() => setShowModal(true)}
+          className="flex items-center justify-center gap-3 w-full py-4 bg-white text-black font-black rounded-xl hover:bg-brand-primary hover:text-white transition-all uppercase tracking-widest text-sm shadow-xl"
+        >
+          <ShoppingCart size={18} /> Purchase — {symbol}{displayPrice.toLocaleString()}
+        </button>
+
+        {fileUrl && (
+          <button
+            onClick={() => setShowPreview(true)}
+            className="flex items-center justify-center gap-3 w-full py-4 bg-white/10 text-white font-black rounded-xl hover:bg-white/20 transition-all uppercase tracking-widest text-sm"
+          >
+            <Eye size={18} /> Preview First 5 Pages
+          </button>
+        )}
+      </div>
+
+      {/* Preview Modal */}
+      {showPreview && fileUrl && (
+        <PdfPreviewModal
+          fileUrl={fileUrl}
+          title={itemTitle}
+          onClose={() => setShowPreview(false)}
+        />
+      )}
 
       {showModal && (
         <div
@@ -60,7 +96,7 @@ export function PurchaseButton({ itemId, itemTitle, priceAmount }: Props) {
           >
             <h3 className="text-base font-black text-white mb-1 line-clamp-2">{itemTitle}</h3>
             <p className="text-sm text-gray-500 mb-6">
-              ₦{priceAmount.toLocaleString()} — enter your details to proceed to payment
+              {symbol}{displayPrice.toLocaleString()} — enter your details to proceed to payment
             </p>
 
             {error && (

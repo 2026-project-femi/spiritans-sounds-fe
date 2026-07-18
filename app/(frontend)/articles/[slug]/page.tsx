@@ -20,6 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 				{ _status: { equals: 'published' } }
 			]
 		},
+		depth: 1,
 	});
     const doc = result.docs[0];
     if (!doc) return {};

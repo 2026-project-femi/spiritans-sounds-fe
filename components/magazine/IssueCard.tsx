@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import { BookOpen, Calendar, Download, Eye } from "lucide-react";
+import { PdfPreviewModal } from "./PdfPreviewModal";
+import { useCurrency } from "@/hooks/useCurrency";
 
 interface MagazineIssue {
   _id: string;
@@ -13,6 +15,8 @@ interface MagazineIssue {
   fileUrl?: string;
   price?: string;
   priceAmount?: number;
+  priceAmountUSD?: number;
+  priceAmountGBP?: number;
   description?: string;
 }
 
@@ -25,16 +29,26 @@ export function IssueCard({ issue, index, isDummy }: { issue: MagazineIssue; ind
   });
 
   const [showModal, setShowModal] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const [form, setForm] = useState({ name: "", email: "" });
   const [isProcessing, setIsProcessing] = useState(false);
   const [modalError, setModalError] = useState<string | null>(null);
+
+  const { currency, symbol } = useCurrency();
+
+  let displayPrice = issue.priceAmount;
+  if (currency === "USD" && issue.priceAmountUSD) {
+    displayPrice = issue.priceAmountUSD;
+  } else if (currency === "GBP" && issue.priceAmountGBP) {
+    displayPrice = issue.priceAmountGBP;
+  }
 
   async function handlePurchase(e: React.FormEvent) {
     e.preventDefault();
     setModalError(null);
     setIsProcessing(true);
     try {
-      const res = await fetch("/api/paystack/purchase/initialize", {
+      const res = await fetch("/api/checkout/purchase", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -42,6 +56,7 @@ export function IssueCard({ issue, index, isDummy }: { issue: MagazineIssue; ind
           name: form.name,
           itemId: issue._id,
           itemType: "magazineIssues",
+          currency: currency,
         }),
       });
       const data = await res.json();
@@ -90,30 +105,6 @@ export function IssueCard({ issue, index, isDummy }: { issue: MagazineIssue; ind
             </div>
           )}
 
-          {/* Overlay — download icon only for free items */}
-          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center p-6 pb-20">
-            <div className="flex gap-4">
-              {issue.fileUrl && !isPaid && (
-                <a
-                  href={`${issue.fileUrl}?dl=${issue.title}.pdf`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-3 bg-brand-primary text-white rounded-full hover:bg-red-700 transition-colors shadow-lg"
-                  title="Download PDF"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <Download size={18} />
-                </a>
-              )}
-              <div className="p-3 bg-white text-black rounded-full hover:bg-gray-200 transition-colors shadow-lg" title="Preview Cover">
-                <Eye size={18} />
-              </div>
-            </div>
-          </div>
-
-          <div className="absolute bottom-4 left-4 right-4">
-            <p className="text-white font-black text-sm leading-tight line-clamp-2">{issue.title}</p>
-          </div>
         </div>
 
         {/* Meta */}
@@ -124,41 +115,65 @@ export function IssueCard({ issue, index, isDummy }: { issue: MagazineIssue; ind
               {formattedDate}
             </span>
             <span className={`px-2 py-0.5 rounded-full border ${isPaid ? "border-amber-500/50 text-amber-500" : "border-green-500/50 text-green-500"}`}>
-              {isPaid && issue.priceAmount
-                ? `₦${issue.priceAmount.toLocaleString()}`
+              {isPaid && displayPrice
+                ? `${symbol}${displayPrice.toLocaleString()}`
                 : issue.price || "Free"}
             </span>
           </div>
 
-          {isPaid ? (
-            <button
-              onClick={() => setShowModal(true)}
-              className={`block w-full text-center py-2.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${
-                isLatest
-                  ? "bg-white text-black hover:bg-brand-primary hover:text-white"
-                  : "bg-white/10 text-white hover:bg-brand-primary"
-              }`}
-            >
-              Buy — {issue.priceAmount ? `₦${issue.priceAmount.toLocaleString()}` : "Paid"}
-            </button>
-          ) : issue.fileUrl ? (
-            <a
-              href={`${issue.fileUrl}?dl=${issue.title}.pdf`}
-              className={`block w-full text-center py-2.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${
-                isLatest
-                  ? "bg-brand-primary text-white hover:bg-red-700"
-                  : "bg-white/10 text-white hover:bg-brand-primary"
-              }`}
-            >
-              Download Issue
-            </a>
-          ) : (
-            <div className="text-xs font-semibold uppercase tracking-widest text-gray-600 text-center py-2.5">
-              Coming Soon
-            </div>
-          )}
+          <h2 className="text-lg font-bold text-white leading-tight group-hover:text-brand-primary transition-colors line-clamp-2">
+            {issue.title}
+          </h2>
+
+          <div className="flex items-center gap-2 w-full pt-2">
+            {issue.fileUrl && (
+              <button
+                onClick={() => setShowPreview(true)}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-white/10 text-white rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:bg-white/20 transition-all"
+              >
+                <Eye size={14} /> Preview
+              </button>
+            )}
+
+            {isPaid ? (
+              <button
+                onClick={() => setShowModal(true)}
+                className={`flex-1 text-center py-2.5 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all ${
+                  isLatest
+                    ? "bg-white text-black hover:bg-brand-primary hover:text-white"
+                    : "bg-white text-black hover:bg-brand-primary hover:text-white"
+                }`}
+              >
+                Buy
+              </button>
+            ) : issue.fileUrl ? (
+              <a
+                href={`${issue.fileUrl}?dl=${issue.title}.pdf`}
+                className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all ${
+                  isLatest
+                    ? "bg-brand-primary text-white hover:bg-red-700"
+                    : "bg-brand-primary text-white hover:bg-red-700"
+                }`}
+              >
+                <Download size={14} /> Download
+              </a>
+            ) : (
+              <div className="flex-1 text-xs font-semibold uppercase tracking-widest text-gray-600 text-center py-2.5">
+                Coming Soon
+              </div>
+            )}
+          </div>
         </div>
       </div>
+
+      {/* Preview Modal */}
+      {showPreview && issue.fileUrl && (
+        <PdfPreviewModal
+          fileUrl={issue.fileUrl}
+          title={issue.title}
+          onClose={() => setShowPreview(false)}
+        />
+      )}
 
       {/* Buy modal */}
       {showModal && (
@@ -172,7 +187,7 @@ export function IssueCard({ issue, index, isDummy }: { issue: MagazineIssue; ind
           >
             <h3 className="text-base font-black text-white mb-1 line-clamp-2">{issue.title}</h3>
             <p className="text-sm text-gray-500 mb-6">
-              {issue.priceAmount ? `₦${issue.priceAmount.toLocaleString()}` : ""} — enter your details to proceed to payment
+              {displayPrice ? `${symbol}${displayPrice.toLocaleString()}` : ""} — enter your details to proceed to payment
             </p>
 
             {modalError && (

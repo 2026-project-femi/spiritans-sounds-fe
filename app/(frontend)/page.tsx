@@ -14,7 +14,6 @@ import { getImageUrlFromResponse } from "@/lib/utils";
 const HomePage: React.FC = async () => {
 	const payload = await getPayload({ config: configPromise });
 	const homeGlobal: any = await payload.find({ collection: "homepage" });
-	console.log(homeGlobal, 'home global')
 
 	const [articlesRes, homilyRes, prayersRes, musicRes] = await Promise.all([
 		payload.find({ collection: "article", where: { _status: { equals: 'published' } }, sort: "-publishedAt", limit: 3 }),
@@ -51,7 +50,6 @@ const HomePage: React.FC = async () => {
 		}))
 	};
 
-	console.log(data, "data completed")
 	const sidebarData = await getSidebarData(); // Fetch sidebar data
 	if (!data) return null;
 

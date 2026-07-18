@@ -80,6 +80,7 @@ export interface Config {
     subscribers: Subscriber;
     emailCampaigns: EmailCampaign;
     orders: Order;
+    donations: Donation;
     posts: Post;
     pages: Page;
     categories: Category;
@@ -88,6 +89,7 @@ export interface Config {
     contactPage: ContactPage;
     donationPage: DonationPage;
     homepage: Homepage;
+    'lyrics-of-light': LyricsOfLight;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -118,6 +120,7 @@ export interface Config {
     subscribers: SubscribersSelect<false> | SubscribersSelect<true>;
     emailCampaigns: EmailCampaignsSelect<false> | EmailCampaignsSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
+    donations: DonationsSelect<false> | DonationsSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
@@ -126,6 +129,7 @@ export interface Config {
     contactPage: ContactPageSelect<false> | ContactPageSelect<true>;
     donationPage: DonationPageSelect<false> | DonationPageSelect<true>;
     homepage: HomepageSelect<false> | HomepageSelect<true>;
+    'lyrics-of-light': LyricsOfLightSelect<false> | LyricsOfLightSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -471,6 +475,8 @@ export interface Publication {
   description?: string | null;
   price?: ('free' | 'paid') | null;
   priceAmount?: number | null;
+  priceAmountUSD?: number | null;
+  priceAmountGBP?: number | null;
   cover?: (string | null) | Media;
   file?: (string | null) | Media;
   publishedAt?: string | null;
@@ -490,6 +496,8 @@ export interface MagazineIssue {
   excerpt?: string | null;
   price?: ('free' | 'paid') | null;
   priceAmount?: number | null;
+  priceAmountUSD?: number | null;
+  priceAmountGBP?: number | null;
   cover?: (string | null) | Media;
   file?: (string | null) | Media;
   publishedAt?: string | null;
@@ -603,7 +611,26 @@ export interface Order {
           }
       )[]
     | null;
+  currency?: ('NGN' | 'USD' | 'GBP') | null;
+  paymentProvider?: ('paystack' | 'stripe') | null;
   paystackReference?: string | null;
+  stripeSessionId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "donations".
+ */
+export interface Donation {
+  id: string;
+  reference: string;
+  amount: number;
+  currency: string;
+  donorEmail: string;
+  donorName?: string | null;
+  message?: string | null;
+  paidAt: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -1185,6 +1212,62 @@ export interface Homepage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lyrics-of-light".
+ */
+export interface LyricsOfLight {
+  id: string;
+  title: string;
+  slug: string;
+  /**
+   * Audio file for the song (MP3)
+   */
+  audio?: (string | null) | Media;
+  /**
+   * YouTube Video ID or Full URL (e.g. "https://www.youtube.com/watch?v=...")
+   */
+  youtubeLink?: string | null;
+  /**
+   * Title of the booklet
+   */
+  bookletTitle?: string | null;
+  /**
+   * Cover image of the booklet
+   */
+  bookletImage?: (string | null) | Media;
+  /**
+   * Short description of the booklet
+   */
+  bookletDescription?: string | null;
+  /**
+   * Link for "Buy Now" or "Request Copy" (can be internal like /contact or external)
+   */
+  bookletBuyLink?: string | null;
+  /**
+   * Upload the PDF E-Book for free download
+   */
+  bookletFile?: (string | null) | Media;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1426,6 +1509,10 @@ export interface PayloadLockedDocument {
         value: string | Order;
       } | null)
     | ({
+        relationTo: 'donations';
+        value: string | Donation;
+      } | null)
+    | ({
         relationTo: 'posts';
         value: string | Post;
       } | null)
@@ -1456,6 +1543,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'homepage';
         value: string | Homepage;
+      } | null)
+    | ({
+        relationTo: 'lyrics-of-light';
+        value: string | LyricsOfLight;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1690,6 +1781,8 @@ export interface PublicationsSelect<T extends boolean = true> {
   description?: T;
   price?: T;
   priceAmount?: T;
+  priceAmountUSD?: T;
+  priceAmountGBP?: T;
   cover?: T;
   file?: T;
   publishedAt?: T;
@@ -1708,6 +1801,8 @@ export interface MagazineIssuesSelect<T extends boolean = true> {
   excerpt?: T;
   price?: T;
   priceAmount?: T;
+  priceAmountUSD?: T;
+  priceAmountGBP?: T;
   cover?: T;
   file?: T;
   publishedAt?: T;
@@ -1764,7 +1859,25 @@ export interface OrdersSelect<T extends boolean = true> {
   amount?: T;
   status?: T;
   items?: T;
+  currency?: T;
+  paymentProvider?: T;
   paystackReference?: T;
+  stripeSessionId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "donations_select".
+ */
+export interface DonationsSelect<T extends boolean = true> {
+  reference?: T;
+  amount?: T;
+  currency?: T;
+  donorEmail?: T;
+  donorName?: T;
+  message?: T;
+  paidAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2038,6 +2151,26 @@ export interface HomepageSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lyrics-of-light_select".
+ */
+export interface LyricsOfLightSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  audio?: T;
+  youtubeLink?: T;
+  bookletTitle?: T;
+  bookletImage?: T;
+  bookletDescription?: T;
+  bookletBuyLink?: T;
+  bookletFile?: T;
+  content?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2472,6 +2605,10 @@ export interface TaskSchedulePublish {
       | ({
           relationTo: 'pages';
           value: string | Page;
+        } | null)
+      | ({
+          relationTo: 'lyrics-of-light';
+          value: string | LyricsOfLight;
         } | null);
     global?: string | null;
     user?: (string | null) | User;

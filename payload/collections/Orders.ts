@@ -48,7 +48,30 @@ export const Orders: CollectionConfig = {
       hasMany: true,
     },
     {
+      name: 'currency',
+      type: 'select',
+      options: [
+        { label: 'NGN', value: 'NGN' },
+        { label: 'USD', value: 'USD' },
+        { label: 'GBP', value: 'GBP' },
+      ],
+      defaultValue: 'NGN',
+    },
+    {
+      name: 'paymentProvider',
+      type: 'select',
+      options: [
+        { label: 'Paystack', value: 'paystack' },
+        { label: 'Stripe', value: 'stripe' },
+      ],
+      defaultValue: 'paystack',
+    },
+    {
       name: 'paystackReference',
+      type: 'text',
+    },
+    {
+      name: 'stripeSessionId',
       type: 'text',
     },
   ],

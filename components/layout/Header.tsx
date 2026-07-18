@@ -9,6 +9,7 @@ const navLinks = [
 	{ href: "/homilies", label: "Homilies" },
 	{ href: "/articles", label: "Articles" },
 	{ href: "/unveiler", label: "Treasures  Unveiler" },
+	{ href: "/lyrics-of-light", label: "Lyrics of Light" },
 	{ href: "/about", label: "About" },
 ];
 
@@ -17,7 +18,7 @@ const moreLinks = [
 	{ href: "/unveiler/issues", label: "Magazine Issues" },
 	{ href: "/unveiler/books", label: "Book Publishing" },
 	{ href: "/unveiler/radio", label: "Internet Radio" },
-	{ href: "/unveiler/adverts", label: "Advertising" },
+	// { href: "/unveiler/adverts", label: "Advertising" },
 ];
 
 const Header: React.FC = () => {
