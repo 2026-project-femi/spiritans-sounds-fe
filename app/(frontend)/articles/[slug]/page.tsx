@@ -7,6 +7,7 @@ import { Sidebar } from "@/components/common/Sidebar";
 import Comments from "@/components/Comments";
 import { Comment } from "@/lib/types";
 import type { Metadata } from "next";
+import { getOgImageUrl } from '@/lib/getOgImageUrl'
 
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -26,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     if (!doc) return {};
     const title = doc.title;
     const description = doc.excerpt || "";
-    const imageUrl = doc.featuredImage && typeof doc.featuredImage === 'object' ? doc.featuredImage.url : null;
+    const imageUrl = getOgImageUrl(doc);
     return {
         title,
         description,

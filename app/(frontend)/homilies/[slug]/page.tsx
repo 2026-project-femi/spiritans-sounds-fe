@@ -9,6 +9,7 @@ import Comments from '@/components/Comments'
 import { getSidebarData } from '@/lib/payload'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { getOgImageUrl } from '@/lib/getOgImageUrl'
 
 
 export async function generateMetadata({
@@ -31,10 +32,7 @@ export async function generateMetadata({
   const doc = result.docs[0]
   if (!doc) return {}
 
-  const imageUrl =
-    doc.featuredImage && typeof doc.featuredImage === 'object'
-      ? (doc.featuredImage as any).url
-      : null
+  const imageUrl = getOgImageUrl(doc)
 
   return {
     title: doc.title,

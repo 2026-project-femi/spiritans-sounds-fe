@@ -6,6 +6,7 @@ import { Sidebar } from "@/components/common/Sidebar"; // Import the new Sidebar
 import { Prayer } from "@/lib/types";
 import Comments from "@/components/Comments";
 import type { Metadata } from "next";
+import { getOgImageUrl } from '@/lib/getOgImageUrl'
 
 
 
@@ -26,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     if (!doc) return {};
     const title = doc.title;
     const description = doc.excerpt || (doc.category ? `${doc.category} — Spiritans Sound` : "");
-    const imageUrl = doc.featuredImage && typeof doc.featuredImage === 'object' ? doc.featuredImage.url : null;
+    const imageUrl = getOgImageUrl(doc);
     return {
         title,
         description,

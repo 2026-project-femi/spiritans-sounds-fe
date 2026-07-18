@@ -6,6 +6,7 @@ import { Calendar, ArrowLeft, BookOpen, Download, ShieldCheck, FileText } from "
 import { PurchaseButton } from "./PurchaseButton";
 import { PreviewButton } from "@/components/magazine/PreviewButton";
 import type { Metadata } from "next";
+import { getOgImageUrl } from '@/lib/getOgImageUrl'
 
 
 
@@ -26,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!doc) return {};
   const title = doc.title;
   const description = doc.excerpt || doc.description || "";
-  const imageUrl = doc.coverImage && typeof doc.coverImage === 'object' ? doc.coverImage.url : null;
+  const imageUrl = getOgImageUrl(doc);
   return {
     title,
     description,

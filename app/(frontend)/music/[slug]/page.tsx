@@ -4,6 +4,7 @@ import configPromise from "@/payload.config";
 import RichText from '@/components/RichText';
 import { Sidebar } from "@/components/common/Sidebar"; // Import the new Sidebar component
 import type { Metadata } from "next";
+import { getOgImageUrl } from '@/lib/getOgImageUrl'
 
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -23,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     if (!doc) return {};
     const title = doc.title;
     const description = doc.excerpt || (doc.artist ? `By ${doc.artist}` : "");
-    const imageUrl = doc.featuredImage && typeof doc.featuredImage === 'object' ? doc.featuredImage.url : null;
+    const imageUrl = getOgImageUrl(doc);
     return {
         title,
         description,
