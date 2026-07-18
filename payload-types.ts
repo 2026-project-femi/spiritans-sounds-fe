@@ -80,6 +80,7 @@ export interface Config {
     subscribers: Subscriber;
     emailCampaigns: EmailCampaign;
     orders: Order;
+    donations: Donation;
     posts: Post;
     pages: Page;
     categories: Category;
@@ -119,6 +120,7 @@ export interface Config {
     subscribers: SubscribersSelect<false> | SubscribersSelect<true>;
     emailCampaigns: EmailCampaignsSelect<false> | EmailCampaignsSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
+    donations: DonationsSelect<false> | DonationsSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
@@ -610,7 +612,25 @@ export interface Order {
       )[]
     | null;
   currency?: ('NGN' | 'USD' | 'GBP') | null;
+  paymentProvider?: ('paystack' | 'stripe') | null;
   paystackReference?: string | null;
+  stripeSessionId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "donations".
+ */
+export interface Donation {
+  id: string;
+  reference: string;
+  amount: number;
+  currency: string;
+  donorEmail: string;
+  donorName?: string | null;
+  message?: string | null;
+  paidAt: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -1489,6 +1509,10 @@ export interface PayloadLockedDocument {
         value: string | Order;
       } | null)
     | ({
+        relationTo: 'donations';
+        value: string | Donation;
+      } | null)
+    | ({
         relationTo: 'posts';
         value: string | Post;
       } | null)
@@ -1836,7 +1860,24 @@ export interface OrdersSelect<T extends boolean = true> {
   status?: T;
   items?: T;
   currency?: T;
+  paymentProvider?: T;
   paystackReference?: T;
+  stripeSessionId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "donations_select".
+ */
+export interface DonationsSelect<T extends boolean = true> {
+  reference?: T;
+  amount?: T;
+  currency?: T;
+  donorEmail?: T;
+  donorName?: T;
+  message?: T;
+  paidAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }

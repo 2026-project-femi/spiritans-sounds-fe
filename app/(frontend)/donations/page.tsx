@@ -78,7 +78,7 @@ export default function DonatePage() {
 		setError(null);
 
 		try {
-			const response = await fetch("/api/paystack/initialize", {
+			const response = await fetch("/api/checkout/donate", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({

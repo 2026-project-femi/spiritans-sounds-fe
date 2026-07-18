@@ -1,7 +1,6 @@
-// app/api/paystack/webhook/route.ts
+// app/api/stripe/webhook/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { headers } from "next/headers";
-import crypto from "crypto";
+import Stripe from "stripe";
 import { 
   sendAdminNotification, 
   sendThankYouEmail, 
@@ -9,8 +8,12 @@ import {
   sendFailedChargeNotification 
 } from "@/lib/emails/sendEmail";
 import { getPayload } from 'payload';
-import configPromise from '@/payload.config'; // Adjust path based on your setup
+import configPromise from '@/payload.config';
 import { Redis } from "@upstash/redis";
+
+const stripe = process.env.STRIPE_SECRET_KEY 
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: "2026-06-24.dahlia" }) 
+  : null;
 
 // Redis-backed deduplication
 const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
@@ -32,79 +35,85 @@ async function markAsProcessed(reference: string): Promise<void> {
     }
 }
 
-// Verify Paystack signature
-function verifyPaystackSignature(payload: string, signature: string, secret: string): boolean {
-    try {
-        const hash = crypto.createHmac("sha512", secret).update(payload).digest("hex");
-        return crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(signature));
-    } catch (error) {
-        console.error("Signature verification error:", error);
-        return false;
-    }
-}
-
 export async function POST(request: NextRequest) {
+    if (!stripe) {
+        console.error("❌ Stripe is not configured.");
+        return NextResponse.json({ error: "Stripe not configured" }, { status: 500 });
+    }
+
     try {
-        const headersList = await headers();
-        const signature = headersList.get("x-paystack-signature");
+        const signature = request.headers.get("stripe-signature");
         const rawBody = await request.text();
 
-        if (!signature) {
-            console.error("❌ No signature header");
-            return NextResponse.json({ error: "No signature provided" }, { status: 401 });
+        if (!signature || !process.env.STRIPE_WEBHOOK_SECRET) {
+            console.error("❌ No signature or webhook secret");
+            return NextResponse.json({ error: "Missing configuration or signature" }, { status: 400 });
         }
 
-        const isValid = verifyPaystackSignature(rawBody, signature, process.env.PAYSTACK_WEBHOOK_SECRET!);
-        if (!isValid) {
-            console.error("❌ Invalid signature");
-            return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
+        let event: Stripe.Event;
+
+        try {
+            event = stripe.webhooks.constructEvent(rawBody, signature, process.env.STRIPE_WEBHOOK_SECRET);
+        } catch (err: any) {
+            console.error(`❌ Webhook signature verification failed: ${err.message}`);
+            return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
         }
 
-        const payload = JSON.parse(rawBody);
-
-        console.log("📬 Webhook received:", {
-            event: payload.event,
-            reference: payload.data?.reference,
+        console.log("📬 Stripe Webhook received:", {
+            event: event.type,
+            id: event.id,
         });
 
         // Initialize Payload CMS instance inside the handler
         const payloadCms = await getPayload({ config: configPromise });
 
-        switch (payload.event) {
-            case "charge.success":
-                if ((payload.data?.reference as string)?.startsWith("PUR-")) {
-                    await handleSuccessfulPurchase(payload.data, payloadCms);
-                } else {
-                    await handleSuccessfulCharge(payload.data, payloadCms);
+        switch (event.type) {
+            case "checkout.session.completed": {
+                const session = event.data.object as Stripe.Checkout.Session;
+                
+                // Route based on metadata type
+                if (session.metadata?.type === "purchase") {
+                    await handleSuccessfulPurchase(session, payloadCms);
+                } else if (session.metadata?.type === "donation") {
+                    await handleSuccessfulCharge(session, payloadCms);
                 }
                 break;
-            case "charge.failed":
-                await handleFailedCharge(payload.data);
+            }
+            case "checkout.session.async_payment_failed":
+            case "payment_intent.payment_failed": {
+                const session = event.data.object as Stripe.Checkout.Session | Stripe.PaymentIntent;
+                await handleFailedCharge(session);
                 break;
+            }
             default:
-                console.log(`ℹ️ Unhandled event: ${payload.event}`);
+                console.log(`ℹ️ Unhandled event type: ${event.type}`);
         }
 
         return NextResponse.json({ received: true }, { status: 200 });
     } catch (error) {
-        console.error("❌ Webhook error:", error);
-        return NextResponse.json({ received: true }, { status: 200 });
+        console.error("❌ Webhook processing error:", error);
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }
 
-async function handleSuccessfulCharge(data: any, payloadCms: any) {
-    if (await isAlreadyProcessed(data.reference)) {
-        console.log(`⏭️ Transaction ${data.reference} already processed, skipping`);
+async function handleSuccessfulCharge(session: Stripe.Checkout.Session, payloadCms: any) {
+    const reference = session.id;
+
+    if (await isAlreadyProcessed(reference)) {
+        console.log(`⏭️ Transaction ${reference} already processed, skipping`);
         return;
     }
 
     try {
-        const { reference, amount, currency, paid_at, customer, metadata } = data;
-        const email = customer.email;
-        const donorName = metadata?.name || customer.first_name || customer.last_name || email.split("@")[0] || "Beloved Donor";
-
-        const formattedAmount = amount / 100;
-        const formattedDate = new Date(paid_at).toLocaleDateString("en-US", {
+        const metadata = session.metadata || {};
+        const email = session.customer_details?.email || session.customer_email || "unknown@donor.com";
+        const donorName = metadata.donor_name || session.customer_details?.name || email.split("@")[0] || "Beloved Donor";
+        const currency = (session.currency || "USD").toUpperCase();
+        const amountSubunits = session.amount_total || 0;
+        const formattedAmount = amountSubunits / 100;
+        
+        const paid_at = new Date();
+        const formattedDate = paid_at.toLocaleDateString("en-US", {
             year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit",
         });
 
@@ -119,8 +128,7 @@ async function handleSuccessfulCharge(data: any, payloadCms: any) {
                 currency,
                 donorEmail: email,
                 donorName,
-                message: metadata?.message,
-                paidAt: new Date(paid_at).toISOString(),
+                paidAt: paid_at.toISOString(),
             },
         });
 
@@ -137,7 +145,6 @@ async function handleSuccessfulCharge(data: any, payloadCms: any) {
                     currency,
                     transactionReference: reference,
                     date: formattedDate,
-                    message: metadata?.message,
                 });
                 if (emailSent) break;
             } catch (emailError) {
@@ -147,9 +154,14 @@ async function handleSuccessfulCharge(data: any, payloadCms: any) {
             if (retries > 0) await new Promise((resolve) => setTimeout(resolve, 2000));
         }
 
-        if (formattedAmount >= 50000) {
+        if (formattedAmount >= 500) { // e.g. 500 USD/GBP
             try {
-                await sendAdminNotification({ ...data, formattedAmount, donorName });
+                await sendAdminNotification({ 
+                  event: "checkout.session.completed", 
+                  data: session, 
+                  formattedAmount, 
+                  donorName 
+                });
             } catch (adminError) {
                 console.error("Failed to send admin notification:", adminError);
             }
@@ -166,18 +178,25 @@ async function handleSuccessfulCharge(data: any, payloadCms: any) {
     }
 }
 
-async function handleSuccessfulPurchase(data: any, payloadCms: any) {
-    if (await isAlreadyProcessed(data.reference)) {
-        console.log(`⏭️ Purchase ${data.reference} already processed, skipping`);
+async function handleSuccessfulPurchase(session: Stripe.Checkout.Session, payloadCms: any) {
+    const reference = session.id;
+
+    if (await isAlreadyProcessed(reference)) {
+        console.log(`⏭️ Purchase ${reference} already processed, skipping`);
         return;
     }
 
     try {
-        const { reference, amount, currency, paid_at, customer, metadata } = data;
-        const email = customer.email;
-        const buyerName = metadata?.name || metadata?.buyer_name || customer.first_name || email.split("@")[0] || "Valued Customer";
+        const metadata = session.metadata || {};
+        const email = session.customer_details?.email || session.customer_email || "unknown@customer.com";
+        const buyerName = metadata.buyer_name || session.customer_details?.name || email.split("@")[0] || "Valued Customer";
+        
+        const currency = (session.currency || "USD").toUpperCase();
+        const amountSubunits = session.amount_total || 0;
+        const formattedAmount = amountSubunits / 100;
+        const paid_at = new Date();
 
-        const orderId = metadata?.orderId;
+        const orderId = metadata.orderId;
         if (!orderId) {
             console.error(`❌ No orderId in metadata for purchase ${reference}`);
             return;
@@ -187,7 +206,7 @@ async function handleSuccessfulPurchase(data: any, payloadCms: any) {
         const order = await payloadCms.findByID({
             collection: 'orders',
             id: orderId,
-            depth: 2, // Tells payload to populate linked media/item fields down 2 levels
+            depth: 2,
         });
 
         if (!order) {
@@ -197,10 +216,9 @@ async function handleSuccessfulPurchase(data: any, payloadCms: any) {
 
         // 2. Safely parse file URL from populated media document
         const firstItem = order.items?.[0];
-        // Polymorphic relations wrap the document in a 'value' key
-        const item = firstItem?.value || firstItem; 
-        const fileDoc = item?.file; // Assuming 'file' relates to a media collection
-        
+        const item = firstItem?.value || firstItem;
+        const fileDoc = item?.file; 
+
         if (!fileDoc || !fileDoc.url) {
             console.error(`❌ Item or file URL not found for order ${orderId}`);
             return;
@@ -217,8 +235,7 @@ async function handleSuccessfulPurchase(data: any, payloadCms: any) {
         console.log(`✅ Order ${orderId} marked completed`);
 
         // 4. Send download email
-        const formattedAmount = amount / 100;
-        const formattedDate = new Date(paid_at).toLocaleDateString("en-NG", {
+        const formattedDate = paid_at.toLocaleDateString("en-US", {
             year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit",
         });
         
@@ -259,23 +276,20 @@ async function handleSuccessfulPurchase(data: any, payloadCms: any) {
     }
 }
 
-async function handleFailedCharge(data: any) {
-    console.log("⚠️ Failed charge:", {
-        reference: data.reference,
-        email: data.customer?.email,
-        amount: data.amount / 100,
-        currency: data.currency,
+async function handleFailedCharge(sessionOrIntent: any) {
+    console.log("⚠️ Failed Stripe charge:", {
+        id: sessionOrIntent.id,
+        email: sessionOrIntent.customer_email || sessionOrIntent.customer_details?.email,
     });
 
     if (process.env.ADMIN_EMAIL) {
-        await sendFailedChargeNotification(data);
+        await sendFailedChargeNotification({ reference: sessionOrIntent.id, ...sessionOrIntent });
     }
 }
 
 export async function GET() {
     return NextResponse.json({
-        message: "Paystack webhook endpoint is active",
-        emailProvider: "Resend",
+        message: "Stripe webhook endpoint is active",
         status: "ready",
         processedTransactions: localProcessedTransactions.size,
     });

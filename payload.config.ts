@@ -19,6 +19,7 @@ import { Comments } from "./payload/collections/Comments";
 import { Subscribers } from "./payload/collections/Subscribers";
 import { EmailCampaigns } from "./payload/collections/EmailCampaigns";
 import { Orders } from "./payload/collections/Orders";
+import { Donations } from "./payload/collections/Donations";
 
 import { HomePage } from "./payload/collections/Home";
 import { DonationPage } from "./payload/collections/DonationPage";
@@ -81,6 +82,7 @@ export default buildConfig({
 		Subscribers,
 		EmailCampaigns,
 		Orders,
+		Donations,
 		Posts,
 		Pages,
 		Categories,

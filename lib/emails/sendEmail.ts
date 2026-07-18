@@ -45,7 +45,7 @@ export async function sendThankYouEmail(data: EmailData): Promise<boolean> {
 		});
 
 		if (error) {
-			console.error("❌ Failed to send thank you email:", error);
+			console.error("❌ Failed to send thank you email:", error.message || error);
 			return false;
 		}
 
@@ -93,7 +93,7 @@ export async function sendPurchaseConfirmationEmail(data: PurchaseEmailData): Pr
 		});
 
 		if (error) {
-			console.error("❌ Failed to send purchase confirmation email:", error);
+			console.error("❌ Failed to send purchase confirmation email:", error.message || error);
 			return false;
 		}
 
@@ -135,7 +135,7 @@ export async function sendFailedChargeNotification(data: any) {
 		});
 
 		if (error) {
-			console.error("❌ Failed to send failed charge notification:", error);
+			console.error("❌ Failed to send failed charge notification:", error.message || error);
 		} else {
 			console.log("✅ Admin notified of failed charge");
 		}
@@ -179,7 +179,7 @@ export async function sendAdminNotification(donation: any) {
 		});
 
 		if (error) {
-			console.error("❌ Failed to send admin notification:", error);
+			console.error("❌ Failed to send admin notification:", error.message || error);
 		} else {
 			console.log("✅ Admin notification sent");
 		}

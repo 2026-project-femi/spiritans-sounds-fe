@@ -48,7 +48,7 @@ export function IssueCard({ issue, index, isDummy }: { issue: MagazineIssue; ind
     setModalError(null);
     setIsProcessing(true);
     try {
-      const res = await fetch("/api/paystack/purchase/initialize", {
+      const res = await fetch("/api/checkout/purchase", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

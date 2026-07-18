@@ -58,7 +58,20 @@ export const Orders: CollectionConfig = {
       defaultValue: 'NGN',
     },
     {
+      name: 'paymentProvider',
+      type: 'select',
+      options: [
+        { label: 'Paystack', value: 'paystack' },
+        { label: 'Stripe', value: 'stripe' },
+      ],
+      defaultValue: 'paystack',
+    },
+    {
       name: 'paystackReference',
+      type: 'text',
+    },
+    {
+      name: 'stripeSessionId',
       type: 'text',
     },
   ],

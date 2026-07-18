@@ -35,7 +35,7 @@ export function PurchaseButton({ itemId, itemTitle, priceAmount, priceAmountUSD,
     setError(null);
     setIsProcessing(true);
     try {
-      const res = await fetch("/api/paystack/purchase/initialize", {
+      const res = await fetch("/api/checkout/purchase", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
