@@ -2,6 +2,7 @@ import * as migration_20260611_105137 from './20260611_105137';
 import * as migration_20260613_121734 from './20260613_121734';
 import * as migration_20260613_145632_update_homilies_category from './20260613_145632_update_homilies_category';
 import * as migration_20260613_publish_existing_docs from './20260613_publish_existing_docs';
+import * as migration_20260718_141543 from './20260718_141543';
 
 export const migrations = [
   {
@@ -22,6 +23,11 @@ export const migrations = [
   {
     up: migration_20260613_publish_existing_docs.up,
     down: migration_20260613_publish_existing_docs.down,
-    name: '20260613_publish_existing_docs'
+    name: '20260613_publish_existing_docs',
+  },
+  {
+    up: migration_20260718_141543.up,
+    down: migration_20260718_141543.down,
+    name: '20260718_141543'
   },
 ];
