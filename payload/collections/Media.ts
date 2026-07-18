@@ -48,16 +48,38 @@ export const Media: CollectionConfig = {
     staticDir: path.resolve(dirname, '../../public/media'),
     adminThumbnail: 'thumbnail',
     focalPoint: true,
+    // Global optimization: automatically convert ALL uploaded images to WebP
+    // This solves the issue if a user uploads a massive PNG or uncompressed JPEG
+    formatOptions: {
+      format: 'webp',
+      options: {
+        quality: 80,
+      },
+    },
     imageSizes: [
       {
         name: 'thumbnail',
         width: 300,
+        formatOptions: {
+          format: 'webp',
+          options: {
+            quality: 75,
+          },
+        },
       },
       {
         name: 'og',
         width: 1200,
         height: 630,
         crop: 'center',
+        // Force the OG image to JPEG. JPEG is universally supported by all social
+        // media scrapers (WhatsApp, Facebook, Twitter) and compresses very well.
+        formatOptions: {
+          format: 'jpeg',
+          options: {
+            quality: 80,
+          },
+        },
       },
     ],
   },
