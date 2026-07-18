@@ -149,7 +149,7 @@ export default function LyricsOfLightClient({ songs }: { songs: any[] }) {
                         }}
                         className="px-8 py-3 bg-brand-primary text-white font-bold tracking-widest uppercase text-xs rounded-full hover:bg-sacred-gold transition-colors duration-300"
                       >
-                        Download E-Book
+                        Get Booklet
                       </button>
                     ) : (
                       <span className="text-white/40 text-xs italic">E-Book not available</span>
