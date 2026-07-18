@@ -3,12 +3,15 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle, Mail } from "lucide-react";
+import { CheckCircle, XCircle, Mail } from "lucide-react";
 
 function PurchaseContent() {
   const searchParams = useSearchParams();
   const reference = searchParams.get("reference") || searchParams.get("trxref");
+  const status = searchParams.get("status");
   const [countdown, setCountdown] = useState(15);
+  
+  const isCancelled = status === "cancelled";
 
   useEffect(() => {
     if (countdown === 0) {
@@ -24,25 +27,35 @@ function PurchaseContent() {
       <div className="max-w-md w-full bg-white/3 border border-white/10 rounded-2xl p-10 text-center space-y-6">
 
         {/* Icon */}
-        <div className="w-20 h-20 bg-green-500/10 border border-green-500/20 rounded-full flex items-center justify-center mx-auto">
-          <CheckCircle className="w-10 h-10 text-green-400" />
+        <div className={`w-20 h-20 ${isCancelled ? 'bg-red-500/10 border-red-500/20' : 'bg-green-500/10 border-green-500/20'} rounded-full border flex items-center justify-center mx-auto`}>
+          {isCancelled ? (
+            <XCircle className="w-10 h-10 text-red-400" />
+          ) : (
+            <CheckCircle className="w-10 h-10 text-green-400" />
+          )}
         </div>
 
         <div>
-          <h2 className="text-2xl font-black text-white">Payment Successful!</h2>
+          <h2 className="text-2xl font-black text-white">
+            {isCancelled ? "Payment Cancelled" : "Payment Successful!"}
+          </h2>
           <p className="mt-2 text-gray-400 text-sm leading-relaxed">
-            Your purchase is confirmed. We are preparing your download link.
+            {isCancelled 
+              ? "Your payment was cancelled. No charges were made."
+              : "Your purchase is confirmed. We are preparing your download link."}
           </p>
         </div>
 
         {/* Email notice */}
-        <div className="flex items-start gap-3 bg-brand-primary/5 border border-brand-primary/20 rounded-xl px-5 py-4 text-left">
-          <Mail className="w-5 h-5 text-brand-primary mt-0.5 shrink-0" />
-          <p className="text-sm text-gray-300 leading-relaxed">
-            Your download link will arrive by email within a few minutes.
-            Please check your inbox (and spam folder).
-          </p>
-        </div>
+        {!isCancelled && (
+          <div className="flex items-start gap-3 bg-brand-primary/5 border border-brand-primary/20 rounded-xl px-5 py-4 text-left">
+            <Mail className="w-5 h-5 text-brand-primary mt-0.5 shrink-0" />
+            <p className="text-sm text-gray-300 leading-relaxed">
+              Your download link will arrive by email within a few minutes.
+              Please check your inbox (and spam folder).
+            </p>
+          </div>
+        )}
 
         {reference && (
           <div className="bg-white/5 rounded-lg px-4 py-3 text-left">
