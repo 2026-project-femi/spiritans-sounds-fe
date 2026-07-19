@@ -56,12 +56,6 @@ export default async function LyricsOfLightPage() {
 						>
 							Listen Now
 						</Link>
-						<Link 
-							href="#library"
-							className="w-full sm:w-auto px-8 py-4 bg-white/10 backdrop-blur-md text-white font-medium tracking-widest uppercase text-sm rounded-full border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:-translate-y-1"
-						>
-							Get Booklet
-						</Link>
 					</div>
 				</div>
 
