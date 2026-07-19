@@ -1246,6 +1246,10 @@ export interface LyricsOfLight {
    * Upload the PDF E-Book for free download
    */
   bookletFile?: (string | null) | Media;
+  /**
+   * Optional lyrics of the song
+   */
+  lyrics?: string | null;
   content?: {
     root: {
       type: string;
@@ -2166,6 +2170,7 @@ export interface LyricsOfLightSelect<T extends boolean = true> {
   bookletDescription?: T;
   bookletBuyLink?: T;
   bookletFile?: T;
+  lyrics?: T;
   content?: T;
   publishedAt?: T;
   updatedAt?: T;

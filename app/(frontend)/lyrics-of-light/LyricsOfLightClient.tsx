@@ -7,6 +7,7 @@ import { captureEmailForEbook } from "./actions";
 
 export default function LyricsOfLightClient({ songs }: { songs: any[] }) {
   const [activeSong, setActiveSong] = useState(songs[0] || null);
+  const [showLyrics, setShowLyrics] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -42,6 +43,7 @@ export default function LyricsOfLightClient({ songs }: { songs: any[] }) {
 
   const handlePlayClick = (song: any) => {
     setActiveSong(song);
+    setShowLyrics(false);
     // Smooth scroll to top of featured section
     document.getElementById("featured")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -106,6 +108,40 @@ export default function LyricsOfLightClient({ songs }: { songs: any[] }) {
                           Download MP3
                         </a>
                       </div>
+                    </div>
+                  )}
+
+                  {/* Lyrics Toggle & Display */}
+                  {activeSong.lyrics && (
+                    <div className="space-y-4">
+                      <button
+                        onClick={() => setShowLyrics(!showLyrics)}
+                        className="w-full py-3.5 px-6 rounded-2xl bg-white/5 hover:bg-white/10 active:bg-white/15 border border-white/10 text-white font-medium text-xs tracking-widest uppercase flex items-center justify-center gap-3 transition-all duration-300 shadow-md group cursor-pointer"
+                      >
+                        <svg 
+                          className={`w-4 h-4 text-brand-primary transition-transform duration-300 ${showLyrics ? 'rotate-180' : ''}`} 
+                          fill="none" 
+                          stroke="currentColor" 
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+                        </svg>
+                        {showLyrics ? "Hide Lyrics" : "Show Lyrics & Sing Along"}
+                      </button>
+
+                      {showLyrics && (
+                        <div className="bg-black/35 border border-white/5 rounded-2xl p-6 relative overflow-hidden animate-fadeIn transition-all duration-500">
+                          {/* Top/bottom fade overlays */}
+                          <div className="absolute top-0 left-0 w-full h-8 bg-linear-to-b from-black/40 to-transparent pointer-events-none z-10" />
+                          <div className="absolute bottom-0 left-0 w-full h-8 bg-linear-to-t from-black/40 to-transparent pointer-events-none z-10" />
+                          
+                          <div className="lyrics-mask max-h-[250px] overflow-y-auto custom-scrollbar pr-2 py-4">
+                            <p className="text-center text-white/90 font-light text-base leading-relaxed whitespace-pre-line font-serif">
+                              {activeSong.lyrics}
+                            </p>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

@@ -3,6 +3,7 @@ import * as migration_20260613_121734 from './20260613_121734';
 import * as migration_20260613_145632_update_homilies_category from './20260613_145632_update_homilies_category';
 import * as migration_20260613_publish_existing_docs from './20260613_publish_existing_docs';
 import * as migration_20260718_141543 from './20260718_141543';
+import * as migration_20260719_175438_add_lyrics_to_lyrics_of_light from './20260719_175438_add_lyrics_to_lyrics_of_light';
 
 export const migrations = [
   {
@@ -28,6 +29,11 @@ export const migrations = [
   {
     up: migration_20260718_141543.up,
     down: migration_20260718_141543.down,
-    name: '20260718_141543'
+    name: '20260718_141543',
+  },
+  {
+    up: migration_20260719_175438_add_lyrics_to_lyrics_of_light.up,
+    down: migration_20260719_175438_add_lyrics_to_lyrics_of_light.down,
+    name: '20260719_175438_add_lyrics_to_lyrics_of_light'
   },
 ];
