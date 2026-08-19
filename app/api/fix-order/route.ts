@@ -13,7 +13,8 @@ export async function GET(request: Request) {
 
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, { apiVersion: '2026-06-24.dahlia' as any });
-    const chargeId = 'ch_3U5yHXLvANyw72eW1abDitw7';
+    const urlChargeId = url.searchParams.get("chargeId");
+    const chargeId = urlChargeId || 'ch_3U5yHXLvANyw72eW1abDitw7';
     
     const charge = await stripe.charges.retrieve(chargeId);
     const paymentIntentId = charge.payment_intent as string;
