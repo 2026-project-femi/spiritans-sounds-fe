@@ -1,13 +1,17 @@
 import fs from 'fs';
 import path from 'path';
 try {
-  const envPath = path.join(process.cwd(), '.env');
-  if (fs.existsSync(envPath)) {
-    const envFile = fs.readFileSync(envPath, 'utf8');
-    for (const line of envFile.split('\n')) {
-      if (line.includes('=')) {
-        const [key, ...values] = line.split('=');
-        if (!process.env[key]) process.env[key] = values.join('=').trim().replace(/['"]/g, '');
+  const envPaths = ['.env', '.env.local', '.env.production'];
+  for (const envName of envPaths) {
+    const envPath = path.join(process.cwd(), envName);
+    if (fs.existsSync(envPath)) {
+      console.log(`Loading env from ${envName}`);
+      const envFile = fs.readFileSync(envPath, 'utf8');
+      for (const line of envFile.split('\n')) {
+        if (line.includes('=')) {
+          const [key, ...values] = line.split('=');
+          if (!process.env[key]) process.env[key] = values.join('=').trim().replace(/['"]/g, '');
+        }
       }
     }
   }
