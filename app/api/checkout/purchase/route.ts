@@ -39,10 +39,23 @@ export async function POST(request: Request) {
   try {
     const headersList = await headers();
     const origin = headersList.get("origin");
-    const allowedOrigins = [process.env.APP_URL, "http://localhost:3000"].filter(Boolean) as string[];
-    const cleanOrigin = origin?.replace(/\/$/, "");
+    const host = headersList.get("host");
+    const protocol = headersList.get("x-forwarded-proto") || "http";
+    const currentHostUrl = host ? `${protocol}://${host}` : null;
+    
+    const allowedOrigins = [
+      process.env.APP_URL, 
+      "http://localhost:3000", 
+      "https://spiritanssound.com", 
+      "https://www.spiritanssound.com",
+      currentHostUrl
+    ].filter(Boolean) as string[];
+    
+    // Fallback to currentHostUrl if origin is missing, or just use origin
+    const cleanOrigin = (origin || currentHostUrl)?.replace(/\/$/, "");
 
     if (!cleanOrigin || !allowedOrigins.includes(cleanOrigin)) {
+      console.error(`Blocked by origin check. Origin: ${origin}, Host: ${host}, Allowed:`, allowedOrigins);
       return NextResponse.json({ error: "Unauthorized origin" }, { status: 403 });
     }
 
