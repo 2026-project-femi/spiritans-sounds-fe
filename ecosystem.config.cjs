@@ -11,8 +11,8 @@ module.exports = {
       exec_mode: "fork",
       autorestart: true,
       watch: false,
-      max_memory_restart: "1500M",
-      node_args: '--max-old-space-size=1400',
+      max_memory_restart: "2500M",
+      node_args: '--max-old-space-size=2048',
       env_production: {
         NODE_ENV: "production",
         PORT: 3000,

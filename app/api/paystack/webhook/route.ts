@@ -9,28 +9,8 @@ import {
   sendFailedChargeNotification 
 } from "@/lib/emails/sendEmail";
 import { getPayload } from 'payload';
-import configPromise from '@/payload.config'; // Adjust path based on your setup
-import { Redis } from "@upstash/redis";
+import configPromise from '@/payload.config';
 
-// Redis-backed deduplication
-const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
-    ? new Redis({ url: process.env.UPSTASH_REDIS_REST_URL, token: process.env.UPSTASH_REDIS_REST_TOKEN })
-    : null;
-
-const localProcessedTransactions = new Set<string>();
-
-async function isAlreadyProcessed(reference: string): Promise<boolean> {
-    if (redis) return (await redis.exists(`txn:${reference}`)) === 1;
-    return localProcessedTransactions.has(reference);
-}
-
-async function markAsProcessed(reference: string): Promise<void> {
-    if (redis) {
-        await redis.set(`txn:${reference}`, "1", { ex: 86400 }); // 24h TTL
-    } else {
-        localProcessedTransactions.add(reference);
-    }
-}
 
 // Verify Paystack signature
 function verifyPaystackSignature(payload: string, signature: string, secret: string): boolean {
@@ -93,13 +73,20 @@ export async function POST(request: NextRequest) {
 }
 
 async function handleSuccessfulCharge(data: any, payloadCms: any) {
-    if (await isAlreadyProcessed(data.reference)) {
-        console.log(`⏭️ Transaction ${data.reference} already processed, skipping`);
-        return;
-    }
-
     try {
         const { reference, amount, currency, paid_at, customer, metadata } = data;
+
+        // Deduplication using Payload CMS
+        const existingDonation = await payloadCms.find({
+            collection: 'donations',
+            where: { reference: { equals: reference } },
+            limit: 1,
+        });
+
+        if (existingDonation.totalDocs > 0) {
+            console.log(`⏭️ Donation ${reference} already processed, skipping`);
+            return;
+        }
         const email = customer.email;
         const donorName = metadata?.name || customer.first_name || customer.last_name || email.split("@")[0] || "Beloved Donor";
 
@@ -156,7 +143,6 @@ async function handleSuccessfulCharge(data: any, payloadCms: any) {
         }
 
         if (emailSent) {
-            await markAsProcessed(reference);
             console.log(`✅ Successfully processed donation ${reference}`);
         } else {
             console.error(`❌ Failed to send email for donation ${reference} after 3 retries`);
@@ -167,11 +153,6 @@ async function handleSuccessfulCharge(data: any, payloadCms: any) {
 }
 
 async function handleSuccessfulPurchase(data: any, payloadCms: any) {
-    if (await isAlreadyProcessed(data.reference)) {
-        console.log(`⏭️ Purchase ${data.reference} already processed, skipping`);
-        return;
-    }
-
     try {
         const { reference, amount, currency, paid_at, customer, metadata } = data;
         const email = customer.email;
@@ -189,6 +170,12 @@ async function handleSuccessfulPurchase(data: any, payloadCms: any) {
             id: orderId,
             depth: 2, // Tells payload to populate linked media/item fields down 2 levels
         });
+
+        // Deduplication: skip if already completed
+        if (order && order.status === 'completed') {
+            console.log(`⏭️ Purchase ${reference} already processed (order completed), skipping`);
+            return;
+        }
 
         if (!order) {
             console.error(`❌ Order not found: ${orderId}`);
@@ -249,7 +236,6 @@ async function handleSuccessfulPurchase(data: any, payloadCms: any) {
         }
 
         if (emailSent) {
-            await markAsProcessed(reference);
             console.log(`✅ Purchase confirmation + download link sent for ${reference}`);
         } else {
             console.error(`❌ Failed to send purchase email for ${reference} after 3 retries`);
@@ -277,6 +263,5 @@ export async function GET() {
         message: "Paystack webhook endpoint is active",
         emailProvider: "Resend",
         status: "ready",
-        processedTransactions: localProcessedTransactions.size,
     });
 }

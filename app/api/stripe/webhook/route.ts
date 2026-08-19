@@ -9,31 +9,11 @@ import {
 } from "@/lib/emails/sendEmail";
 import { getPayload } from 'payload';
 import configPromise from '@/payload.config';
-import { Redis } from "@upstash/redis";
 
 const stripe = process.env.STRIPE_SECRET_KEY 
   ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: "2026-06-24.dahlia" }) 
   : null;
 
-// Redis-backed deduplication
-const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
-    ? new Redis({ url: process.env.UPSTASH_REDIS_REST_URL, token: process.env.UPSTASH_REDIS_REST_TOKEN })
-    : null;
-
-const localProcessedTransactions = new Set<string>();
-
-async function isAlreadyProcessed(reference: string): Promise<boolean> {
-    if (redis) return (await redis.exists(`txn:${reference}`)) === 1;
-    return localProcessedTransactions.has(reference);
-}
-
-async function markAsProcessed(reference: string): Promise<void> {
-    if (redis) {
-        await redis.set(`txn:${reference}`, "1", { ex: 86400 }); // 24h TTL
-    } else {
-        localProcessedTransactions.add(reference);
-    }
-}
 
 export async function POST(request: NextRequest) {
     if (!stripe) {
@@ -99,12 +79,19 @@ export async function POST(request: NextRequest) {
 async function handleSuccessfulCharge(session: Stripe.Checkout.Session, payloadCms: any) {
     const reference = session.id;
 
-    if (await isAlreadyProcessed(reference)) {
-        console.log(`⏭️ Transaction ${reference} already processed, skipping`);
-        return;
-    }
-
     try {
+        // Deduplication using Payload CMS
+        const existingDonation = await payloadCms.find({
+            collection: 'donations',
+            where: { reference: { equals: reference } },
+            limit: 1,
+        });
+
+        if (existingDonation.totalDocs > 0) {
+            console.log(`⏭️ Donation ${reference} already processed, skipping`);
+            return;
+        }
+
         const metadata = session.metadata || {};
         const email = session.customer_details?.email || session.customer_email || "unknown@donor.com";
         const donorName = metadata.donor_name || session.customer_details?.name || email.split("@")[0] || "Beloved Donor";
@@ -168,7 +155,6 @@ async function handleSuccessfulCharge(session: Stripe.Checkout.Session, payloadC
         }
 
         if (emailSent) {
-            await markAsProcessed(reference);
             console.log(`✅ Successfully processed donation ${reference}`);
         } else {
             console.error(`❌ Failed to send email for donation ${reference} after 3 retries`);
@@ -180,11 +166,6 @@ async function handleSuccessfulCharge(session: Stripe.Checkout.Session, payloadC
 
 async function handleSuccessfulPurchase(session: Stripe.Checkout.Session, payloadCms: any) {
     const reference = session.id;
-
-    if (await isAlreadyProcessed(reference)) {
-        console.log(`⏭️ Purchase ${reference} already processed, skipping`);
-        return;
-    }
 
     try {
         const metadata = session.metadata || {};
@@ -208,6 +189,12 @@ async function handleSuccessfulPurchase(session: Stripe.Checkout.Session, payloa
             id: orderId,
             depth: 2,
         });
+
+        // Deduplication: skip if already completed
+        if (order && order.status === 'completed') {
+            console.log(`⏭️ Purchase ${reference} already processed (order completed), skipping`);
+            return;
+        }
 
         if (!order) {
             console.error(`❌ Order not found: ${orderId}`);
@@ -266,7 +253,6 @@ async function handleSuccessfulPurchase(session: Stripe.Checkout.Session, payloa
         }
 
         if (emailSent) {
-            await markAsProcessed(reference);
             console.log(`✅ Purchase confirmation + download link sent for ${reference}`);
         } else {
             console.error(`❌ Failed to send purchase email for ${reference} after 3 retries`);
@@ -291,6 +277,5 @@ export async function GET() {
     return NextResponse.json({
         message: "Stripe webhook endpoint is active",
         status: "ready",
-        processedTransactions: localProcessedTransactions.size,
     });
 }
