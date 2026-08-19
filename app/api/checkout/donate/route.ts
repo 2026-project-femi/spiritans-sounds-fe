@@ -112,6 +112,14 @@ export async function POST(req: NextRequest) {
 					origin: cleanOrigin,
 					type: "donation",
 				},
+				payment_intent_data: {
+					metadata: {
+						reference,
+						donor_name: sanitizedName,
+						origin: cleanOrigin,
+						type: "donation",
+					}
+				}
 			});
 
 			if (!session.url) {

@@ -195,6 +195,17 @@ export async function POST(request: Request) {
           origin: cleanOrigin,
           type: "purchase",
         },
+        payment_intent_data: {
+          metadata: {
+            reference,
+            orderId: order.id.toString(),
+            itemType,
+            itemId,
+            buyer_name: sanitizedName,
+            origin: cleanOrigin,
+            type: "purchase",
+          }
+        }
       });
 
       if (!session.url || !session.id) {
