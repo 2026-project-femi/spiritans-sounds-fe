@@ -43,26 +43,31 @@ export default async function HomiliesPage({ searchParams }: HomiliesPageProps) 
 	const endIndex = startIndex + HOMILIES_PER_PAGE;
 
 	const payload = await getPayload({ config: configPromise });
-	const result = await payload.find({
-		collection: "homily",
-		where: { _status: { equals: 'published' } },
-		limit: HOMILIES_PER_PAGE,
-		page: currentPage,
-		sort: "-date",
-	});
 
-	const recentHomiliesResult = await payload.find({
-		collection: "homily",
-		where: { _status: { equals: 'published' } },
-		limit: 3,
-		sort: "-date",
-	});
-	const recentArticlesResult = await payload.find({
-		collection: "article",
-		where: { _status: { equals: 'published' } },
-		limit: 2,
-		sort: "-publishedAt",
-	});
+	const [result, recentHomiliesResult, recentArticlesResult] = await Promise.all([
+		payload.find({
+			collection: "homily",
+			where: { _status: { equals: 'published' } },
+			limit: HOMILIES_PER_PAGE,
+			page: currentPage,
+			sort: "-date",
+			depth: 1,
+		}),
+		payload.find({
+			collection: "homily",
+			where: { _status: { equals: 'published' } },
+			limit: 3,
+			sort: "-date",
+			depth: 1,
+		}),
+		payload.find({
+			collection: "article",
+			where: { _status: { equals: 'published' } },
+			limit: 2,
+			sort: "-publishedAt",
+			depth: 1,
+		}),
+	]);
 	const recentPosts = [
 		...recentHomiliesResult.docs.map((d: any) => ({ ...d, _id: d.id, type: "homily", imageUrl: d.featuredImage && typeof d.featuredImage === 'object' ? d.featuredImage.url : null, publishedAt: d.date || d.publishedAt || new Date().toISOString() })),
 		...recentArticlesResult.docs.map((d: any) => ({ ...d, _id: d.id, type: "article", imageUrl: d.featuredImage && typeof d.featuredImage === 'object' ? d.featuredImage.url : null, publishedAt: d.publishedAt || new Date().toISOString() }))

@@ -36,6 +36,7 @@ export default async function ArticlesPage({ searchParams }: { searchParams: Pro
 		limit: ARTICLES_PER_PAGE,
 		page: currentPage,
 		sort: "-publishedAt",
+		depth: 1,
 	});
 
 	const articles = result.docs.map((doc: any) => ({
