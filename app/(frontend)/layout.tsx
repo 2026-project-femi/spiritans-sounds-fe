@@ -96,6 +96,8 @@ export const viewport = {
 };
 
 import { CurrencyProvider } from "@/hooks/useCurrency";
+import { AuthProvider } from "@/providers/AuthProvider";
+import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 
 export default function RootLayout({
 	children,
@@ -105,11 +107,15 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={`${playfair.variable} ${montserrat.variable}`}>
-				<CurrencyProvider>
-					<Header />
-					{children}
-					<Footer />
-				</CurrencyProvider>
+				<AnalyticsProvider>
+					<AuthProvider>
+						<CurrencyProvider>
+							<Header />
+							{children}
+							<Footer />
+						</CurrencyProvider>
+					</AuthProvider>
+				</AnalyticsProvider>
 			</body>
 		</html>
 	);

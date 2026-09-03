@@ -1,19 +1,19 @@
 import { anyone } from '@/access/anyone'
-import { isAdmin, isAdminOrEditor } from '@/access/roles'
+import { isAdmin, isAdminOrEditor, isAdminOrPublishingAdmin } from '@/access/roles'
 import { CollectionConfig } from 'payload'
 
 export const Orders: CollectionConfig = {
   slug: 'orders',
   admin: {
     useAsTitle: 'id',
-    hidden: ({user})=>user.role === 'contributor' 
+    hidden: ({user})=>user.role === 'contributor' || user.role === 'author' 
 
   },
   access: {
-      read: isAdminOrEditor,
-        update: isAdminOrEditor,
-        delete: isAdmin,
-        create: anyone,
+      read: isAdminOrPublishingAdmin,
+      update: isAdminOrPublishingAdmin,
+      delete: isAdmin,
+      create: anyone,
   },
   fields: [
     {
@@ -73,6 +73,26 @@ export const Orders: CollectionConfig = {
     {
       name: 'stripeSessionId',
       type: 'text',
+    },
+    {
+      name: 'paymentProcessingFee',
+      type: 'number',
+      admin: { readOnly: true },
+    },
+    {
+      name: 'commissionRate',
+      type: 'number',
+      admin: { readOnly: true },
+    },
+    {
+      name: 'commissionAmount',
+      type: 'number',
+      admin: { readOnly: true },
+    },
+    {
+      name: 'authorEarnings',
+      type: 'number',
+      admin: { readOnly: true },
     },
   ],
 }

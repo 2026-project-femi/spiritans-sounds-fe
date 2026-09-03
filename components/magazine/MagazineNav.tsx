@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/providers/AuthProvider";
 
-const tabs = [
+const baseTabs = [
   { label: "Events", href: "/unveiler" },
   { label: "Magazine", href: "/unveiler/issues" },
   { label: "Books", href: "/unveiler/books" },
@@ -14,6 +15,12 @@ const tabs = [
 
 export default function MagazineNav() {
   const pathname = usePathname();
+  const { user } = useAuth();
+  
+  console.log(user)
+  const tabs = user 
+    ? [...baseTabs, { label: "Dashboard", href: "/unveiler/dashboard" }]
+    : baseTabs;
 
   const isActiveTab = (href: string) => {
     // Events tab: exact match on /unveiler only (not sub-paths like /unveiler/about)

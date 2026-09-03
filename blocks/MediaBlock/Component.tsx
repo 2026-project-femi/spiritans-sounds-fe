@@ -7,9 +7,11 @@ import type { MediaBlock as MediaBlockProps } from '@/payload-types'
 
 import { Media } from '../../components/Media'
 import { cn } from '@/payload/utilities/ui'
+import { hasTextContent } from '@/payload/utilities/hasTextContent'
 
 type Props = MediaBlockProps & {
   breakout?: boolean
+  caption?: any
   captionClassName?: string
   className?: string
   enableGutter?: boolean
@@ -29,11 +31,12 @@ export const MediaBlock: React.FC<Props> = (props) => {
     disableInnerContainer,
   } = props
 
-  let caption
-  if (media && typeof media === 'object') caption = media.caption
+  let caption = (props as any).caption || (media && typeof media === 'object' ? media.caption : undefined)
+
+  const showCaption = hasTextContent(caption)
 
   return (
-    <div
+    <figure
       className={cn(
         '',
         {
@@ -49,19 +52,23 @@ export const MediaBlock: React.FC<Props> = (props) => {
           src={staticImage}
         />
       )}
-      {caption && (
-        <div
+      {showCaption && caption && (
+        <figcaption
           className={cn(
-            'mt-6',
+            'mt-3 text-center text-sm italic text-gray-500',
             {
               container: !disableInnerContainer,
             },
             captionClassName,
           )}
         >
-          <RichText data={caption} enableGutter={false} />
-        </div>
+          {typeof caption === 'string' ? (
+            <p>{caption}</p>
+          ) : (
+            <RichText data={caption as any} enableGutter={false} enableProse={false} />
+          )}
+        </figcaption>
       )}
-    </div>
+    </figure>
   )
 }

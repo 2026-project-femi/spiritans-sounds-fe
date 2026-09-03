@@ -6,7 +6,7 @@ import { Banner } from '@/blocks/Banner/config'
 import { Code } from '@/blocks/Code/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
 import { publishedAtField } from '@/payload/fields/statusField'
-import { BlocksFeature, FixedToolbarFeature, HeadingFeature, HorizontalRuleFeature, InlineToolbarFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
+import { BlocksFeature, FixedToolbarFeature, HeadingFeature, HorizontalRuleFeature, InlineToolbarFeature, lexicalEditor, UploadFeature } from '@payloadcms/richtext-lexical'
 import { revalidatePath } from 'next/cache'
 import { CollectionConfig } from 'payload'
 
@@ -14,7 +14,7 @@ export const Prayers: CollectionConfig = {
   slug: 'prayer',
   admin: {
     useAsTitle: 'title',
-    hidden: ({user})=>user.role === 'contributor',
+    hidden: ({user})=>user?.role === 'contributor' || user?.role === 'publishing_admin',
     defaultColumns: ['title', '_status', 'publishedAt', 'updatedAt'],
   },
   access: {
@@ -53,7 +53,10 @@ export const Prayers: CollectionConfig = {
       hooks: {
         beforeValidate: [
           ({ value, data }) => {
-            if (value) return value
+            if (value && typeof value === 'string') {
+              const cleaned = value.replace(/^undefined-/, '').trim()
+              if (cleaned) return cleaned
+            }
             const title = data?.title ?? ''
             return title
               .toLowerCase()
@@ -84,6 +87,19 @@ export const Prayers: CollectionConfig = {
         features: ({ rootFeatures }) => {
           return [
             ...rootFeatures,
+            UploadFeature({
+              collections: {
+                media: {
+                  fields: [
+                    {
+                      name: 'caption',
+                      type: 'text',
+                      label: 'Caption (Optional)',
+                    },
+                  ],
+                },
+              },
+            }),
             HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
             BlocksFeature({ blocks: [Banner, Code, MediaBlock] }),
             FixedToolbarFeature(),

@@ -7,6 +7,7 @@ import {
   HorizontalRuleFeature,
   InlineToolbarFeature,
   lexicalEditor,
+  UploadFeature,
 } from '@payloadcms/richtext-lexical'
 
 import { authenticated } from '@/access/authenticated'
@@ -49,7 +50,7 @@ export const Posts: CollectionConfig<'posts'> = {
   },
   admin: {
     hidden: true,
-    defaultColumns: ['title', 'slug', 'updatedAt'],
+    defaultColumns: ['title', 'slug', 'views', 'updatedAt'],
     livePreview: {
       url: ({ data, req }) =>
         generatePreviewPath({
@@ -73,6 +74,15 @@ export const Posts: CollectionConfig<'posts'> = {
       required: true,
     },
     {
+      name: 'views',
+      type: 'number',
+      defaultValue: 0,
+      admin: {
+        position: 'sidebar',
+        description: 'Total number of post reads/views',
+      },
+    },
+    {
       type: 'tabs',
       tabs: [
         {
@@ -89,6 +99,19 @@ export const Posts: CollectionConfig<'posts'> = {
                 features: ({ rootFeatures }) => {
                   return [
                     ...rootFeatures,
+                    UploadFeature({
+                      collections: {
+                        media: {
+                          fields: [
+                            {
+                              name: 'caption',
+                              type: 'text',
+                              label: 'Caption (Optional)',
+                            },
+                          ],
+                        },
+                      },
+                    }),
                     HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
                     BlocksFeature({ blocks: [Banner, Code, MediaBlock] }),
                     FixedToolbarFeature(),

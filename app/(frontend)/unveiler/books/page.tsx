@@ -1,10 +1,10 @@
 import { getPayload } from "payload";
 import configPromise from "@/payload.config";
-import { BookCard } from "@/components/magazine/BookCard";
+import { BookSearchList } from "@/components/magazine/BookSearchList";
 import { ExternalLink } from "lucide-react";
+import { PreorderBanner } from "@/components/magazine/PreorderBanner";
 import type { Metadata } from "next";
-
-
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Books & Publications",
@@ -21,29 +21,17 @@ interface Book {
   _id: string;
   title: string;
   description: string;
-  price: string;
+  price?: string;
+  priceAmount?: number;
+  priceAmountUSD?: number;
+  priceAmountGBP?: number;
   slug: string;
+  authorName?: string;
   imageUrl?: string;
   fileUrl?: string;
   publishedAt?: string;
+  isPreorder?: boolean;
 }
-
-const DUMMY_BOOKS: Book[] = [
-  {
-    _id: "d1",
-    title: "Proclaiming Christ Through Art",
-    description: "A reflection on how creativity becomes a vehicle for the Gospel — exploring music, writing, and visual art as sacred expression.",
-    price: "₦2,500",
-    slug: "proclaiming-christ-through-art",
-  },
-  {
-    _id: "d2",
-    title: "Treasures Unveiled: Young Voices",
-    description: "A compilation of writings, poems, and reflections from recipients of the Young Creators Award — voices that shine before others.",
-    price: "₦1,800",
-    slug: "treasures-unveiled-young-voices",
-  },
-];
 
 export default async function BooksPage() {
   let books: Book[] = [];
@@ -53,15 +41,16 @@ export default async function BooksPage() {
     books = result.docs.map((d: any) => ({
       ...d,
       _id: d.id,
+      authorName: d.author && typeof d.author === 'object' ? d.author.name : undefined,
       imageUrl: d.cover && typeof d.cover === 'object' ? d.cover.url : undefined,
       fileUrl: d.file && typeof d.file === 'object' ? d.file.url : undefined,
+      isPreorder: d.isPreorder,
     })) as Book[];
   } catch (err) {
     console.error("Failed to fetch books:", err);
   }
 
-  const isDummy = false;
-  const displayBooks = books;
+  const preorderBooks = books.filter((b) => b.isPreorder);
 
   return (
     <main className="pb-24">
@@ -80,22 +69,16 @@ export default async function BooksPage() {
           Treasures Unveiler publishes books rooted in faith, creativity, and mission — 
           resources for young people, ministers, and all who seek to bring out what is new and old from the treasury.
         </p>
-        
       </section>
 
-      {/* Books Grid */}
+      {/* Pre-Order Promotional Showcase Banner */}
+      <section className="max-w-7xl mx-auto px-6 mb-16">
+        <PreorderBanner books={preorderBooks} />
+      </section>
+
+      {/* Books Search & Grid */}
       <section className="max-w-7xl mx-auto px-6">
-        {displayBooks.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {displayBooks.map((book) => (
-              <BookCard key={book._id} book={book} />
-            ))}
-          </div>
-        ) : (
-          <div className="py-24 text-center">
-            <p className="text-gray-500 text-lg">No books published yet — check back soon.</p>
-          </div>
-        )}
+        <BookSearchList books={books} />
       </section>
 
       {/* Publishing Submissions CTA */}
@@ -109,10 +92,10 @@ export default async function BooksPage() {
                     Are you a young creative with a manuscript, a collection of poems, or a faith-filled story to tell? 
                     Treasures Unveiler is committed to giving young voices a platform. Join our stable of authors.
                 </p>
-                <a href="/contact"
+                <Link href="/unveiler/publish"
                     className="inline-flex px-10 py-4 bg-white text-black text-sm font-black rounded-full hover:bg-brand-primary hover:text-white transition-all duration-300 hover:scale-105 uppercase tracking-widest shadow-xl">
                     Submit Your Manuscript
-                </a>
+                </Link>
             </div>
         </div>
       </section>

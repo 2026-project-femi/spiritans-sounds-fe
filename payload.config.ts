@@ -20,6 +20,9 @@ import { Subscribers } from "./payload/collections/Subscribers";
 import { EmailCampaigns } from "./payload/collections/EmailCampaigns";
 import { Orders } from "./payload/collections/Orders";
 import { Donations } from "./payload/collections/Donations";
+import { BookSubmissions } from "./payload/collections/BookSubmissions";
+import { Payouts } from "./payload/collections/Payouts";
+import { CommissionSettings } from "./payload/globals/CommissionSettings";
 
 import { HomePage } from "./payload/collections/Home";
 import { DonationPage } from "./payload/collections/DonationPage";
@@ -61,6 +64,7 @@ export default buildConfig({
 			},
 			beforeDashboard: [
 				'@/components/Admin/WelcomeMessage#WelcomeMessage',
+				'@/components/Admin/AdminFinancialDashboard#AdminFinancialDashboard',
 			],
 		},
 		importMap: {
@@ -92,8 +96,10 @@ export default buildConfig({
 		DonationPage,
 		HomePage,
 		LyricsOfLight,
+		BookSubmissions,
+		Payouts,
 	],
-	globals: [Footer, Header],
+	globals: [Footer, Header, CommissionSettings],
 	editor: defaultLexical,
 	secret: process.env.PAYLOAD_SECRET || "DEVELOPMENT_ONLY_SECRET_STRING_12345",
 	cookiePrefix: 'spiritans',

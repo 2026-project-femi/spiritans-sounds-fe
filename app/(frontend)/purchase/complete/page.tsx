@@ -9,6 +9,7 @@ function PurchaseContent() {
   const searchParams = useSearchParams();
   const reference = searchParams.get("reference") || searchParams.get("trxref");
   const status = searchParams.get("status");
+  const isPreorder = searchParams.get("isPreorder") === "true";
   const [countdown, setCountdown] = useState(15);
   
   const isCancelled = status === "cancelled";
@@ -42,7 +43,9 @@ function PurchaseContent() {
           <p className="mt-2 text-gray-400 text-sm leading-relaxed">
             {isCancelled 
               ? "Your payment was cancelled. No charges were made."
-              : "Your purchase is confirmed. We are preparing your download link."}
+              : isPreorder
+                ? "Your pre-order is confirmed! Your copy has been reserved."
+                : "Your purchase is confirmed. We are preparing your download link."}
           </p>
         </div>
 
@@ -51,8 +54,9 @@ function PurchaseContent() {
           <div className="flex items-start gap-3 bg-brand-primary/5 border border-brand-primary/20 rounded-xl px-5 py-4 text-left">
             <Mail className="w-5 h-5 text-brand-primary mt-0.5 shrink-0" />
             <p className="text-sm text-gray-300 leading-relaxed">
-              Your download link will arrive by email within a few minutes.
-              Please check your inbox (and spam folder).
+              {isPreorder
+                ? "A confirmation email has been sent. You will receive your download link as soon as the book is released."
+                : "Your download link will arrive by email within a few minutes. Please check your inbox (and spam folder)."}
             </p>
           </div>
         )}

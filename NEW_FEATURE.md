@@ -1,3 +1,9 @@
+# MISSION
+
+You are an expert full-stack developer specializing in Next.js 16 (App Router), React 19, Tailwind v4, and Payload CMS v3. Your task is to integrate the following features into the existing project. You must first thoroughly review the existing PayloadCMS implementation to understand the current data model, then plan and execute a phase by phase implementation of the following features, try not to do too much at once - Keep track of the status of each feature in a file called TASK.md I should be able to see the Task.md in project home directory.
+
+A lot of the implemenation that public users will see revolve arount this page: https://spiritanssound.com/unveiler/books which will be localhost:3000/unveiler/books in dev
+
 TREASURES UNVEILER PUBLICATION AUTHOR PUBLISHING & SALES DASHBOARD
 Project Objective
 Create an integrated Author Publishing, Book Sales and Royalty Management System within the existing Spiritans Sound website:
@@ -73,8 +79,8 @@ Spiritans Sound will remain the publisher/platform administrator. Authors will n
    Each author receives:
    Email/Username + Password
    The author should be able to log in from:
-   www.spiritanssound.com/author-login
-   Do not allow authors to access the administrator dashboard.
+   www.spiritanssound.com
+   Do not allow authors to access the administrator dashboard. and other user types dashboard their roles should permit them to access only their work, to see sales and other metrics
 
 4. AUTHOR DASHBOARD
    The Author Dashboard should be clean, simple and mobile-friendly.
@@ -187,7 +193,7 @@ Spiritans Sound will remain the publisher/platform administrator. Authors will n
    The administrator should be able to assign or remove this status.
 
 10. PAYMENT PROCESSING
-    Integrate the website with the selected payment gateway(s), such as Paystack and/or Stripe.
+    the following payment gateway(s) exist already in the project, Paystack and/or Stripe.
     The system must capture the actual payment-processing fee associated with each transaction, rather than assuming that every transaction has the same fee.
     Where the payment provider supplies transaction and fee information through its API/webhooks, retrieve and store this information automatically.
     Do not present payment-provider charges as Spiritans Sound charges.
@@ -326,7 +332,7 @@ Spiritans Sound will remain the publisher/platform administrator. Authors will n
     Financial records should never simply be deleted.
 
 20. SECURITY
-    Implement:
+    Payload CMS already has dashboard, see if it fits the below Implementation or if there's need for custom implementation:
     • Secure password hashing
     • Password reset
     • Email verification
@@ -355,7 +361,7 @@ Spiritans Sound will remain the publisher/platform administrator. Authors will n
     Can purchase and access books they have purchased.
 
 22. WEBSITE PAGES
-    Create the following pages:
+    Create the following pages if they align with our implementation:
     Public
     • Books
     • Book Details

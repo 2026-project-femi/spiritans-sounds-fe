@@ -38,6 +38,38 @@ const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
 const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => ({
   ...defaultConverters,
   ...LinkJSXConverter({ internalDocToHref }),
+  upload: ({ node }) => {
+    const uploadDoc = (typeof node.value === 'object' && node.value !== null ? node.value : (node as any).fields?.doc?.value) as any;
+
+    if (!uploadDoc || typeof uploadDoc !== 'object') {
+      return null;
+    }
+
+    const mimeType = uploadDoc.mimeType || '';
+    const url = uploadDoc.url || '';
+    const isImage = mimeType ? mimeType.startsWith('image') : (url ? /\.(jpg|jpeg|png|webp|gif|svg)/i.test(url) : true);
+
+    if (isImage) {
+      const caption = (node as any).fields?.caption || (node as any).caption || uploadDoc.caption;
+      return (
+        <MediaBlock
+          blockType="mediaBlock"
+          className="col-start-1 col-span-3 my-6"
+          imgClassName="m-0"
+          media={uploadDoc}
+          caption={caption}
+          enableGutter={false}
+          disableInnerContainer={true}
+        />
+      );
+    }
+
+    return (
+      <a href={url} target="_blank" rel="noopener noreferrer" className="text-brand-primary underline">
+        {uploadDoc.filename || 'Download file'}
+      </a>
+    );
+  },
   blocks: {
     banner: ({ node }) => <BannerBlock className="col-start-2 mb-4" {...node.fields} />,
     mediaBlock: ({ node }) => (
