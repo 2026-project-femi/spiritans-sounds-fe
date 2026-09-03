@@ -33,6 +33,7 @@ interface PurchasableItem {
   priceAmountUSD?: number | null;
   priceAmountGBP?: number | null;
   title?: string;
+  isPreorder?: boolean;
 }
 
 export async function POST(request: Request) {
@@ -151,7 +152,7 @@ export async function POST(request: Request) {
             origin: cleanOrigin,
             original_currency: currency,
           },
-          callback_url: `${cleanOrigin}/purchase/complete`,
+          callback_url: `${cleanOrigin}/purchase/complete?isPreorder=${item.isPreorder ? 'true' : 'false'}`,
         }),
       });
 
@@ -197,7 +198,7 @@ export async function POST(request: Request) {
           },
         ],
         mode: "payment",
-        success_url: `${cleanOrigin}/purchase/complete?reference=${reference}&status=success`,
+        success_url: `${cleanOrigin}/purchase/complete?reference=${reference}&status=success&isPreorder=${item.isPreorder ? 'true' : 'false'}`,
         cancel_url: `${cleanOrigin}/purchase/complete?status=cancelled`,
         metadata: {
           reference,

@@ -7,7 +7,7 @@ export const Comments: CollectionConfig = {
 		useAsTitle: "name",
 		defaultColumns: ["name", "comment", "approved", "createdAt"],
 		description: "Comments won't show on the site without approval",
-		hidden: ({user})=>user.role === 'contributor'
+		hidden: ({user})=>user?.role === 'contributor' || user?.role === 'publishing_admin'
 	},
 	access: {
 		read: () => true,

@@ -4,7 +4,7 @@ import { Banner } from '@/blocks/Banner/config'
 import { Code } from '@/blocks/Code/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
 import { publishedAtField } from '@/payload/fields/statusField'
-import { BlocksFeature, FixedToolbarFeature, HeadingFeature, HorizontalRuleFeature, InlineToolbarFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
+import { BlocksFeature, FixedToolbarFeature, HeadingFeature, HorizontalRuleFeature, InlineToolbarFeature, lexicalEditor, UploadFeature } from '@payloadcms/richtext-lexical'
 import { revalidatePath } from 'next/cache'
 import { CollectionConfig } from 'payload'
 
@@ -12,8 +12,8 @@ export const Homilies: CollectionConfig = {
   slug: 'homily',
   admin: {
     useAsTitle: 'title',
-    hidden: ({user})=>user.role === 'contributor',
-    defaultColumns: ['title', '_status', 'publishedAt', 'updatedAt'],
+    hidden: ({user})=>user?.role === 'contributor' || user?.role === 'publishing_admin',
+    defaultColumns: ['title', 'views', '_status', 'publishedAt', 'updatedAt'],
   },
   access: {
     read: authenticatedOrPublished,
@@ -39,6 +39,15 @@ export const Homilies: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
+    },
+    {
+      name: 'views',
+      type: 'number',
+      defaultValue: 0,
+      admin: {
+        position: 'sidebar',
+        description: 'Total number of homily views/reads',
+      },
     },
     {
       name: 'date',
@@ -80,6 +89,19 @@ export const Homilies: CollectionConfig = {
                 features: ({ rootFeatures }) => {
                   return [
                     ...rootFeatures,
+                    UploadFeature({
+                      collections: {
+                        media: {
+                          fields: [
+                            {
+                              name: 'caption',
+                              type: 'text',
+                              label: 'Caption (Optional)',
+                            },
+                          ],
+                        },
+                      },
+                    }),
                     HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
                     BlocksFeature({ blocks: [Banner, Code, MediaBlock] }),
                     FixedToolbarFeature(),
@@ -111,7 +133,10 @@ export const Homilies: CollectionConfig = {
       hooks: {
         beforeValidate: [
           ({ value, data }) => {
-            if (value) return value
+            if (value && typeof value === 'string') {
+              const cleaned = value.replace(/^undefined-/, '').trim()
+              if (cleaned) return cleaned
+            }
             const title = data?.title ?? ''
             return title
               .toLowerCase()

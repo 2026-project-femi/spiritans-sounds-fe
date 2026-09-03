@@ -4,6 +4,7 @@ import * as migration_20260613_145632_update_homilies_category from './20260613_
 import * as migration_20260613_publish_existing_docs from './20260613_publish_existing_docs';
 import * as migration_20260718_141543 from './20260718_141543';
 import * as migration_20260719_175438_add_lyrics_to_lyrics_of_light from './20260719_175438_add_lyrics_to_lyrics_of_light';
+import * as migration_20260903_195212_add_views_and_publishing_updates from './20260903_195212_add_views_and_publishing_updates';
 
 export const migrations = [
   {
@@ -34,6 +35,11 @@ export const migrations = [
   {
     up: migration_20260719_175438_add_lyrics_to_lyrics_of_light.up,
     down: migration_20260719_175438_add_lyrics_to_lyrics_of_light.down,
-    name: '20260719_175438_add_lyrics_to_lyrics_of_light'
+    name: '20260719_175438_add_lyrics_to_lyrics_of_light',
+  },
+  {
+    up: migration_20260903_195212_add_views_and_publishing_updates.up,
+    down: migration_20260903_195212_add_views_and_publishing_updates.down,
+    name: '20260903_195212_add_views_and_publishing_updates'
   },
 ];

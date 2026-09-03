@@ -90,6 +90,8 @@ export interface Config {
     donationPage: DonationPage;
     homepage: Homepage;
     'lyrics-of-light': LyricsOfLight;
+    'book-submissions': BookSubmission;
+    payouts: Payout;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -130,6 +132,8 @@ export interface Config {
     donationPage: DonationPageSelect<false> | DonationPageSelect<true>;
     homepage: HomepageSelect<false> | HomepageSelect<true>;
     'lyrics-of-light': LyricsOfLightSelect<false> | LyricsOfLightSelect<true>;
+    'book-submissions': BookSubmissionsSelect<false> | BookSubmissionsSelect<true>;
+    payouts: PayoutsSelect<false> | PayoutsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -148,10 +152,12 @@ export interface Config {
   globals: {
     footer: Footer;
     header: Header;
+    'commission-settings': CommissionSetting;
   };
   globalsSelect: {
     footer: FooterSelect<false> | FooterSelect<true>;
     header: HeaderSelect<false> | HeaderSelect<true>;
+    'commission-settings': CommissionSettingsSelect<false> | CommissionSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -194,7 +200,15 @@ export interface UserAuthOperations {
 export interface User {
   id: string;
   name?: string | null;
-  role?: ('admin' | 'editor' | 'contributor') | null;
+  role: 'admin' | 'publishing_admin' | 'editor' | 'contributor' | 'author';
+  authorType?: ('standard' | 'young_creator') | null;
+  authorBio?: string | null;
+  bankDetails?: {
+    bankName?: string | null;
+    accountName?: string | null;
+    accountNumber?: string | null;
+    sortCodeOrRoutingNumber?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -301,6 +315,10 @@ export interface Article {
   id: string;
   title: string;
   author?: string | null;
+  /**
+   * Total number of article reads/views
+   */
+  views?: number | null;
   content?: {
     root: {
       type: string;
@@ -369,6 +387,10 @@ export interface Event {
 export interface Homily {
   id: string;
   title: string;
+  /**
+   * Total number of homily views/reads
+   */
+  views?: number | null;
   date: string;
   scripture?: string | null;
   /**
@@ -479,10 +501,47 @@ export interface Publication {
   priceAmountGBP?: number | null;
   cover?: (string | null) | Media;
   file?: (string | null) | Media;
+  author?: (string | null) | User;
+  category?: (string | null) | Category;
+  publishingStatus?: ('draft' | 'under_review' | 'approved' | 'published' | 'suspended' | 'archived') | null;
+  /**
+   * If checked, the book will be sold as a pre-order and download links will not be sent until unchecked.
+   */
+  isPreorder?: boolean | null;
+  /**
+   * Total number of book detail page views
+   */
+  views?: number | null;
+  totalSales?: number | null;
+  grossRevenue?: number | null;
   publishedAt?: string | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: string;
+  title: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  parent?: (string | null) | Category;
+  breadcrumbs?:
+    | {
+        doc?: (string | null) | Category;
+        url?: string | null;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -615,6 +674,10 @@ export interface Order {
   paymentProvider?: ('paystack' | 'stripe') | null;
   paystackReference?: string | null;
   stripeSessionId?: string | null;
+  paymentProcessingFee?: number | null;
+  commissionRate?: number | null;
+  commissionAmount?: number | null;
+  authorEarnings?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -641,6 +704,10 @@ export interface Donation {
 export interface Post {
   id: string;
   title: string;
+  /**
+   * Total number of post reads/views
+   */
+  views?: number | null;
   heroImage?: (string | null) | Media;
   content: {
     root: {
@@ -683,30 +750,6 @@ export interface Post {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories".
- */
-export interface Category {
-  id: string;
-  title: string;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  parent?: (string | null) | Category;
-  breadcrumbs?:
-    | {
-        doc?: (string | null) | Category;
-        url?: string | null;
-        label?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1272,6 +1315,49 @@ export interface LyricsOfLight {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "book-submissions".
+ */
+export interface BookSubmission {
+  id: string;
+  submitter?: (string | null) | User;
+  fullName: string;
+  email: string;
+  phone: string;
+  country?: string | null;
+  authorName: string;
+  bookTitle: string;
+  category?: (string | null) | Category;
+  description: string;
+  authorBio?: string | null;
+  sellingPrice: number;
+  bookCover?: (string | null) | Media;
+  bookPdf?: (string | null) | Media;
+  bankDetails?: {
+    bankName?: string | null;
+    accountName?: string | null;
+    accountNumber?: string | null;
+    sortCodeOrRoutingNumber?: string | null;
+  };
+  status?: ('pending' | 'reviewed' | 'approved' | 'rejected') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payouts".
+ */
+export interface Payout {
+  id: string;
+  author: string | User;
+  amount: number;
+  paymentDate?: string | null;
+  reference: string;
+  status?: ('pending' | 'processing' | 'paid' | 'failed') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1553,6 +1639,14 @@ export interface PayloadLockedDocument {
         value: string | LyricsOfLight;
       } | null)
     | ({
+        relationTo: 'book-submissions';
+        value: string | BookSubmission;
+      } | null)
+    | ({
+        relationTo: 'payouts';
+        value: string | Payout;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: string | Redirect;
       } | null)
@@ -1621,6 +1715,16 @@ export interface PayloadMigration {
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
   role?: T;
+  authorType?: T;
+  authorBio?: T;
+  bankDetails?:
+    | T
+    | {
+        bankName?: T;
+        accountName?: T;
+        accountNumber?: T;
+        sortCodeOrRoutingNumber?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -1689,6 +1793,7 @@ export interface MediaSelect<T extends boolean = true> {
 export interface ArticleSelect<T extends boolean = true> {
   title?: T;
   author?: T;
+  views?: T;
   content?: T;
   youtubeUrl?: T;
   featuredImage?: T;
@@ -1727,6 +1832,7 @@ export interface EventsSelect<T extends boolean = true> {
  */
 export interface HomilySelect<T extends boolean = true> {
   title?: T;
+  views?: T;
   date?: T;
   scripture?: T;
   category?: T;
@@ -1789,6 +1895,13 @@ export interface PublicationsSelect<T extends boolean = true> {
   priceAmountGBP?: T;
   cover?: T;
   file?: T;
+  author?: T;
+  category?: T;
+  publishingStatus?: T;
+  isPreorder?: T;
+  views?: T;
+  totalSales?: T;
+  grossRevenue?: T;
   publishedAt?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1867,6 +1980,10 @@ export interface OrdersSelect<T extends boolean = true> {
   paymentProvider?: T;
   paystackReference?: T;
   stripeSessionId?: T;
+  paymentProcessingFee?: T;
+  commissionRate?: T;
+  commissionAmount?: T;
+  authorEarnings?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1891,6 +2008,7 @@ export interface DonationsSelect<T extends boolean = true> {
  */
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
+  views?: T;
   heroImage?: T;
   content?: T;
   relatedPosts?: T;
@@ -2176,6 +2294,49 @@ export interface LyricsOfLightSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "book-submissions_select".
+ */
+export interface BookSubmissionsSelect<T extends boolean = true> {
+  submitter?: T;
+  fullName?: T;
+  email?: T;
+  phone?: T;
+  country?: T;
+  authorName?: T;
+  bookTitle?: T;
+  category?: T;
+  description?: T;
+  authorBio?: T;
+  sellingPrice?: T;
+  bookCover?: T;
+  bookPdf?: T;
+  bankDetails?:
+    | T
+    | {
+        bankName?: T;
+        accountName?: T;
+        accountNumber?: T;
+        sortCodeOrRoutingNumber?: T;
+      };
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payouts_select".
+ */
+export interface PayoutsSelect<T extends boolean = true> {
+  author?: T;
+  amount?: T;
+  paymentDate?: T;
+  reference?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2512,6 +2673,23 @@ export interface Header {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "commission-settings".
+ */
+export interface CommissionSetting {
+  id: string;
+  /**
+   * The standard commission rate percentage (e.g., 15 for 15%).
+   */
+  standardCommissionRate: number;
+  /**
+   * The minimum amount an author must earn before a payout can be processed.
+   */
+  minimumPayoutThreshold: number;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
@@ -2552,6 +2730,17 @@ export interface HeaderSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "commission-settings_select".
+ */
+export interface CommissionSettingsSelect<T extends boolean = true> {
+  standardCommissionRate?: T;
+  minimumPayoutThreshold?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

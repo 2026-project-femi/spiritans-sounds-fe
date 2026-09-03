@@ -73,6 +73,28 @@ export default async function SinglePrayerPage({ params }: { params: Promise<{ s
 		);
 	}
 
+	// Fetch approved comments for this prayer
+	const commentsResult = await payload.find({
+		collection: "comments",
+		where: {
+			and: [
+				{ 'post.value': { equals: rawDoc.id } },
+				{ 'post.relationTo': { equals: 'prayer' } },
+				{ approved: { equals: true } },
+			],
+		},
+		sort: '-createdAt',
+		depth: 0,
+	});
+
+	const comments = commentsResult.docs.map((c) => ({
+		_id: String(c.id),
+		name: c.name,
+		email: c.email,
+		comment: c.comment,
+		createdAt: c.createdAt,
+	}));
+
 	return (
 		<main className="pt-32 pb-20">
 			<div className="max-w-7xl mx-auto px-6 md:px-12">
@@ -110,7 +132,7 @@ export default async function SinglePrayerPage({ params }: { params: Promise<{ s
 								{prayer.content && <RichText data={prayer.content} />}
 							</div>
 						</div>
-						<Comments postType="prayer" postId={prayer._id} comments={prayer.comments || []} />
+						<Comments postType="prayer" postId={prayer._id} comments={comments} />
 					</article>
 
 					{/* Sidebar Area */}

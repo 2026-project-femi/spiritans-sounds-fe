@@ -6,7 +6,8 @@ import {
   sendAdminNotification, 
   sendThankYouEmail, 
   sendPurchaseConfirmationEmail, 
-  sendFailedChargeNotification 
+  sendFailedChargeNotification,
+  sendPreorderConfirmationEmail
 } from "@/lib/emails/sendEmail";
 import { getPayload } from 'payload';
 import configPromise from '@/payload.config';
@@ -163,6 +164,8 @@ async function handleSuccessfulPurchase(data: any, payloadCms: any) {
             console.error(`❌ No orderId in metadata for purchase ${reference}`);
             return;
         }
+        
+        const formattedAmount = amount / 100;
 
         // 1. Fetch Order and populate the item relation fields inside Payload
         const order = await payloadCms.findByID({
@@ -188,45 +191,103 @@ async function handleSuccessfulPurchase(data: any, payloadCms: any) {
         const item = firstItem?.value || firstItem; 
         const fileDoc = item?.file; // Assuming 'file' relates to a media collection
         
-        if (!fileDoc || !fileDoc.url) {
+        if (!item?.isPreorder && (!fileDoc || !fileDoc.url)) {
             console.error(`❌ Item or file URL not found for order ${orderId}`);
             return;
         }
 
-        // 3. Mark order as completed via local API update method
+        // 3. Calculate Commissions and Earnings
+        let paymentProcessingFee = (data.fees || 0) / 100;
+        
+        let authorType = 'standard';
+        const authorId = typeof item?.author === 'object' ? item.author.id : item?.author;
+        
+        if (authorId) {
+            try {
+                const authorUser = await payloadCms.findByID({ collection: 'users', id: authorId });
+                if (authorUser && authorUser.authorType) {
+                    authorType = authorUser.authorType;
+                }
+            } catch(e) {
+                console.error("Error fetching author for commission calculation", e);
+            }
+        }
+
+        let commissionRate = 15;
+        try {
+            const settings = await payloadCms.findGlobal({ slug: 'commission-settings' });
+            commissionRate = authorType === 'young_creator' ? 0 : (settings.standardCommissionRate || 15);
+        } catch (e) {
+            console.error("Failed to load commission settings, using default");
+        }
+
+        const netAmount = formattedAmount - paymentProcessingFee;
+        const commissionAmount = Math.max(0, netAmount * (commissionRate / 100));
+        const authorEarnings = Math.max(0, netAmount - commissionAmount);
+
+        // 4. Mark order as completed via local API update method
         await payloadCms.update({
             collection: 'orders',
             id: orderId,
             data: {
                 status: 'completed',
+                paymentProcessingFee,
+                commissionRate,
+                commissionAmount,
+                authorEarnings,
             },
         });
         console.log(`✅ Order ${orderId} marked completed`);
 
-        // 4. Send download email
-        const formattedAmount = amount / 100;
+        // 5. Update Publication stats if applicable
+        if (item && metadata?.itemType === 'publications') {
+            await payloadCms.update({
+                collection: 'publications',
+                id: item.id || item._id,
+                data: {
+                    totalSales: (item.totalSales || 0) + 1,
+                    grossRevenue: (item.grossRevenue || 0) + formattedAmount,
+                },
+            });
+        }
+
+        // 6. Send download email
         const formattedDate = new Date(paid_at).toLocaleDateString("en-NG", {
             year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit",
         });
         
-        const downloadUrl = `${fileDoc.url}?dl=${encodeURIComponent((item.title ?? "download") + ".pdf")}`;
+        const downloadUrl = fileDoc?.url ? `${fileDoc.url}?dl=${encodeURIComponent((item.title ?? "download") + ".pdf")}` : "";
 
         let emailSent = false;
         let retries = 3;
 
         while (!emailSent && retries > 0) {
             try {
-                emailSent = await sendPurchaseConfirmationEmail({
-                    to: order.customerEmail || email,
-                    subject: `Your Download is Ready — ${item?.title ?? "Purchase Confirmed"}`,
-                    buyerName,
-                    itemTitle: item?.title ?? "Your purchased item",
-                    downloadUrl,
-                    amount: formattedAmount,
-                    currency,
-                    transactionReference: reference,
-                    date: formattedDate,
-                });
+                if (item?.isPreorder) {
+                    emailSent = await sendPreorderConfirmationEmail({
+                        to: order.customerEmail || email,
+                        subject: `Pre-order Confirmed: ${item?.title ?? "Purchase Confirmed"}`,
+                        buyerName,
+                        itemTitle: item?.title ?? "Your purchased item",
+                        downloadUrl: "", // Pre-orders don't get the download link yet
+                        amount: formattedAmount,
+                        currency,
+                        transactionReference: reference,
+                        date: formattedDate,
+                    });
+                } else {
+                    emailSent = await sendPurchaseConfirmationEmail({
+                        to: order.customerEmail || email,
+                        subject: `Your Download is Ready — ${item?.title ?? "Purchase Confirmed"}`,
+                        buyerName,
+                        itemTitle: item?.title ?? "Your purchased item",
+                        downloadUrl,
+                        amount: formattedAmount,
+                        currency,
+                        transactionReference: reference,
+                        date: formattedDate,
+                    });
+                }
                 if (emailSent) break;
             } catch (emailError) {
                 console.error("Email attempt failed:", emailError);
@@ -236,7 +297,7 @@ async function handleSuccessfulPurchase(data: any, payloadCms: any) {
         }
 
         if (emailSent) {
-            console.log(`✅ Purchase confirmation + download link sent for ${reference}`);
+            console.log(`✅ Purchase confirmation email sent for ${reference}`);
         } else {
             console.error(`❌ Failed to send purchase email for ${reference} after 3 retries`);
         }

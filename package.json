@@ -52,6 +52,7 @@
 		"framer-motion": "^12.40.0",
 		"graphql": "^16.14.1",
 		"lucide-react": "^0.562.0",
+		"mixpanel-browser": "^2.82.1",
 		"next": "16.2.7",
 		"payload": "^3.85.0",
 		"pdf-lib": "^1.17.1",
@@ -67,6 +68,7 @@
 	},
 	"devDependencies": {
 		"@tailwindcss/postcss": "^4",
+		"@types/mixpanel-browser": "^2.66.0",
 		"@types/node": "^20",
 		"@types/react": "^19",
 		"@types/react-dom": "^19",

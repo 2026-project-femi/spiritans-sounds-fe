@@ -10,6 +10,7 @@ import { getSidebarData } from '@/lib/payload'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getOgImageUrl } from '@/lib/getOgImageUrl'
+import { TrackContentRead } from '@/components/analytics/TrackContentRead'
 
 
 export async function generateMetadata({
@@ -113,6 +114,13 @@ export default async function SingleHomilyPage({
 
   return (
     <main className="pt-32 pb-20">
+      <TrackContentRead
+        id={String(doc.id)}
+        slug={doc.slug}
+        title={doc.title}
+        type="homily"
+        collection="homily"
+      />
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
 

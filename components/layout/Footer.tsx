@@ -120,6 +120,27 @@ const Footer: React.FC = () => {
 									Homily Archives
 								</Link>
 							</li>
+							<li>
+								<Link
+									href="/unveiler/books"
+									className="text-sm text-gray-200 hover:text-white transition-gentle font-light">
+									Book Store
+								</Link>
+							</li>
+							<li>
+								<Link
+									href="/unveiler/publish"
+									className="text-sm text-gray-200 hover:text-white transition-gentle font-light">
+									Publish a Book
+								</Link>
+							</li>
+							<li>
+								<Link
+									href="/unveiler/login"
+									className="text-sm text-gray-200 hover:text-white transition-gentle font-light">
+									Author Login
+								</Link>
+							</li>
 						</ul>
 					</div>
 

@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
-import { BookOpen, ShoppingCart, Download, Calendar, Eye } from "lucide-react";
+import { BookOpen, ShoppingCart, Download, Calendar, Eye, ExternalLink } from "lucide-react";
 import { PdfPreviewModal } from "./PdfPreviewModal";
 import { useCurrency } from "@/hooks/useCurrency";
 
@@ -15,9 +16,11 @@ interface Book {
   priceAmountUSD?: number;
   priceAmountGBP?: number;
   slug: string;
+  authorName?: string;
   imageUrl?: string;
   fileUrl?: string;
   publishedAt?: string;
+  isPreorder?: boolean;
 }
 
 export function BookCard({ book }: { book: Book }) {
@@ -68,7 +71,7 @@ export function BookCard({ book }: { book: Book }) {
     <>
       <div className="group flex flex-col rounded-2xl bg-white/3 border border-white/10 hover:border-brand-primary/40 transition-all duration-300 overflow-hidden hover:shadow-2xl hover:shadow-red-950/20">
         {/* Book Cover */}
-        <div className="aspect-3/4 relative bg-linear-to-br from-red-950/30 to-red-900/40 flex items-center justify-center overflow-hidden border-b border-white/5">
+        <Link href={`/unveiler/books/${book.slug}`} className="aspect-3/4 relative bg-linear-to-br from-red-950/30 to-red-900/40 flex items-center justify-center overflow-hidden border-b border-white/5 block">
           {book.imageUrl ? (
             <Image
               src={book.imageUrl}
@@ -83,30 +86,29 @@ export function BookCard({ book }: { book: Book }) {
               <span className="text-[10px] tracking-widest uppercase text-gray-600">Treasures Unveiler</span>
             </div>
           )}
-
-          {/* Hover overlay — download only for free items */}
-          {book.fileUrl && !isPaid && (
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-              <a
-                href={`${book.fileUrl}?dl=${book.title}.pdf`}
-                className="p-4 bg-brand-primary text-white rounded-full hover:scale-110 transition-transform shadow-xl"
-                title="Download eBook"
-              >
-                <Download size={24} />
-              </a>
+          {book.isPreorder && (
+            <div className="absolute top-3 left-3 bg-amber-500 text-black text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full shadow-lg z-10">
+              Pre-Order
             </div>
           )}
-        </div>
+        </Link>
 
         <div className="p-6 flex flex-col flex-1 gap-4">
           <div className="space-y-2">
             <div className="flex justify-between items-start">
-              <h2 className="text-xl font-bold text-white leading-tight group-hover:text-brand-primary transition-colors line-clamp-2">
-                {book.title}
-              </h2>
+              <Link href={`/unveiler/books/${book.slug}`}>
+                <h2 className="text-xl font-bold text-white leading-tight group-hover:text-brand-primary transition-colors line-clamp-2">
+                  {book.title}
+                </h2>
+              </Link>
             </div>
+            {book.authorName && (
+              <div className="text-sm text-gray-400 font-medium italic">
+                By {book.authorName}
+              </div>
+            )}
             {book.publishedAt && (
-              <div className="flex items-center gap-1.5 text-[10px] text-gray-500 uppercase tracking-widest font-bold">
+              <div className="flex items-center gap-1.5 text-[10px] text-gray-500 uppercase tracking-widest font-bold pt-1">
                 <Calendar size={12} />
                 {new Date(book.publishedAt).getFullYear()}
               </div>
@@ -142,9 +144,9 @@ export function BookCard({ book }: { book: Book }) {
               {isPaid ? (
                 <button
                   onClick={() => setShowModal(true)}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-white text-black text-xs font-black rounded-full hover:bg-brand-primary hover:text-white transition-all uppercase tracking-widest"
+                  className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-black rounded-full transition-all uppercase tracking-widest ${book.isPreorder ? 'bg-amber-500 hover:bg-amber-600 text-black' : 'bg-white hover:bg-brand-primary hover:text-white text-black'}`}
                 >
-                  <ShoppingCart size={14} /> Buy
+                  <ShoppingCart size={14} /> {book.isPreorder ? "Pre-order" : "Buy"}
                 </button>
               ) : book.fileUrl ? (
                 <a
@@ -184,7 +186,7 @@ export function BookCard({ book }: { book: Book }) {
           >
             <h3 className="text-base font-black text-white mb-1 line-clamp-2">{book.title}</h3>
             <p className="text-sm text-gray-500 mb-6">
-              {displayPrice ? `${symbol}${displayPrice.toLocaleString()}` : ""} — enter your details to proceed to payment
+              {displayPrice ? `${symbol}${displayPrice.toLocaleString()}` : ""} — enter your details to proceed to payment {book.isPreorder && "(Pre-order)"}
             </p>
 
             {modalError && (
@@ -227,7 +229,7 @@ export function BookCard({ book }: { book: Book }) {
             </button>
 
             <p className="mt-4 text-center text-[10px] text-gray-700">
-              Secured by Paystack · Download link sent by email after payment.
+              Secured by Paystack · {book.isPreorder ? "Confirmation email sent upon payment." : "Download link sent by email after payment."}
             </p>
           </div>
         </div>

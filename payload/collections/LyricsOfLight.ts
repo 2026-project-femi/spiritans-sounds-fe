@@ -9,7 +9,7 @@ export const LyricsOfLight: CollectionConfig = {
   slug: 'lyrics-of-light',
   admin: {
     useAsTitle: 'title',
-    hidden: ({user}) => user.role === 'contributor',
+    hidden: ({user}) => user?.role === 'contributor' || user?.role === 'publishing_admin',
     defaultColumns: ['title', '_status', 'publishedAt', 'updatedAt'],
     group: 'Content',
   },

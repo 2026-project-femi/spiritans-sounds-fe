@@ -14,7 +14,7 @@ export const HomePage: CollectionConfig = {
 		}]
   },
   admin: {
-    hidden: ({user})=>user.role === 'contributor'
+    hidden: ({user})=>user?.role === 'contributor' || user?.role === 'publishing_admin'
   },
   fields: [
     {

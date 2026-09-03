@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState, useEffect } from "react";
+import { useAuth } from "@/providers/AuthProvider";
 
 const navLinks = [
 	{ href: "/", label: "Home" },
@@ -16,15 +17,32 @@ const navLinks = [
 const moreLinks = [
 	{ href: "/contact", label: "Contact" },
 	{ href: "/unveiler/issues", label: "Magazine Issues" },
-	{ href: "/unveiler/books", label: "Book Publishing" },
+	{ href: "/unveiler/books", label: "Book Store" },
+	{ href: "/unveiler/publish", label: "Publish a Book" },
 	{ href: "/unveiler/radio", label: "Internet Radio" },
+	{ href: "/unveiler/login", label: "Author Login" },
 	// { href: "/unveiler/adverts", label: "Advertising" },
 ];
 
 const Header: React.FC = () => {
 	const pathname = usePathname();
+	const { user, refetchUser } = useAuth();
 	const [isScrolled, setIsScrolled] = useState(false);
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+	const handleLogout = async () => {
+		await fetch("/api/users/logout", { method: "POST" });
+		await refetchUser();
+		window.location.href = "/";
+	};
+
+	const dynamicMoreLinks = user 
+		? moreLinks.map(link => 
+			link.href === "/unveiler/login" 
+				? { href: "/unveiler/dashboard", label: "Dashboard" } 
+				: link
+		  )
+		: moreLinks;
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -77,7 +95,7 @@ const Header: React.FC = () => {
 							More
 						</button>
 						<div className="absolute top-full left-0 w-56 bg-white shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-gentle border-t-2 border-brand-primary py-2 z-50">
-							{moreLinks.map((link) => {
+							{dynamicMoreLinks.map((link) => {
 								const active = isActiveLink(link.href);
 								return (
 									<Link
@@ -92,6 +110,14 @@ const Header: React.FC = () => {
 									</Link>
 								);
 							})}
+							{user && (
+								<button
+									onClick={handleLogout}
+									className="block w-full text-left px-4 py-2 text-xs uppercase tracking-widest transition-gentle text-red-500 hover:bg-red-50"
+								>
+									Log Out
+								</button>
+							)}
 						</div>
 					</div>
 
@@ -161,7 +187,7 @@ const Header: React.FC = () => {
 								More
 							</p>
 							<div className="space-y-3">
-								{moreLinks.map((link) => {
+								{dynamicMoreLinks.map((link) => {
 									const active = isActiveLink(link.href);
 									return (
 										<Link
@@ -177,6 +203,17 @@ const Header: React.FC = () => {
 										</Link>
 									);
 								})}
+								{user && (
+									<button
+										onClick={() => {
+											setIsMobileMenuOpen(false);
+											handleLogout();
+										}}
+										className="block w-full text-center text-sm text-red-500 hover:text-red-600 transition-gentle"
+									>
+										Log Out
+									</button>
+								)}
 							</div>
 						</div>
 
