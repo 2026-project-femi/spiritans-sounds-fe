@@ -5,6 +5,8 @@ import { usePathname, useSearchParams } from "next/navigation";
 import Script from "next/script";
 import { initAnalytics, trackPageView } from "@/lib/analytics";
 
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-FT59GPJLE3";
+
 function AnalyticsTracker() {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
@@ -24,14 +26,12 @@ function AnalyticsTracker() {
 }
 
 export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
-	const gaId = process.env.NEXT_PUBLIC_GA_ID;
-
 	return (
 		<>
-			{gaId && (
+			{GA_ID && (
 				<>
 					<Script
-						src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+						src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
 						strategy="afterInteractive"
 					/>
 					<Script id="google-analytics" strategy="afterInteractive">
@@ -39,7 +39,7 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
 							window.dataLayer = window.dataLayer || [];
 							function gtag(){dataLayer.push(arguments);}
 							gtag('js', new Date());
-							gtag('config', '${gaId}', {
+							gtag('config', '${GA_ID}', {
 								page_path: window.location.pathname,
 							});
 						`}

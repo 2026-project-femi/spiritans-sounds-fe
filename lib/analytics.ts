@@ -1,8 +1,8 @@
 import mixpanel from "mixpanel-browser";
 
 // Environment variables
-const MIXPANEL_TOKEN = '0a063ff9a9c7c06c23b2309baea02257';
-const GA_ID = 'G-FT59GPJLE3';
+const MIXPANEL_TOKEN = process.env.NEXT_PUBLIC_MIXPANEL_TOKEN || '0a063ff9a9c7c06c23b2309baea02257';
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID || 'G-FT59GPJLE3';
 
 let isMixpanelInitialized = false;
 
