@@ -17,7 +17,11 @@ export default function MagazineNav() {
   const pathname = usePathname();
   const { user } = useAuth();
   
-  console.log(user)
+  // Hide magazine navigation on dedicated book launch funnel
+  if (pathname?.startsWith("/unveiler/books/behind-the-veil")) {
+    return null;
+  }
+
   const tabs = user 
     ? [...baseTabs, { label: "Dashboard", href: "/unveiler/dashboard" }]
     : baseTabs;

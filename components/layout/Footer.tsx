@@ -3,6 +3,7 @@
 import { FacebookIcon, Instagram, X, YoutubeIcon, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 
 const navLinks = [
@@ -21,10 +22,15 @@ const socialLinks = [
 ];
 
 const Footer: React.FC = () => {
+	const pathname = usePathname();
 	const [email, setEmail] = useState("");
 	const [firstName, setFirstName] = useState("");
 	const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 	const [message, setMessage] = useState("");
+
+	if (pathname?.startsWith("/unveiler/books/behind-the-veil") || pathname === "/behind-the-veil") {
+		return null;
+	}
 
 	const handleSubscribe = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -47,9 +53,9 @@ const Footer: React.FC = () => {
 			} else {
 				throw new Error(data.message || "Something went wrong");
 			}
-		} catch (err: any) {
+		} catch (err: unknown) {
 			setStatus("error");
-			setMessage(err.message);
+			setMessage(err instanceof Error ? err.message : "Something went wrong");
 		}
 	};
 

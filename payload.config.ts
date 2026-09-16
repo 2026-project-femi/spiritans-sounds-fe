@@ -21,6 +21,7 @@ import { EmailCampaigns } from "./payload/collections/EmailCampaigns";
 import { Orders } from "./payload/collections/Orders";
 import { Donations } from "./payload/collections/Donations";
 import { BookSubmissions } from "./payload/collections/BookSubmissions";
+import { BookLaunchRegistrations } from "./payload/collections/BookLaunchRegistrations";
 import { Payouts } from "./payload/collections/Payouts";
 import { CommissionSettings } from "./payload/globals/CommissionSettings";
 
@@ -103,6 +104,7 @@ export default buildConfig({
 		HomePage,
 		LyricsOfLight,
 		BookSubmissions,
+		BookLaunchRegistrations,
 		Payouts,
 	],
 	globals: [Footer, Header, CommissionSettings],

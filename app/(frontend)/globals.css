@@ -61,6 +61,87 @@
 }
 
 /* ===============================
+   Behind The Veil Editorial Launch Funnel
+   =============================== */
+.btv-funnel {
+  --background: 255 255 255;
+  --foreground: 18 18 18;
+  --surface: 247 246 242;
+  --card: 255 255 255;
+  --border: 226 224 218;
+  --muted: 243 241 237;
+  --muted-foreground: 105 105 105;
+  --brand-primary: 219 23 23;
+  --gradient-warm: linear-gradient(180deg, #ffffff 0%, #f7f6f2 100%);
+  --gradient-ink: linear-gradient(160deg, #141414 0%, #0a0a0a 60%, #30080a 100%);
+  --gradient-glow: radial-gradient(60% 50% at 50% 40%, rgba(219, 23, 23, 0.32) 0%, transparent 70%);
+}
+
+.btv-funnel .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: rgb(var(--brand-primary));
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+}
+
+.btv-funnel .eyebrow::before {
+  content: '';
+  display: block;
+  width: 2rem;
+  height: 1px;
+  background-color: rgb(var(--brand-primary));
+}
+
+.btv-funnel .display {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.btv-funnel .section-pad {
+  padding-top: 3.5rem;
+  padding-bottom: 3.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .btv-funnel .section-pad {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .btv-funnel .section-pad {
+    padding-top: 6.5rem;
+    padding-bottom: 6.5rem;
+  }
+}
+
+.btv-funnel .rule-red {
+  display: block;
+  width: 3.5rem;
+  height: 3px;
+  background-color: rgb(var(--brand-primary));
+}
+
+.shadow-book {
+  box-shadow: 0 50px 80px -30px rgba(0,0,0,0.55), 0 20px 34px -14px rgba(0,0,0,0.35);
+}
+
+.shadow-soft {
+  box-shadow: 0 14px 44px -20px rgba(0,0,0,0.18);
+}
+
+/* ===============================
    Base Layer
    =============================== */
 @layer base {

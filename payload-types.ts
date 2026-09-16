@@ -91,6 +91,7 @@ export interface Config {
     homepage: Homepage;
     'lyrics-of-light': LyricsOfLight;
     'book-submissions': BookSubmission;
+    'book-launch-registrations': BookLaunchRegistration;
     payouts: Payout;
     redirects: Redirect;
     forms: Form;
@@ -133,6 +134,7 @@ export interface Config {
     homepage: HomepageSelect<false> | HomepageSelect<true>;
     'lyrics-of-light': LyricsOfLightSelect<false> | LyricsOfLightSelect<true>;
     'book-submissions': BookSubmissionsSelect<false> | BookSubmissionsSelect<true>;
+    'book-launch-registrations': BookLaunchRegistrationsSelect<false> | BookLaunchRegistrationsSelect<true>;
     payouts: PayoutsSelect<false> | PayoutsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
@@ -1364,6 +1366,25 @@ export interface BookSubmission {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "book-launch-registrations".
+ */
+export interface BookLaunchRegistration {
+  id: string;
+  fullName: string;
+  email: string;
+  whatsapp?: string | null;
+  country?: string | null;
+  book: string;
+  bookSlug: string;
+  source?: string | null;
+  reminderSent?: boolean | null;
+  attended?: boolean | null;
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payouts".
  */
 export interface Payout {
@@ -1661,6 +1682,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'book-submissions';
         value: string | BookSubmission;
+      } | null)
+    | ({
+        relationTo: 'book-launch-registrations';
+        value: string | BookLaunchRegistration;
       } | null)
     | ({
         relationTo: 'payouts';
@@ -2344,6 +2369,24 @@ export interface BookSubmissionsSelect<T extends boolean = true> {
         sortCodeOrRoutingNumber?: T;
       };
   status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "book-launch-registrations_select".
+ */
+export interface BookLaunchRegistrationsSelect<T extends boolean = true> {
+  fullName?: T;
+  email?: T;
+  whatsapp?: T;
+  country?: T;
+  book?: T;
+  bookSlug?: T;
+  source?: T;
+  reminderSent?: T;
+  attended?: T;
+  notes?: T;
   updatedAt?: T;
   createdAt?: T;
 }

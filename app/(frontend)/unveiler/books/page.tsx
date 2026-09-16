@@ -5,6 +5,7 @@ import { ExternalLink } from "lucide-react";
 import { PreorderBanner } from "@/components/magazine/PreorderBanner";
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Books & Publications",
@@ -38,14 +39,17 @@ export default async function BooksPage() {
   try {
     const payload = await getPayload({ config: configPromise });
     const result = await payload.find({ collection: 'publications', where: { _status: { equals: 'published' } }, sort: '-publishedAt', limit: 100 });
-    books = result.docs.map((d: any) => ({
-      ...d,
-      _id: d.id,
-      authorName: d.author && typeof d.author === 'object' ? d.author.name : undefined,
-      imageUrl: d.cover && typeof d.cover === 'object' ? d.cover.url : undefined,
-      fileUrl: d.file && typeof d.file === 'object' ? d.file.url : undefined,
-      isPreorder: d.isPreorder,
-    })) as Book[];
+    books = result.docs.map((d) => {
+      const doc = d as unknown as Record<string, unknown>;
+      return {
+        ...doc,
+        _id: String(doc.id),
+        authorName: doc.author && typeof doc.author === 'object' && 'name' in doc.author ? String((doc.author as { name: string }).name) : undefined,
+        imageUrl: doc.cover && typeof doc.cover === 'object' && 'url' in doc.cover ? String((doc.cover as { url: string }).url) : undefined,
+        fileUrl: doc.file && typeof doc.file === 'object' && 'url' in doc.file ? String((doc.file as { url: string }).url) : undefined,
+        isPreorder: Boolean(doc.isPreorder),
+      };
+    }) as Book[];
   } catch (err) {
     console.error("Failed to fetch books:", err);
   }
@@ -69,6 +73,58 @@ export default async function BooksPage() {
           Treasures Unveiler publishes books rooted in faith, creativity, and mission — 
           resources for young people, ministers, and all who seek to bring out what is new and old from the treasury.
         </p>
+      </section>
+
+      {/* Featured Behind the Veil Launch Funnel Banner */}
+      <section className="max-w-7xl mx-auto px-6 mb-14">
+        <div className="relative overflow-hidden rounded-3xl border border-brand-primary/40 bg-gradient-to-br from-[#1c080b] via-[#120a0d] to-[#0a0a0c] p-7 sm:p-10 text-white shadow-2xl">
+          <div className="absolute top-0 right-0 -mr-20 -mt-20 size-80 rounded-full bg-brand-primary/15 blur-3xl pointer-events-none" />
+          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
+              <div className="relative w-28 sm:w-36 shrink-0 aspect-[2/3] rounded-md overflow-hidden shadow-2xl border border-brand-primary/30 group-hover:scale-105 transition-transform">
+                <Image
+                  src="/images/behind-the-veil/behind-the-veil-front-cover.jpg"
+                  alt="Behind the Veil cover"
+                  width={200}
+                  height={300}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="max-w-xl">
+                <div className="inline-flex items-center gap-2 rounded-full border border-brand-primary/40 bg-brand-primary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-brand-primary mb-3">
+                  Featured Book Launch · 21 Nov 2026
+                </div>
+                <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-black text-white leading-tight">
+                  Behind the Veil
+                </h2>
+                <p className="text-sm sm:text-base text-gray-300 font-serif italic mt-1">
+                  How to Detect Deception and Deal with Liars
+                </p>
+                <p className="text-xs text-gray-400 uppercase tracking-widest mt-1">
+                  By Fr. Oluwafemi Victor Orilua, CSSp
+                </p>
+                <p className="text-sm text-gray-300 mt-3 line-clamp-2 leading-relaxed">
+                  A pastoral and psychological guide to seeing clearly — for anyone who has ever sensed that something was wrong long before they could name it.
+                </p>
+              </div>
+            </div>
+
+            <div className="shrink-0 flex flex-col sm:flex-row md:flex-col gap-3 w-full sm:w-auto">
+              <Link
+                href="/unveiler/books/behind-the-veil"
+                className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-brand-primary text-white text-xs font-bold uppercase tracking-widest hover:bg-brand-primary/90 transition-all shadow-lg shadow-brand-primary/25 hover:scale-102"
+              >
+                Join Online Launch & Register →
+              </Link>
+              <Link
+                href="/unveiler/books/behind-the-veil#purchase"
+                className="inline-flex items-center justify-center px-8 py-3.5 rounded-full border border-white/20 bg-white/5 text-white text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all"
+              >
+                Explore Book Editions
+              </Link>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Pre-Order Promotional Showcase Banner */}

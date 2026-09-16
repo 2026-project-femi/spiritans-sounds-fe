@@ -78,6 +78,11 @@ const Header: React.FC = () => {
 		return pathname.startsWith(href);
 	};
 
+	// Hide main site header on dedicated book launch funnel pages
+	if (pathname?.startsWith("/unveiler/books/behind-the-veil") || pathname === "/behind-the-veil") {
+		return null;
+	}
+
 	return (
 		<header
 			className={`fixed top-0 left-0 right-0 z-50 transition-gentle px-4 sm:px-6 md:px-12 py-3 sm:py-4 ${
