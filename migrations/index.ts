@@ -5,6 +5,7 @@ import * as migration_20260613_publish_existing_docs from './20260613_publish_ex
 import * as migration_20260718_141543 from './20260718_141543';
 import * as migration_20260719_175438_add_lyrics_to_lyrics_of_light from './20260719_175438_add_lyrics_to_lyrics_of_light';
 import * as migration_20260903_195212_add_views_and_publishing_updates from './20260903_195212_add_views_and_publishing_updates';
+import * as migration_20260916_211433_add_book_launch_registrations_and_comments_updates from './20260916_211433_add_book_launch_registrations_and_comments_updates';
 
 export const migrations = [
   {
@@ -40,6 +41,11 @@ export const migrations = [
   {
     up: migration_20260903_195212_add_views_and_publishing_updates.up,
     down: migration_20260903_195212_add_views_and_publishing_updates.down,
-    name: '20260903_195212_add_views_and_publishing_updates'
+    name: '20260903_195212_add_views_and_publishing_updates',
+  },
+  {
+    up: migration_20260916_211433_add_book_launch_registrations_and_comments_updates.up,
+    down: migration_20260916_211433_add_book_launch_registrations_and_comments_updates.down,
+    name: '20260916_211433_add_book_launch_registrations_and_comments_updates'
   },
 ];
