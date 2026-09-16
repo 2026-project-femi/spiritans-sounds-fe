@@ -73,7 +73,7 @@ export default async function DashboardOverviewPage() {
   const availableBalance = authorTotalEarnings - totalPaidOut;
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8">
       <div>
         <h1 className="text-3xl font-black text-white">Dashboard Overview</h1>
         <p className="text-gray-400 mt-2">Welcome back, {user.name}. Here's what's happening with your publications.</p>

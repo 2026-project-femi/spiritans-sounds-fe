@@ -77,7 +77,7 @@ export default async function DashboardEarningsPage() {
   const bankDetails = user.bankDetails || {};
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8">
       <div>
         <h1 className="text-3xl font-black text-white">Earnings & Payouts</h1>
         <p className="text-gray-400 mt-2">Track your revenue and manage your bank details for payouts.</p>

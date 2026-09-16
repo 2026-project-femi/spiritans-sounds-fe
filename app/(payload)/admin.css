@@ -1,0 +1,132 @@
+/* Custom Styles for Payload CMS Admin Panel */
+
+/* =========================================================
+   1. Nav Sidebar Logout Button (.payload-admin-nav-logout)
+   ========================================================= */
+.payload-admin-nav-logout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444 !important;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.payload-admin-nav-logout:hover,
+.payload-admin-nav-logout:focus-visible {
+  background: #ef4444 !important;
+  border-color: #ef4444 !important;
+  color: #ffffff !important;
+  outline: 2px solid rgba(239, 68, 68, 0.4);
+  outline-offset: 2px;
+}
+
+.payload-admin-nav-logout .payload-logout-icon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+}
+
+.payload-admin-nav-logout .payload-logout-label {
+  white-space: nowrap;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* =========================================================
+   2. Top-Right Header Action Logout (.payload-admin-header-logout)
+   ========================================================= */
+.payload-admin-header-logout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #ef4444 !important;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.payload-admin-header-logout:hover,
+.payload-admin-header-logout:focus-visible {
+  background: #ef4444 !important;
+  border-color: #ef4444 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+  outline: 2px solid rgba(239, 68, 68, 0.4);
+  outline-offset: 2px;
+}
+
+.payload-admin-header-logout .payload-logout-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.payload-admin-header-logout .payload-header-logout-label {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* =========================================================
+   3. Small Screens & Large Fonts Accessibility Resilience
+   ========================================================= */
+
+/* Ensure the Nav Controls container at sidebar bottom adapts smoothly */
+.nav__controls {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+  padding: 12px 16px !important;
+  min-height: 52px !important;
+}
+
+/* Ensure Settings and other controls are also comfortably sized */
+.nav__controls > * {
+  min-height: 40px;
+}
+
+/* On small screens, hide label in top bar if space is super constrained but keep large icon */
+@media (max-width: 480px) {
+  .payload-admin-header-logout {
+    padding: 6px 10px;
+  }
+  .payload-admin-header-logout .payload-header-logout-label {
+    display: none;
+  }
+}
+
+/* Light Mode specific high-contrast polish */
+html[data-theme='light'] .payload-admin-nav-logout,
+html[data-theme='light'] .payload-admin-header-logout {
+  background: rgba(220, 38, 38, 0.08);
+  border-color: rgba(220, 38, 38, 0.3);
+  color: #dc2626 !important;
+}
+
+html[data-theme='light'] .payload-admin-nav-logout:hover,
+html[data-theme='light'] .payload-admin-header-logout:hover {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+}

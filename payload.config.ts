@@ -62,6 +62,12 @@ export default buildConfig({
 				Logo: '@/components/Admin/AdminLogo#AdminLogo',
 				Icon: '@/components/Admin/AdminIcon#AdminIcon',
 			},
+			actions: [
+				'@/components/Admin/AdminHeaderLogout#AdminHeaderLogout',
+			],
+			logout: {
+				Button: '@/components/Admin/AdminLogoutButton#AdminLogoutButton',
+			},
 			beforeDashboard: [
 				'@/components/Admin/WelcomeMessage#WelcomeMessage',
 				'@/components/Admin/AdminFinancialDashboard#AdminFinancialDashboard',
