@@ -5,6 +5,7 @@ import RichText from '@/components/RichText';
 import { YouTubeEmbed } from "@/components/PortableTextComponents";
 import { Sidebar } from "@/components/common/Sidebar";
 import Comments from "@/components/Comments";
+import { ShareButtons } from "@/components/common/ShareButtons";
 import { Comment } from "@/lib/types";
 import type { Metadata } from "next";
 import { getOgImageUrl } from '@/lib/getOgImageUrl'
@@ -107,16 +108,24 @@ export default async function SingleArticlePage({ params }: { params: Promise<{ 
         ],
       },
       sort: '-createdAt',
-      depth: 0,
+      depth: 1,
     });
 
-    const comments = commentsResult.docs.map((c) => ({
+    const comments: Comment[] = commentsResult.docs.map((c) => ({
       _id: String(c.id),
       name: c.name,
       email: c.email,
       comment: c.comment,
       createdAt: c.createdAt,
+      parent:
+        c.parent && typeof c.parent === 'object' && 'id' in c.parent
+          ? String((c.parent as { id: string | number }).id)
+          : c.parent
+          ? String(c.parent)
+          : null,
+      reactions: (c.reactions as Record<string, number>) || {},
     }));
+
 
     const featuredImageDoc = rawDoc?.featuredImage && typeof rawDoc.featuredImage === 'object' ? rawDoc.featuredImage : null;
     const featuredCaption = featuredImageDoc?.caption;
@@ -174,12 +183,20 @@ export default async function SingleArticlePage({ params }: { params: Promise<{ 
                                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-black mb-8">
                                     {article.title}
                                 </h1>
-                                <div className="flex items-center space-x-4 pb-8 border-b border-gray-200 justify-center">
-                                    {article.author && (
-                                        <p className="text-sm text-muted-foreground">
-                                            By {article.author}
-                                        </p>
-                                    )}
+                                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-8 border-b border-gray-200">
+                                    <div className="text-left">
+                                        {article.author && (
+                                            <p className="text-sm font-medium text-gray-700">
+                                                By {article.author}
+                                            </p>
+                                        )}
+                                    </div>
+                                    <ShareButtons
+                                        title={article.title}
+                                        slug={article.slug}
+                                        itemType="article"
+                                        theme="light"
+                                    />
                                 </div>
                             </header>
 
@@ -189,6 +206,19 @@ export default async function SingleArticlePage({ params }: { params: Promise<{ 
 
                             <div className="prose prose-lg dark:prose-invert max-w-none text-black space-y-8 font-light leading-loose text-lg">
                                 {article.content && <RichText data={article.content} />}
+                            </div>
+
+                            {/* Bottom Share Section */}
+                            <div className="my-10 pt-6 pb-6 border-t border-b border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <span className="text-sm font-semibold text-gray-700">
+                                    Enjoyed this article? Share it with others:
+                                </span>
+                                <ShareButtons
+                                    title={article.title}
+                                    slug={article.slug}
+                                    itemType="article"
+                                    theme="light"
+                                />
                             </div>
                         </div>
                         <Comments postType="article" postId={article._id} comments={comments} />

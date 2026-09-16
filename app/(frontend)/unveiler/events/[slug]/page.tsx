@@ -5,6 +5,7 @@ import Link from "next/link";
 import RichText from '@/components/RichText';
 import { YouTubeEmbed } from "@/components/PortableTextComponents";
 import { ArrowLeft, CalendarDays, MapPin, Clock } from "lucide-react";
+import { ShareButtons } from "@/components/common/ShareButtons";
 import type { Metadata } from "next";
 import { getOgImageUrl } from '@/lib/getOgImageUrl'
 
@@ -120,12 +121,19 @@ All are welcome. Come and celebrate the treasures in our midst.`,
 
   return (
     <main className="pb-24">
-      {/* Back */}
-      <div className="max-w-4xl mx-auto px-6 pt-10">
+      {/* Back & Share */}
+      <div className="max-w-4xl mx-auto px-6 pt-10 flex items-center justify-between flex-wrap gap-4">
         <Link href="/unveiler"
           className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-brand-primary transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to Events
         </Link>
+        <ShareButtons
+          title={displayEvent.title}
+          slug={displayEvent.slug}
+          itemType="event"
+          theme="dark"
+          basePath="/unveiler/events"
+        />
       </div>
 
       {/* Hero Image */}
@@ -193,6 +201,18 @@ All are welcome. Come and celebrate the treasures in our midst.`,
               </p>
             ))
           )}
+        </div>
+
+        {/* Bottom Share */}
+        <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <span className="text-sm text-gray-400">Share this event with others:</span>
+          <ShareButtons
+            title={displayEvent.title}
+            slug={displayEvent.slug}
+            itemType="event"
+            theme="dark"
+            basePath="/unveiler/events"
+          />
         </div>
 
         {/* CTA for upcoming */}

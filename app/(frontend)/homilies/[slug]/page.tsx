@@ -6,6 +6,8 @@ import RichText from '@/components/RichText'
 import { YouTubeEmbed } from '@/components/PortableTextComponents'
 import { Sidebar } from '@/components/common/Sidebar'
 import Comments from '@/components/Comments'
+import { ShareButtons } from '@/components/common/ShareButtons'
+import { Comment } from '@/lib/types'
 import { getSidebarData } from '@/lib/payload'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -91,16 +93,24 @@ export default async function SingleHomilyPage({
       ],
     },
     sort: '-createdAt',
-    depth: 0,
+    depth: 1,
   })
 
-  const comments = commentsResult.docs.map((c) => ({
+  const comments: Comment[] = commentsResult.docs.map((c) => ({
     _id: String(c.id),
     name: c.name,
     email: c.email,
     comment: c.comment,
     createdAt: c.createdAt,
+    parent:
+      c.parent && typeof c.parent === 'object' && 'id' in c.parent
+        ? String((c.parent as { id: string | number }).id)
+        : c.parent
+        ? String(c.parent)
+        : null,
+    reactions: (c.reactions as Record<string, number>) || {},
   }))
+
 
   const imageUrl =
     doc.featuredImage && typeof doc.featuredImage === 'object'
@@ -164,11 +174,19 @@ export default async function SingleHomilyPage({
                   {doc.title}
                 </h1>
 
-                {doc.scripture && (
-                  <div className="flex items-center justify-center pb-8 border-b border-gray-200">
-                    <p className="text-sm text-muted-foreground">{doc.scripture}</p>
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-8 border-b border-gray-200">
+                  <div className="text-left">
+                    {doc.scripture && (
+                      <p className="text-sm font-medium text-gray-700 italic">{doc.scripture}</p>
+                    )}
                   </div>
-                )}
+                  <ShareButtons
+                    title={doc.title}
+                    slug={doc.slug}
+                    itemType="homily"
+                    theme="light"
+                  />
+                </div>
               </header>
 
               {audioUrl && (
@@ -184,6 +202,19 @@ export default async function SingleHomilyPage({
 
               <div className="prose prose-lg dark:prose-invert max-w-none text-black space-y-8 font-light leading-loose text-lg">
                 {doc.content && <RichText data={doc.content} />}
+              </div>
+
+              {/* Bottom Share Section */}
+              <div className="my-10 pt-6 pb-6 border-t border-b border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <span className="text-sm font-semibold text-gray-700">
+                  Share this homily with family and friends:
+                </span>
+                <ShareButtons
+                  title={doc.title}
+                  slug={doc.slug}
+                  itemType="homily"
+                  theme="light"
+                />
               </div>
             </div>
 

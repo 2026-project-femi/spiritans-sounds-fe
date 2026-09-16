@@ -565,7 +565,7 @@ export interface MagazineIssue {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Comments won't show on the site without approval
+ * Comments won't show on the site without approval. Replies to approved comments are published immediately.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "comments".
@@ -575,6 +575,22 @@ export interface Comment {
   name: string;
   email: string;
   comment: string;
+  /**
+   * Parent comment if this is a reply
+   */
+  parent?: (string | null) | Comment;
+  /**
+   * Counts of emoji reactions e.g. { '👍': 4, '❤️': 2 }
+   */
+  reactions?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   post?:
     | ({
         relationTo: 'homily';
@@ -587,6 +603,10 @@ export interface Comment {
     | ({
         relationTo: 'prayer';
         value: string | Prayer;
+      } | null)
+    | ({
+        relationTo: 'events';
+        value: string | Event;
       } | null);
   /**
    * Comments won't show on the site without approval
@@ -1935,6 +1955,8 @@ export interface CommentsSelect<T extends boolean = true> {
   name?: T;
   email?: T;
   comment?: T;
+  parent?: T;
+  reactions?: T;
   post?: T;
   approved?: T;
   updatedAt?: T;

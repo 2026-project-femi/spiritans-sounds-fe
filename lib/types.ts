@@ -56,6 +56,9 @@ export interface Comment {
   email: string
   comment: string
   createdAt: string
+  parent?: string | number | null
+  reactions?: Record<string, number>
+  replies?: Comment[]
 }
 
 export interface Homily extends HomilyItem {
@@ -185,7 +188,7 @@ export interface HomeData {
 	latestMusic: MusicItem[];
 }
 
-export type PostType = 'homily' | 'article' | 'prayer'
+export type PostType = 'homily' | 'article' | 'prayer' | 'events'
 
 export interface ScheduleItem {
   time: string;
