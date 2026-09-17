@@ -202,6 +202,8 @@ export interface UserAuthOperations {
 export interface User {
   id: string;
   name?: string | null;
+  phone?: string | null;
+  country?: string | null;
   role: 'admin' | 'publishing_admin' | 'editor' | 'contributor' | 'author';
   authorType?: ('standard' | 'young_creator') | null;
   authorBio?: string | null;
@@ -1346,12 +1348,12 @@ export interface BookSubmission {
   email: string;
   phone: string;
   country?: string | null;
-  authorName: string;
+  authorName?: string | null;
   bookTitle: string;
   category?: (string | null) | Category;
   description: string;
   authorBio?: string | null;
-  sellingPrice: number;
+  sellingPrice?: number | null;
   bookCover?: (string | null) | Media;
   bookPdf?: (string | null) | Media;
   bankDetails?: {
@@ -1759,6 +1761,8 @@ export interface PayloadMigration {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  phone?: T;
+  country?: T;
   role?: T;
   authorType?: T;
   authorBio?: T;
