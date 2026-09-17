@@ -39,6 +39,14 @@ export const Users: CollectionConfig = {
       type: 'text',
     },
     {
+      name: 'phone',
+      type: 'text',
+    },
+    {
+      name: 'country',
+      type: 'text',
+    },
+    {
       name: 'role',
       type: 'select',
       options: [

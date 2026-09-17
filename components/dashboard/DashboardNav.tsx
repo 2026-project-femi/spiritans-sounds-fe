@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Book, Wallet, FileText, Menu, X } from "lucide-react";
+import { LayoutDashboard, Book, Wallet, FileText, Menu, X, User } from "lucide-react";
 import LogoutButton from "./LogoutButton";
 
 interface DashboardNavProps {
@@ -41,6 +41,12 @@ export default function DashboardNav({ user }: DashboardNavProps) {
       href: "/unveiler/dashboard/earnings",
       label: "Earnings & Payouts",
       icon: Wallet,
+      exact: false,
+    },
+    {
+      href: "/unveiler/dashboard/profile",
+      label: "Profile Settings",
+      icon: User,
       exact: false,
     },
   ];

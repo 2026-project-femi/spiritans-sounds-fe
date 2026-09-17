@@ -4,6 +4,7 @@ import { cookies, headers } from "next/headers";
 import { BookOpen, ExternalLink, Calendar, PlusCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import BookCoverUploader from "@/components/dashboard/BookCoverUploader";
 
 export default async function DashboardBooksPage() {
   const payload = await getPayload({ config: configPromise });
@@ -45,15 +46,22 @@ export default async function DashboardBooksPage() {
           <div key={book.id} className="bg-[#121214] border border-white/5 rounded-2xl overflow-hidden shadow-xl flex flex-col group">
             <div className="aspect-video relative bg-linear-to-br from-red-950/30 to-red-900/40 border-b border-white/5">
               {book.cover?.url ? (
-                <Image 
-                  src={book.cover.url} 
-                  alt={book.title} 
-                  fill 
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
+                <>
+                  <Image 
+                    src={book.cover.url} 
+                    alt={book.title} 
+                    fill 
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute bottom-3 right-3 opacity-90 group-hover:opacity-100 transition-opacity">
+                    <BookCoverUploader bookId={book.id} bookTitle={book.title} hasCover={true} />
+                  </div>
+                </>
               ) : (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <BookOpen className="w-12 h-12 text-gray-700" />
+                <div className="absolute inset-0 flex flex-col items-center justify-center p-4 gap-2 bg-[#17171a]">
+                  <BookOpen className="w-10 h-10 text-gray-600" />
+                  <span className="text-[11px] text-gray-400 font-medium">No cover image</span>
+                  <BookCoverUploader bookId={book.id} bookTitle={book.title} hasCover={false} />
                 </div>
               )}
               

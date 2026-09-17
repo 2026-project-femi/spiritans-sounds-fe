@@ -3,6 +3,7 @@ import configPromise from "@/payload.config";
 import { cookies, headers } from "next/headers";
 import { Wallet, History, CreditCard, Building } from "lucide-react";
 import { PayoutButton } from "@/components/dashboard/PayoutButton";
+import Link from "next/link";
 
 export default async function DashboardEarningsPage() {
   const payload = await getPayload({ config: configPromise });
@@ -170,9 +171,12 @@ export default async function DashboardEarningsPage() {
             </div>
             
             <div className="mt-6 pt-6 border-t border-white/5">
-              <p className="text-xs text-gray-500">
-                To update your bank details, please contact the publishing admin.
-              </p>
+              <Link
+                href="/unveiler/dashboard/profile#payout-details"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-primary hover:text-red-400 transition-colors"
+              >
+                Update Payout Details →
+              </Link>
             </div>
           </div>
           

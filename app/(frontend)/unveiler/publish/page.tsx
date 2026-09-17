@@ -83,174 +83,113 @@ export default function PublishBookPage() {
           onSubmit={handleSubmit}
           className="bg-[#121214] border border-white/10 p-8 md:p-12 rounded-3xl space-y-8 shadow-2xl"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold text-brand-primary border-b border-white/10 pb-2">
-                Personal Information
-              </h3>
+          <div className="bg-brand-primary/10 border border-brand-primary/20 rounded-2xl p-4 sm:p-5 flex items-start gap-4">
+            <Book className="w-6 h-6 text-brand-primary shrink-0 mt-0.5" />
+            <div className="text-sm text-gray-300 space-y-1">
+              <p className="font-bold text-white">Streamlined Publishing Submission</p>
+              <p className="text-gray-400">
+                Provide your core details and manuscript below. Once approved, you can upload your book cover, set pricing, and configure your payout bank details in your personal Author Dashboard.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <h3 className="text-xl font-bold text-brand-primary border-b border-white/10 pb-2">
+              Author Information
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label className="block text-sm font-bold text-gray-300 mb-2">
-                  Full Name
+                  Full Name <span className="text-brand-primary">*</span>
                 </label>
                 <input
                   type="text"
                   name="fullName"
                   required
+                  autoComplete="name"
                   defaultValue={user?.name || ""}
+                  placeholder="e.g. Chinua Achebe"
                   className="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-primary"
                 />
               </div>
               <div>
                 <label className="block text-sm font-bold text-gray-300 mb-2">
-                  Email Address
+                  Email Address <span className="text-brand-primary">*</span>
                 </label>
                 <input
                   type="email"
                   name="email"
                   required
+                  autoComplete="email"
                   defaultValue={user?.email || ""}
+                  placeholder="author@example.com"
                   className="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-primary"
                 />
               </div>
               <div>
                 <label className="block text-sm font-bold text-gray-300 mb-2">
-                  Phone Number
+                  Phone Number <span className="text-brand-primary">*</span>
                 </label>
                 <input
-                  type="text"
+                  type="tel"
                   name="phone"
                   required
-                  className="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-primary"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-300 mb-2">
-                  Country
-                </label>
-                <input
-                  type="text"
-                  name="country"
-                  className="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-primary"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold text-brand-primary border-b border-white/10 pb-2">
-                Book Details
-              </h3>
-              <div>
-                <label className="block text-sm font-bold text-gray-300 mb-2">
-                  Author / Publication Name
-                </label>
-                <input
-                  type="text"
-                  name="authorName"
-                  required
-                  className="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-primary"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-300 mb-2">
-                  Book Title
-                </label>
-                <input
-                  type="text"
-                  name="bookTitle"
-                  required
-                  className="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-primary"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-300 mb-2">
-                  Selling Price (NGN)
-                </label>
-                <input
-                  type="number"
-                  name="sellingPrice"
-                  required
-                  min="0"
+                  autoComplete="tel"
+                  placeholder="+234 800 000 0000"
                   className="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-primary"
                 />
               </div>
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-6">
             <h3 className="text-xl font-bold text-brand-primary border-b border-white/10 pb-2">
-              Descriptions & Bio
+              Book Details
             </h3>
             <div>
               <label className="block text-sm font-bold text-gray-300 mb-2">
-                Short Book Description
+                Book Title <span className="text-brand-primary">*</span>
               </label>
-              <textarea
-                name="description"
-                rows={3}
+              <input
+                type="text"
+                name="bookTitle"
                 required
-                className="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-primary resize-none"
-              ></textarea>
+                placeholder="Enter title of your manuscript"
+                className="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-primary"
+              />
             </div>
             <div>
               <label className="block text-sm font-bold text-gray-300 mb-2">
-                Author Biography
+                Book Description <span className="text-brand-primary">*</span>
               </label>
               <textarea
-                name="authorBio"
-                rows={3}
-                defaultValue={user?.authorBio || ""}
+                name="description"
+                rows={4}
+                required
+                placeholder="Provide a compelling summary or synopsis of your book..."
                 className="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-primary resize-none"
               ></textarea>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold text-brand-primary border-b border-white/10 pb-2">
-                Files
-              </h3>
-              <div>
-                <label className="block text-sm font-bold text-gray-300 mb-2">
-                  Book Cover (Image)
-                </label>
-                <input
-                  type="file"
-                  name="bookCover"
-                  accept="image/*"
-                  required
-                  className="w-full text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-red-700"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-300 mb-2">
-                  Book Manuscript (PDF)
-                </label>
-                <input
-                  type="file"
-                  name="bookPdf"
-                  accept="application/pdf"
-                  required
-                  className="w-full text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-red-700"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold text-brand-primary border-b border-white/10 pb-2">
-                Bank / Payment Details
-              </h3>
-              <div>
-                <label className="block text-sm font-bold text-gray-300 mb-1">Bank Name</label>
-                <input type="text" name="bankName" defaultValue={user?.bankDetails?.bankName || ""} className="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-3 py-2 text-white text-sm" />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-300 mb-1">Account Name</label>
-                <input type="text" name="accountName" defaultValue={user?.bankDetails?.accountName || ""} className="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-3 py-2 text-white text-sm" />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-300 mb-1">Account Number</label>
-                <input type="text" name="accountNumber" defaultValue={user?.bankDetails?.accountNumber || ""} className="w-full bg-[#1a1a1e] border border-white/10 rounded-xl px-3 py-2 text-white text-sm" />
-              </div>
+          <div className="space-y-6">
+            <h3 className="text-xl font-bold text-brand-primary border-b border-white/10 pb-2">
+              Manuscript
+            </h3>
+            <div>
+              <label className="block text-sm font-bold text-gray-300 mb-2">
+                Book Manuscript (PDF) <span className="text-brand-primary">*</span>
+              </label>
+              <input
+                type="file"
+                name="bookPdf"
+                accept="application/pdf"
+                required
+                className="w-full text-gray-400 file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-brand-primary file:text-white hover:file:bg-red-700 cursor-pointer bg-[#1a1a1e] border border-white/10 rounded-xl p-2"
+              />
+              <p className="text-xs text-gray-500 mt-2">
+                Upload your manuscript in PDF format. You will be able to upload your book cover once approved.
+              </p>
             </div>
           </div>
 

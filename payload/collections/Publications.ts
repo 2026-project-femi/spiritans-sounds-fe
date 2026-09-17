@@ -63,7 +63,13 @@ export const Publications: CollectionConfig = {
     readVersions: authenticated,
     update: ({ req: { user } }) => {
       if (user?.role === 'admin' || user?.role === 'publishing_admin') return true;
-      // Authors can only update their own draft/under_review books if we wanted, but let's stick to admins for now
+      if (user?.role === 'author') {
+        return {
+          author: {
+            equals: user.id,
+          },
+        };
+      }
       return false;
     },
     delete: isAdmin,
