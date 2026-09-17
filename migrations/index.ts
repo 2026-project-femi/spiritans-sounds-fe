@@ -7,6 +7,7 @@ import * as migration_20260719_175438_add_lyrics_to_lyrics_of_light from './2026
 import * as migration_20260903_195212_add_views_and_publishing_updates from './20260903_195212_add_views_and_publishing_updates';
 import * as migration_20260916_211433_add_book_launch_registrations_and_comments_updates from './20260916_211433_add_book_launch_registrations_and_comments_updates';
 import * as migration_20260917_122741_add_user_profile_fields from './20260917_122741_add_user_profile_fields';
+import * as migration_20260917_134725_add_book_launch_settings from './20260917_134725_add_book_launch_settings';
 
 export const migrations = [
   {
@@ -52,6 +53,11 @@ export const migrations = [
   {
     up: migration_20260917_122741_add_user_profile_fields.up,
     down: migration_20260917_122741_add_user_profile_fields.down,
-    name: '20260917_122741_add_user_profile_fields'
+    name: '20260917_122741_add_user_profile_fields',
+  },
+  {
+    up: migration_20260917_134725_add_book_launch_settings.up,
+    down: migration_20260917_134725_add_book_launch_settings.down,
+    name: '20260917_134725_add_book_launch_settings'
   },
 ];

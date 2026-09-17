@@ -73,8 +73,8 @@ export default function LaunchRegistrationForm() {
 
       setSuccessMessage(
         data.alreadyRegistered
-          ? "You're already registered! We've updated your confirmation details."
-          : "You're on the guest list! Details and access links will follow by email."
+          ? "You're already registered! We've updated your confirmation details and sent access details to your email."
+          : (data.message || "You're on the guest list! A confirmation email with event details and meeting access has been dispatched.")
       );
       setDone(true);
     } catch (err: unknown) {
@@ -95,12 +95,13 @@ export default function LaunchRegistrationForm() {
         <h3 className="font-serif text-2xl sm:text-3xl text-white font-bold tracking-tight">
           You&apos;re on the list.
         </h3>
-        <p className="text-sm sm:text-base text-gray-300 max-w-[42ch] mx-auto leading-relaxed">
-          {successMessage} We&apos;ll email your private access link and a reminder before the online launch on 21 November 2026.
+        <p className="text-sm sm:text-base text-gray-300 max-w-[44ch] mx-auto leading-relaxed">
+          {successMessage} Please check your inbox (and spam/promotions folder) for the confirmation message and online meeting access details.
         </p>
       </div>
     );
   }
+
 
   const fieldLabel =
     "text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-gray-300";

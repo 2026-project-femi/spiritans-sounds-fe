@@ -24,6 +24,7 @@ import { BookSubmissions } from "./payload/collections/BookSubmissions";
 import { BookLaunchRegistrations } from "./payload/collections/BookLaunchRegistrations";
 import { Payouts } from "./payload/collections/Payouts";
 import { CommissionSettings } from "./payload/globals/CommissionSettings";
+import { BookLaunchSettings } from "./payload/globals/BookLaunchSettings";
 
 import { HomePage } from "./payload/collections/Home";
 import { DonationPage } from "./payload/collections/DonationPage";
@@ -107,7 +108,7 @@ export default buildConfig({
 		BookLaunchRegistrations,
 		Payouts,
 	],
-	globals: [Footer, Header, CommissionSettings],
+	globals: [Footer, Header, CommissionSettings, BookLaunchSettings],
 	editor: defaultLexical,
 	secret: process.env.PAYLOAD_SECRET || "DEVELOPMENT_ONLY_SECRET_STRING_12345",
 	cookiePrefix: 'spiritans',

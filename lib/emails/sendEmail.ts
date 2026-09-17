@@ -339,3 +339,131 @@ export async function sendPayoutRequestAdminNotification(data: { authorName: str
 		console.error("❌ Failed to send payout request admin notification:", error);
 	}
 }
+
+// ── Book Launch Registration Confirmation ────────────────────────────────────
+
+export interface BookLaunchEmailData {
+	to: string;
+	fullName: string;
+	bookTitle: string;
+	meetingLink?: string;
+	meetingPlatform?: string;
+	meetingPasscode?: string;
+	eventDate?: string;
+	customNote?: string;
+}
+
+export async function sendBookLaunchConfirmationEmail(data: BookLaunchEmailData): Promise<boolean> {
+	try {
+		const hasMeetingLink = Boolean(data.meetingLink && data.meetingLink.trim());
+		const platform = data.meetingPlatform || "Online";
+		const eventDate = data.eventDate || "Saturday, 21 November 2026 at 5:00 PM (WAT) / 4:00 PM (GMT)";
+
+		const html = `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1f2937; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background-color: #ffffff;">
+        <!-- Header Banner -->
+        <div style="background: linear-gradient(135deg, #18181b 0%, #09090b 100%); padding: 32px 24px; text-align: center; border-bottom: 3px solid #ee0303;">
+          <p style="color: #ee0303; text-transform: uppercase; font-size: 11px; font-weight: 800; letter-spacing: 0.15em; margin: 0 0 8px 0;">Spiritans Sound · Online Event</p>
+          <h1 style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0; line-height: 1.3;">Launch Registration Confirmed 🎉</h1>
+          <p style="color: #a1a1aa; font-size: 14px; margin: 8px 0 0 0;">You're officially on the guest list for <strong>${data.bookTitle}</strong></p>
+        </div>
+
+        <!-- Body Content -->
+        <div style="padding: 32px 24px; background-color: #ffffff;">
+          <p style="font-size: 16px; line-height: 1.6; margin: 0 0 16px 0;">Dear <strong>${data.fullName}</strong>,</p>
+          <p style="font-size: 15px; line-height: 1.6; color: #4b5563; margin: 0 0 24px 0;">
+            Thank you for registering to attend the official online launch of <em>${data.bookTitle}</em>. We are delighted to have you join us for this special unveiling.
+          </p>
+
+          <!-- Event Details Card -->
+          <div style="background-color: #fafafa; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px; margin-bottom: 28px;">
+            <h3 style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: #9ca3af; margin: 0 0 16px 0; font-weight: 700;">Event Details</h3>
+            
+            <div style="margin-bottom: 12px; display: flex; align-items: baseline;">
+              <span style="font-weight: 600; color: #374151; min-width: 110px; font-size: 14px;">📖 Book:</span>
+              <span style="color: #111827; font-size: 14px; font-weight: 600;">${data.bookTitle}</span>
+            </div>
+
+            <div style="margin-bottom: 12px; display: flex; align-items: baseline;">
+              <span style="font-weight: 600; color: #374151; min-width: 110px; font-size: 14px;">📅 Date & Time:</span>
+              <span style="color: #111827; font-size: 14px;">${eventDate}</span>
+            </div>
+
+            <div style="margin-bottom: 12px; display: flex; align-items: baseline;">
+              <span style="font-weight: 600; color: #374151; min-width: 110px; font-size: 14px;">💻 Platform:</span>
+              <span style="color: #111827; font-size: 14px;">${platform}</span>
+            </div>
+
+            ${data.meetingPasscode ? `
+            <div style="margin-bottom: 4px; display: flex; align-items: baseline;">
+              <span style="font-weight: 600; color: #374151; min-width: 110px; font-size: 14px;">🔑 Passcode:</span>
+              <span style="color: #111827; font-size: 14px; font-family: monospace; font-weight: 700;">${data.meetingPasscode}</span>
+            </div>
+            ` : ""}
+          </div>
+
+          <!-- Meeting Link Section -->
+          ${hasMeetingLink ? `
+            <div style="text-align: center; margin: 32px 0; padding: 24px; background: #fff5f5; border: 1px solid #fed7d7; border-radius: 12px;">
+              <h4 style="margin: 0 0 8px 0; color: #991b1b; font-size: 16px; font-weight: 700;">Your Online Meeting Link is Ready</h4>
+              <p style="margin: 0 0 20px 0; color: #4b5563; font-size: 14px;">Click the button below at event time to access the broadcast directly:</p>
+              <a href="${data.meetingLink}" target="_blank" rel="noopener noreferrer"
+                 style="display: inline-block; background-color: #ee0303; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 12px rgba(238, 3, 3, 0.25);">
+                Join Online Launch Meeting →
+              </a>
+              <p style="margin: 16px 0 0 0; font-size: 12px; color: #6b7280; word-break: break-all;">
+                Or open URL: <a href="${data.meetingLink}" style="color: #ee0303;">${data.meetingLink}</a>
+              </p>
+            </div>
+          ` : `
+            <div style="background-color: #eff6ff; border: 1px solid #bfdbfe; border-left: 4px solid #3b82f6; border-radius: 8px; padding: 16px; margin: 24px 0;">
+              <p style="margin: 0 0 6px 0; font-weight: 700; color: #1e40af; font-size: 14px;">📍 Link Access Notice</p>
+              <p style="margin: 0; color: #1e3a8a; font-size: 13px; line-height: 1.5;">
+                The official stream link is currently being finalized. Your place is securely reserved, and we will email you the direct joining link prior to the event.
+              </p>
+            </div>
+          `}
+
+          ${data.customNote ? `
+            <div style="background-color: #f9fafb; border-left: 3px solid #6b7280; padding: 14px 18px; margin: 24px 0; font-size: 13px; color: #4b5563; font-style: italic;">
+              ${data.customNote}
+            </div>
+          ` : ""}
+
+          <p style="font-size: 14px; line-height: 1.6; color: #6b7280; margin: 24px 0 0 0;">
+            We look forward to sharing this momentous launch with you. Please feel free to invite friends, colleagues, and family!
+          </p>
+
+          <p style="font-size: 14px; line-height: 1.6; color: #111827; margin: 16px 0 0 0;">
+            Warm regards,<br />
+            <strong>Spiritans Sound Editorial & Events Team</strong>
+          </p>
+        </div>
+
+        <!-- Footer -->
+        <div style="background-color: #f9fafb; padding: 20px; text-align: center; font-size: 12px; color: #9ca3af; border-top: 1px solid #e5e7eb;">
+          &copy; ${new Date().getFullYear()} Spiritans Sound · Congregation of the Holy Spirit (Spiritans)<br />
+          Treasures Unveiler Publishing
+        </div>
+      </div>
+    `;
+
+		const { error } = await getResend().emails.send({
+			from: getFrom(),
+			to: data.to,
+			subject: `🎉 Registration Confirmed: ${data.bookTitle} Online Launch`,
+			html,
+		});
+
+		if (error) {
+			console.error("❌ Failed to send book launch confirmation email:", error.message || error);
+			return false;
+		}
+
+		console.log(`✅ Book launch confirmation email sent to ${data.to}`);
+		return true;
+	} catch (error) {
+		console.error("❌ Failed to send book launch confirmation email:", error);
+		return false;
+	}
+}

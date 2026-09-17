@@ -3,6 +3,8 @@ import configPromise from "@/payload.config";
 import { cookies, headers } from "next/headers";
 import AuthorProfileForm from "@/components/dashboard/AuthorProfileForm";
 
+export const dynamic = "force-dynamic";
+
 export default async function AuthorProfilePage() {
   const payload = await getPayload({ config: configPromise });
   const req = {
@@ -29,6 +31,7 @@ export default async function AuthorProfilePage() {
       </div>
 
       <AuthorProfileForm
+        key={`${user.id}-${user.updatedAt || ''}`}
         initialUser={{
           id: user.id,
           name: user.name,
@@ -44,3 +47,4 @@ export default async function AuthorProfilePage() {
     </div>
   );
 }
+

@@ -2,7 +2,7 @@
 
 import { getPayload } from 'payload'
 import configPromise from '@/payload.config'
-import { cookies, headers } from 'next/headers'
+import { headers } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 
 export interface UpdateAuthorProfileInput {
@@ -16,18 +16,19 @@ export interface UpdateAuthorProfileInput {
     accountNumber?: string
     sortCodeOrRoutingNumber?: string
   }
-  newPassword?: string
+}
+
+export interface UpdateAuthorPasswordInput {
+  newPassword: string
+  confirmPassword: string
 }
 
 export async function updateAuthorProfileAction(data: UpdateAuthorProfileInput) {
   try {
     const payload = await getPayload({ config: configPromise })
-    const req = {
-      headers: await headers(),
-      cookies: await cookies(),
-    }
+    const headersList = await headers()
 
-    const { user } = await payload.auth(req as any)
+    const { user } = await payload.auth({ headers: headersList })
     if (!user) {
       return { success: false, error: 'You must be logged in to update your profile.' }
     }
@@ -49,18 +50,11 @@ export async function updateAuthorProfileAction(data: UpdateAuthorProfileInput) 
       },
     }
 
-    // Optional password change
-    if (data.newPassword && data.newPassword.trim()) {
-      if (data.newPassword.length < 6) {
-        return { success: false, error: 'Password must be at least 6 characters long.' }
-      }
-      updatePayload.password = data.newPassword
-    }
-
     const updatedUser = await payload.update({
       collection: 'users',
       id: user.id,
       data: updatePayload,
+      overrideAccess: true,
     })
 
     // Revalidate dashboard pages
@@ -71,15 +65,15 @@ export async function updateAuthorProfileAction(data: UpdateAuthorProfileInput) 
 
     return {
       success: true,
-      message: 'Profile updated successfully!',
+      message: 'Profile details saved successfully!',
       user: {
         id: updatedUser.id,
         name: updatedUser.name,
         email: updatedUser.email,
-        phone: (updatedUser as any).phone,
-        country: (updatedUser as any).country,
-        authorBio: updatedUser.authorBio,
-        bankDetails: updatedUser.bankDetails,
+        phone: (updatedUser as any).phone || '',
+        country: (updatedUser as any).country || '',
+        authorBio: updatedUser.authorBio || '',
+        bankDetails: updatedUser.bankDetails || null,
       },
     }
   } catch (error: any) {
@@ -90,3 +84,49 @@ export async function updateAuthorProfileAction(data: UpdateAuthorProfileInput) 
     }
   }
 }
+
+export async function updateAuthorPasswordAction(data: UpdateAuthorPasswordInput) {
+  try {
+    const payload = await getPayload({ config: configPromise })
+    const headersList = await headers()
+
+    const { user } = await payload.auth({ headers: headersList })
+    if (!user) {
+      return { success: false, error: 'You must be logged in to change your password.' }
+    }
+
+    if (!data.newPassword || !data.newPassword.trim()) {
+      return { success: false, error: 'Please enter a new password.' }
+    }
+
+    if (data.newPassword.length < 6) {
+      return { success: false, error: 'New password must be at least 6 characters long.' }
+    }
+
+    if (data.newPassword !== data.confirmPassword) {
+      return { success: false, error: 'Passwords do not match. Please verify your new password.' }
+    }
+
+    await payload.update({
+      collection: 'users',
+      id: user.id,
+      data: {
+        password: data.newPassword,
+      },
+      overrideAccess: true,
+    })
+
+    return {
+      success: true,
+      message: 'Password changed successfully! Please use your new password next time you log in.',
+    }
+  } catch (error: any) {
+    console.error('Update author password error:', error)
+    return {
+      success: false,
+      error: error.message || 'An error occurred while updating password.',
+    }
+  }
+}
+
+

@@ -1,6 +1,7 @@
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { NextResponse } from 'next/server'
+import { sendBookLaunchConfirmationEmail } from '@/lib/emails/sendEmail'
 
 export async function POST(req: Request) {
   try {
@@ -34,6 +35,16 @@ export async function POST(req: Request) {
     const targetSlug = (bookSlug && typeof bookSlug === 'string' && bookSlug.trim()) || 'behind-the-veil'
     const targetTitle = (bookTitle && typeof bookTitle === 'string' && bookTitle.trim()) || 'Behind the Veil'
 
+    // Fetch Book Launch Settings configured in Admin Dashboard
+    let launchSettings: any = null
+    try {
+      launchSettings = await payload.findGlobal({
+        slug: 'book-launch-settings' as any,
+      })
+    } catch {
+      // Graceful fallback if settings haven't been saved yet
+    }
+
     // Check for existing registration
     const existing = await payload.find({
       collection: 'book-launch-registrations',
@@ -59,10 +70,25 @@ export async function POST(req: Request) {
         },
       })
 
+      // Send or re-send confirmation email with meeting link
+      if (launchSettings?.sendConfirmationEmail !== false) {
+        sendBookLaunchConfirmationEmail({
+          to: trimmedEmail,
+          fullName: fullName.trim(),
+          bookTitle: launchSettings?.bookTitle || targetTitle,
+          meetingLink: launchSettings?.meetingLink || '',
+          meetingPlatform: launchSettings?.meetingPlatform || 'Online',
+          meetingPasscode: launchSettings?.meetingPasscode || '',
+          eventDate: launchSettings?.eventDate || 'Saturday, 21 November 2026',
+          customNote: launchSettings?.customNote || '',
+        }).catch((err) => console.error('Failed to send confirmation email:', err))
+      }
+
       return NextResponse.json({
         success: true,
         alreadyRegistered: true,
-        message: "You are already on the launch guest list! We've updated your information.",
+        message: "You are already on the launch guest list! We've updated your information and sent confirmation details to your email.",
+        hasMeetingLink: Boolean(launchSettings?.meetingLink),
       })
     }
 
@@ -81,10 +107,25 @@ export async function POST(req: Request) {
       },
     })
 
+    // Send instant confirmation email with meeting link if configured
+    if (launchSettings?.sendConfirmationEmail !== false) {
+      sendBookLaunchConfirmationEmail({
+        to: trimmedEmail,
+        fullName: fullName.trim(),
+        bookTitle: launchSettings?.bookTitle || targetTitle,
+        meetingLink: launchSettings?.meetingLink || '',
+        meetingPlatform: launchSettings?.meetingPlatform || 'Online',
+        meetingPasscode: launchSettings?.meetingPasscode || '',
+        eventDate: launchSettings?.eventDate || 'Saturday, 21 November 2026',
+        customNote: launchSettings?.customNote || '',
+      }).catch((err) => console.error('Failed to send confirmation email:', err))
+    }
+
     return NextResponse.json({
       success: true,
-      message: "You're registered for the Behind the Veil online launch! Details will follow by email.",
+      message: "You're registered for the Behind the Veil online launch! A confirmation email with access details has been sent.",
       id: created.id,
+      hasMeetingLink: Boolean(launchSettings?.meetingLink),
     })
   } catch (error) {
     console.error('Error creating book launch registration:', error)
@@ -94,3 +135,4 @@ export async function POST(req: Request) {
     )
   }
 }
+

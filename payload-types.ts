@@ -155,11 +155,13 @@ export interface Config {
     footer: Footer;
     header: Header;
     'commission-settings': CommissionSetting;
+    'book-launch-settings': BookLaunchSetting;
   };
   globalsSelect: {
     footer: FooterSelect<false> | FooterSelect<true>;
     header: HeaderSelect<false> | HeaderSelect<true>;
     'commission-settings': CommissionSettingsSelect<false> | CommissionSettingsSelect<true>;
+    'book-launch-settings': BookLaunchSettingsSelect<false> | BookLaunchSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -2758,6 +2760,46 @@ export interface CommissionSetting {
   createdAt?: string | null;
 }
 /**
+ * Configure online launch event meeting links (Zoom/Google Meet), date, time, and attendee email settings.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "book-launch-settings".
+ */
+export interface BookLaunchSetting {
+  id: string;
+  /**
+   * Title of the book being launched.
+   */
+  bookTitle: string;
+  /**
+   * URL slug for the book launch page.
+   */
+  bookSlug: string;
+  /**
+   * Direct meeting link provided to registered attendees. If left blank, emails will inform attendees that the link is being finalized.
+   */
+  meetingLink?: string | null;
+  meetingPlatform?: ('Zoom' | 'Google Meet' | 'YouTube Live' | 'Microsoft Teams' | 'Other') | null;
+  /**
+   * Passcode or meeting ID required to join the stream.
+   */
+  meetingPasscode?: string | null;
+  /**
+   * Human-friendly date and time included in confirmation emails.
+   */
+  eventDate?: string | null;
+  /**
+   * Custom notes or instructions appended to the registration confirmation email.
+   */
+  customNote?: string | null;
+  /**
+   * When enabled, registrants receive an instant confirmation email with access details.
+   */
+  sendConfirmationEmail?: boolean | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "footer_select".
  */
@@ -2810,6 +2852,23 @@ export interface HeaderSelect<T extends boolean = true> {
 export interface CommissionSettingsSelect<T extends boolean = true> {
   standardCommissionRate?: T;
   minimumPayoutThreshold?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "book-launch-settings_select".
+ */
+export interface BookLaunchSettingsSelect<T extends boolean = true> {
+  bookTitle?: T;
+  bookSlug?: T;
+  meetingLink?: T;
+  meetingPlatform?: T;
+  meetingPasscode?: T;
+  eventDate?: T;
+  customNote?: T;
+  sendConfirmationEmail?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
