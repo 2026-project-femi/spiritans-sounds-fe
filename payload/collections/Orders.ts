@@ -48,6 +48,51 @@ export const Orders: CollectionConfig = {
       hasMany: true,
     },
     {
+      name: 'format',
+      type: 'select',
+      label: 'Item Format',
+      defaultValue: 'ebook',
+      options: [
+        { label: 'eBook (Digital)', value: 'ebook' },
+        { label: 'Paperback (Physical)', value: 'paperback' },
+      ],
+      admin: {
+        description: 'Format purchased (eBook download vs physical Paperback for delivery)',
+      },
+    },
+    {
+      name: 'isPreorder',
+      type: 'checkbox',
+      label: 'Pre-Order',
+      defaultValue: false,
+      admin: {
+        description: 'Resolved at checkout from launch settings; drives pre-order vs download fulfillment.',
+      },
+    },
+    {
+      name: 'shippingAddress',
+      type: 'textarea',
+      label: 'Shipping Address',
+      admin: {
+        description: 'Physical delivery address (for paperback orders)',
+      },
+    },
+    {
+      name: 'shippingCity',
+      type: 'text',
+      label: 'Shipping City / State',
+    },
+    {
+      name: 'shippingCountry',
+      type: 'text',
+      label: 'Shipping Country',
+    },
+    {
+      name: 'shippingPhone',
+      type: 'text',
+      label: 'Customer Contact Phone',
+    },
+    {
       name: 'currency',
       type: 'select',
       options: [

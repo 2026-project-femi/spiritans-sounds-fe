@@ -79,13 +79,24 @@ export const Publications: CollectionConfig = {
     
   },hooks: {
     afterChange: [({doc})=>{
-      revalidatePath('/unveiler/books');
-      revalidatePath(`/unveiler/books/${doc.slug}`);
+      // revalidatePath throws when the write happens during a render (e.g. the
+      // Behind the Veil funnel ensuring its publication on first request), so it
+      // must never be allowed to break the underlying write.
+      try {
+        revalidatePath('/unveiler/books');
+        revalidatePath(`/unveiler/books/${doc.slug}`);
+      } catch {
+        // Revalidation is skipped outside of server actions / route handlers.
+      }
       return doc;
     }, handlePreorderRelease],
     afterDelete: [({doc})=>{
-      revalidatePath('/unveiler/books');
-      revalidatePath(`/unveiler/books/${doc.slug}`);
+      try {
+        revalidatePath('/unveiler/books');
+        revalidatePath(`/unveiler/books/${doc.slug}`);
+      } catch {
+        // Revalidation is skipped outside of server actions / route handlers.
+      }
       return doc;
     }],
   },

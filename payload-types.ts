@@ -696,6 +696,21 @@ export interface Order {
           }
       )[]
     | null;
+  /**
+   * Format purchased (eBook download vs physical Paperback for delivery)
+   */
+  format?: ('ebook' | 'paperback') | null;
+  /**
+   * Resolved at checkout from launch settings; drives pre-order vs download fulfillment.
+   */
+  isPreorder?: boolean | null;
+  /**
+   * Physical delivery address (for paperback orders)
+   */
+  shippingAddress?: string | null;
+  shippingCity?: string | null;
+  shippingCountry?: string | null;
+  shippingPhone?: string | null;
   currency?: ('NGN' | 'USD' | 'GBP') | null;
   paymentProvider?: ('paystack' | 'stripe') | null;
   paystackReference?: string | null;
@@ -2029,6 +2044,12 @@ export interface OrdersSelect<T extends boolean = true> {
   amount?: T;
   status?: T;
   items?: T;
+  format?: T;
+  isPreorder?: T;
+  shippingAddress?: T;
+  shippingCity?: T;
+  shippingCountry?: T;
+  shippingPhone?: T;
   currency?: T;
   paymentProvider?: T;
   paystackReference?: T;
@@ -2760,7 +2781,7 @@ export interface CommissionSetting {
   createdAt?: string | null;
 }
 /**
- * Configure online launch event meeting links (Zoom/Google Meet), date, time, and attendee email settings.
+ * Configure online launch event, book pricing, preview PDF, video links, audiobook clips, bookstores, and testimonials.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "book-launch-settings".
@@ -2776,18 +2797,22 @@ export interface BookLaunchSetting {
    */
   bookSlug: string;
   /**
+   * Used by the countdown timer on the launch page (e.g. 2026-11-21T17:00:00+01:00).
+   */
+  launchDateISO?: string | null;
+  /**
+   * Human-friendly date and time displayed in confirmation emails and UI headers.
+   */
+  eventDate?: string | null;
+  meetingPlatform?: ('Zoom' | 'Google Meet' | 'YouTube Live' | 'Microsoft Teams' | 'Other') | null;
+  /**
    * Direct meeting link provided to registered attendees. If left blank, emails will inform attendees that the link is being finalized.
    */
   meetingLink?: string | null;
-  meetingPlatform?: ('Zoom' | 'Google Meet' | 'YouTube Live' | 'Microsoft Teams' | 'Other') | null;
   /**
    * Passcode or meeting ID required to join the stream.
    */
   meetingPasscode?: string | null;
-  /**
-   * Human-friendly date and time included in confirmation emails.
-   */
-  eventDate?: string | null;
   /**
    * Custom notes or instructions appended to the registration confirmation email.
    */
@@ -2796,6 +2821,83 @@ export interface BookLaunchSetting {
    * When enabled, registrants receive an instant confirmation email with access details.
    */
   sendConfirmationEmail?: boolean | null;
+  /**
+   * Total number of pages of the book.
+   */
+  pages?: string | null;
+  /**
+   * International Standard Book Number.
+   */
+  isbn?: string | null;
+  publisher?: string | null;
+  imprint?: string | null;
+  language?: string | null;
+  category?: string | null;
+  /**
+   * When checked, purchases are marked as pre-orders and confirmation emails specify launch release delivery.
+   */
+  isPreorder?: boolean | null;
+  /**
+   * Attach to the Behind the Veil publication for tracking inventory, orders, and sales metrics.
+   */
+  publication?: (string | null) | Publication;
+  ebookAvailable?: boolean | null;
+  ebookPriceNGN: number;
+  ebookPriceUSD: number;
+  ebookPriceGBP: number;
+  ebookPriceNote?: string | null;
+  paperbackAvailable?: boolean | null;
+  paperbackPriceNGN: number;
+  paperbackPriceUSD: number;
+  paperbackPriceGBP: number;
+  paperbackPriceNote?: string | null;
+  /**
+   * PDF used to render the interactive first 5 pages preview modal (same as the-road-to-success-tty).
+   */
+  previewPdf?: (string | null) | Media;
+  excerptTitle?: string | null;
+  excerptText?: string | null;
+  videosHeading?: string | null;
+  videosIntro?: string | null;
+  videos?:
+    | {
+        title: string;
+        url: string;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  audioHeading?: string | null;
+  audioIntro?: string | null;
+  audioPreviews?:
+    | {
+        title: string;
+        description?: string | null;
+        audioFile?: (string | null) | Media;
+        audioUrl?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  bookshopsHeading?: string | null;
+  bookshopsIntro?: string | null;
+  bookshops?:
+    | {
+        name: string;
+        address: string;
+        city: string;
+        phone?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  testimonialsHeading?: string | null;
+  testimonials?:
+    | {
+        name: string;
+        detail?: string | null;
+        quote: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2863,12 +2965,75 @@ export interface CommissionSettingsSelect<T extends boolean = true> {
 export interface BookLaunchSettingsSelect<T extends boolean = true> {
   bookTitle?: T;
   bookSlug?: T;
-  meetingLink?: T;
-  meetingPlatform?: T;
-  meetingPasscode?: T;
+  launchDateISO?: T;
   eventDate?: T;
+  meetingPlatform?: T;
+  meetingLink?: T;
+  meetingPasscode?: T;
   customNote?: T;
   sendConfirmationEmail?: T;
+  pages?: T;
+  isbn?: T;
+  publisher?: T;
+  imprint?: T;
+  language?: T;
+  category?: T;
+  isPreorder?: T;
+  publication?: T;
+  ebookAvailable?: T;
+  ebookPriceNGN?: T;
+  ebookPriceUSD?: T;
+  ebookPriceGBP?: T;
+  ebookPriceNote?: T;
+  paperbackAvailable?: T;
+  paperbackPriceNGN?: T;
+  paperbackPriceUSD?: T;
+  paperbackPriceGBP?: T;
+  paperbackPriceNote?: T;
+  previewPdf?: T;
+  excerptTitle?: T;
+  excerptText?: T;
+  videosHeading?: T;
+  videosIntro?: T;
+  videos?:
+    | T
+    | {
+        title?: T;
+        url?: T;
+        description?: T;
+        id?: T;
+      };
+  audioHeading?: T;
+  audioIntro?: T;
+  audioPreviews?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        audioFile?: T;
+        audioUrl?: T;
+        id?: T;
+      };
+  bookshopsHeading?: T;
+  bookshopsIntro?: T;
+  bookshops?:
+    | T
+    | {
+        name?: T;
+        address?: T;
+        city?: T;
+        phone?: T;
+        id?: T;
+      };
+  testimonialsHeading?: T;
+  testimonials?:
+    | T
+    | {
+        name?: T;
+        detail?: T;
+        quote?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

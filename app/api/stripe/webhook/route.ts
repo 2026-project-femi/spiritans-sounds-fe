@@ -4,10 +4,9 @@ import Stripe from "stripe";
 import { 
   sendAdminNotification, 
   sendThankYouEmail, 
-  sendPurchaseConfirmationEmail, 
-  sendFailedChargeNotification,
-  sendPreorderConfirmationEmail
+  sendFailedChargeNotification
 } from "@/lib/emails/sendEmail";
+import { completePurchase } from "@/lib/payments/completePurchase";
 import { getPayload } from 'payload';
 import configPromise from '@/payload.config';
 
@@ -167,179 +166,48 @@ async function handleSuccessfulCharge(session: Stripe.Checkout.Session, payloadC
 
 async function handleSuccessfulPurchase(session: Stripe.Checkout.Session, payloadCms: any) {
     const reference = session.id;
+    const metadata = session.metadata || {};
+    const email = session.customer_details?.email || session.customer_email || "unknown@customer.com";
+    const buyerName = metadata.buyer_name || session.customer_details?.name || email.split("@")[0] || "Valued Customer";
+    const currency = (session.currency || "USD").toUpperCase();
+    const formattedAmount = (session.amount_total || 0) / 100;
 
-    try {
-        const metadata = session.metadata || {};
-        const email = session.customer_details?.email || session.customer_email || "unknown@customer.com";
-        const buyerName = metadata.buyer_name || session.customer_details?.name || email.split("@")[0] || "Valued Customer";
-        
-        const currency = (session.currency || "USD").toUpperCase();
-        const amountSubunits = session.amount_total || 0;
-        const formattedAmount = amountSubunits / 100;
-        const paid_at = new Date();
-
-        const orderId = metadata.orderId;
-        if (!orderId) {
-            console.error(`❌ No orderId in metadata for purchase ${reference}`);
-            return;
-        }
-
-        // 1. Fetch Order and populate the item relation fields inside Payload
-        const order = await payloadCms.findByID({
-            collection: 'orders',
-            id: orderId,
-            depth: 2,
-        });
-
-        // Deduplication: skip if already completed
-        if (order && order.status === 'completed') {
-            console.log(`⏭️ Purchase ${reference} already processed (order completed), skipping`);
-            return;
-        }
-
-        if (!order) {
-            console.error(`❌ Order not found: ${orderId}`);
-            return;
-        }
-
-        // 2. Safely parse file URL from populated media document
-        const firstItem = order.items?.[0];
-        const item = firstItem?.value || firstItem;
-        const fileDoc = item?.file; 
-
-        if (!item?.isPreorder && (!fileDoc || !fileDoc.url)) {
-            console.error(`❌ Item or file URL not found for order ${orderId}`);
-            return;
-        }
-
-        // 3. Financial calculations
-        let paymentProcessingFee = 0;
-        if (typeof session.payment_intent === 'string' && stripe) {
-            try {
-                const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent, {
-                    expand: ['latest_charge.balance_transaction']
-                });
-                const charge = paymentIntent.latest_charge as Stripe.Charge;
-                if (charge && typeof charge.balance_transaction === 'object') {
-                    paymentProcessingFee = (charge.balance_transaction as Stripe.BalanceTransaction).fee / 100;
-                }
-            } catch (e) {
-                console.error("Could not fetch Stripe fee:", e);
-            }
-        }
-
-        let authorType = 'standard';
-        const authorId = typeof item?.author === 'object' ? item.author.id : item?.author;
-        
-        if (authorId) {
-            try {
-                const authorUser = await payloadCms.findByID({ collection: 'users', id: authorId });
-                if (authorUser && authorUser.authorType) {
-                    authorType = authorUser.authorType;
-                }
-            } catch(e) {
-                console.error("Error fetching author for commission calculation", e);
-            }
-        }
-
-        let commissionRate = 15; // default fallback
-        try {
-            const commissionSettings = await payloadCms.findGlobal({ slug: 'commission-settings' });
-            commissionRate = authorType === 'young_creator' ? 0 : (commissionSettings.standardCommissionRate || 15);
-        } catch (e) {
-            console.error("Error fetching commission settings", e);
-        }
-
-        const amountAfterFee = formattedAmount - paymentProcessingFee;
-        const commissionAmount = (amountAfterFee * commissionRate) / 100;
-        const authorEarnings = amountAfterFee - commissionAmount;
-
-        // 4. Mark order as completed and record financial split via local API update method
-        await payloadCms.update({
-            collection: 'orders',
-            id: orderId,
-            data: {
-                status: 'completed',
-                paymentProcessingFee,
-                commissionRate,
-                commissionAmount,
-                authorEarnings
-            },
-        });
-        console.log(`✅ Order ${orderId} marked completed with financials`);
-
-        // 5. Update Publication stats if applicable
-        if (firstItem?.relationTo === 'publications' && item?.id) {
-            try {
-                const prevSales = item.totalSales || 0;
-                const prevRev = item.grossRevenue || 0;
-                await payloadCms.update({
-                    collection: 'publications',
-                    id: item.id,
-                    data: {
-                        totalSales: prevSales + 1,
-                        grossRevenue: prevRev + formattedAmount
-                    }
-                });
-                console.log(`✅ Updated publication stats for ${item.id}`);
-            } catch(e) {
-                console.error("Error updating publication stats", e);
-            }
-        }
-
-        // 6. Send download email
-        const formattedDate = paid_at.toLocaleDateString("en-US", {
-            year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit",
-        });
-        
-        const downloadUrl = `${fileDoc.url}?dl=${encodeURIComponent((item.title ?? "download") + ".pdf")}`;
-
-        let emailSent = false;
-        let retries = 3;
-
-        while (!emailSent && retries > 0) {
-            try {
-                if (item?.isPreorder) {
-                    emailSent = await sendPreorderConfirmationEmail({
-                        to: order.customerEmail || email,
-                        subject: `Pre-order Confirmed: ${item?.title ?? "Purchase Confirmed"}`,
-                        buyerName,
-                        itemTitle: item?.title ?? "Your purchased item",
-                        downloadUrl: "", // Pre-orders don't get the download link yet
-                        amount: formattedAmount,
-                        currency,
-                        transactionReference: reference,
-                        date: formattedDate,
-                    });
-                } else {
-                    emailSent = await sendPurchaseConfirmationEmail({
-                        to: order.customerEmail || email,
-                        subject: `Your Download is Ready — ${item?.title ?? "Purchase Confirmed"}`,
-                        buyerName,
-                        itemTitle: item?.title ?? "Your purchased item",
-                        downloadUrl,
-                        amount: formattedAmount,
-                        currency,
-                        transactionReference: reference,
-                        date: formattedDate,
-                    });
-                }
-                if (emailSent) break;
-            } catch (emailError) {
-                console.error("Email attempt failed:", emailError);
-            }
-            retries--;
-            if (retries > 0) await new Promise((resolve) => setTimeout(resolve, 2000));
-        }
-
-        if (emailSent) {
-            console.log(`✅ Purchase confirmation + download link sent for ${reference}`);
-        } else {
-            console.error(`❌ Failed to send purchase email for ${reference} after 3 retries`);
-        }
-    } catch (error) {
-        console.error("❌ Error in handleSuccessfulPurchase:", error);
+    const orderId = metadata.orderId;
+    if (!orderId) {
+        console.error(`❌ No orderId in metadata for purchase ${reference}`);
+        return;
     }
+
+    let paymentProcessingFee = 0;
+    if (typeof session.payment_intent === 'string' && stripe) {
+        try {
+            const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent, {
+                expand: ['latest_charge.balance_transaction']
+            });
+            const charge = paymentIntent.latest_charge as Stripe.Charge;
+            if (charge && typeof charge.balance_transaction === 'object') {
+                paymentProcessingFee = (charge.balance_transaction as Stripe.BalanceTransaction).fee / 100;
+            }
+        } catch (e) {
+            console.error("Could not fetch Stripe fee:", e);
+        }
+    }
+
+    const formattedDate = new Date().toLocaleDateString("en-US", {
+        year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit",
+    });
+
+    await completePurchase({
+        payloadCms,
+        orderId,
+        reference,
+        formattedAmount,
+        currency,
+        paymentProcessingFee,
+        formattedDate,
+        buyerName,
+        fallbackEmail: email,
+    });
 }
 
 async function handleFailedCharge(sessionOrIntent: any) {

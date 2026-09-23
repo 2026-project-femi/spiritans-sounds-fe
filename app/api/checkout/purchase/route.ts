@@ -14,6 +14,11 @@ interface PurchaseInitRequest {
   itemId: string;
   itemType: "publications" | "magazineIssues"; 
   currency?: string; // NGN, USD, GBP
+  format?: "ebook" | "paperback";
+  shippingAddress?: string;
+  shippingCity?: string;
+  shippingCountry?: string;
+  shippingPhone?: string;
 }
 
 interface PaystackResponse {
@@ -33,6 +38,7 @@ interface PurchasableItem {
   priceAmountUSD?: number | null;
   priceAmountGBP?: number | null;
   title?: string;
+  slug?: string;
   isPreorder?: boolean;
 }
 
@@ -61,7 +67,18 @@ export async function POST(request: Request) {
     }
 
     const body = (await request.json()) as PurchaseInitRequest;
-    const { email, name, itemId, itemType, currency = "NGN" } = body;
+    const {
+      email,
+      name,
+      itemId,
+      itemType,
+      currency = "NGN",
+      format = "ebook",
+      shippingAddress,
+      shippingCity,
+      shippingCountry,
+      shippingPhone,
+    } = body;
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || !emailRegex.test(email)) {
@@ -74,10 +91,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Valid item type is required" }, { status: 400 });
     }
 
+    if (format === "paperback") {
+      if (!shippingAddress?.trim()) {
+        return NextResponse.json({ error: "Delivery address is required for paperback orders." }, { status: 400 });
+      }
+      if (!shippingPhone?.trim()) {
+        return NextResponse.json({ error: "Contact phone number is required for delivery coordination." }, { status: 400 });
+      }
+    }
+
     const sanitizedName = name.replace(/[<>]/g, "").trim().slice(0, 100);
     const payloadCms = await getPayload({ config: configPromise });
 
-    // Cast the dynamic collection to satisfy internal Payload definitions cleanly
+    // Find the item
     const item = (await payloadCms.findByID({
       collection: itemType as any, 
       id: itemId,
@@ -86,24 +112,61 @@ export async function POST(request: Request) {
     if (!item) {
       return NextResponse.json({ error: "Item not found" }, { status: 404 });
     }
-    
-    let selectedPrice = item.priceAmount;
-    if (currency === "USD" && item.priceAmountUSD) {
-      selectedPrice = item.priceAmountUSD;
-    } else if (currency === "GBP" && item.priceAmountGBP) {
-      selectedPrice = item.priceAmountGBP;
+
+    // Check if this item relates to BookLaunchSettings
+    let launchSettings: any = null;
+    if (itemType === "publications") {
+      try {
+        const settings = await payloadCms.findGlobal({ slug: "book-launch-settings" as any });
+        if (
+          settings?.bookSlug === item.slug ||
+          (settings?.publication && typeof settings.publication === "object" && settings.publication.id === item.id) ||
+          settings?.publication === item.id ||
+          item.slug === "behind-the-veil"
+        ) {
+          launchSettings = settings;
+        }
+      } catch (e) {
+        // Fallback gracefully
+      }
     }
 
-    if (item.price?.toLowerCase() !== "paid" || !selectedPrice || selectedPrice <= 0) {
+    let selectedPrice: number | null | undefined = null;
+
+    if (launchSettings) {
+      if (format === "paperback") {
+        if (currency === "USD") selectedPrice = launchSettings.paperbackPriceUSD;
+        else if (currency === "GBP") selectedPrice = launchSettings.paperbackPriceGBP;
+        else selectedPrice = launchSettings.paperbackPriceNGN;
+      } else {
+        if (currency === "USD") selectedPrice = launchSettings.ebookPriceUSD;
+        else if (currency === "GBP") selectedPrice = launchSettings.ebookPriceGBP;
+        else selectedPrice = launchSettings.ebookPriceNGN;
+      }
+    }
+
+    // Fallback to item base price if not set from launchSettings
+    if (!selectedPrice) {
+      if (currency === "USD" && item.priceAmountUSD) {
+        selectedPrice = item.priceAmountUSD;
+      } else if (currency === "GBP" && item.priceAmountGBP) {
+        selectedPrice = item.priceAmountGBP;
+      } else {
+        selectedPrice = item.priceAmount;
+      }
+    }
+
+    if (!selectedPrice || selectedPrice <= 0) {
       return NextResponse.json({ error: "Item is not available for purchase or price not set for this currency" }, { status: 400 });
     }
 
+    const isPreorder = Boolean(launchSettings?.isPreorder ?? item.isPreorder);
     const amountSubUnits = Math.round(selectedPrice * 100); 
     const reference = `PUR-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
 
-    // Create the Payload Order
     const paymentProvider = currency === "NGN" ? "paystack" : "stripe";
     
+    // Create the Payload Order with format and shipping fields
     const order = await payloadCms.create({
       collection: 'orders',
       data: {
@@ -113,7 +176,12 @@ export async function POST(request: Request) {
         currency: currency as any,
         status: 'pending',
         paymentProvider,
-        // Set the reference for Paystack immediately, we'll update it for Stripe if needed
+        format: format || 'ebook',
+        isPreorder,
+        shippingAddress: shippingAddress ? String(shippingAddress).trim() : undefined,
+        shippingCity: shippingCity ? String(shippingCity).trim() : undefined,
+        shippingCountry: shippingCountry ? String(shippingCountry).trim() : undefined,
+        shippingPhone: shippingPhone ? String(shippingPhone).trim() : undefined,
         paystackReference: paymentProvider === 'paystack' ? reference : undefined,
         items: [
           {
@@ -123,6 +191,9 @@ export async function POST(request: Request) {
         ],
       },
     });
+
+    const formatLabel = format === "paperback" ? "Paperback Edition" : "eBook Edition";
+    const itemTitleWithFormat = `${item.title || "Book"} (${formatLabel})`;
 
     if (currency === "NGN") {
       // =======================
@@ -149,10 +220,13 @@ export async function POST(request: Request) {
             orderId: order.id, 
             itemType,
             itemId,
+            format,
+            shippingAddress,
+            shippingPhone,
             origin: cleanOrigin,
             original_currency: currency,
           },
-          callback_url: `${cleanOrigin}/purchase/complete?isPreorder=${item.isPreorder ? 'true' : 'false'}`,
+          callback_url: `${cleanOrigin}/purchase/complete?isPreorder=${isPreorder ? 'true' : 'false'}&format=${format}`,
         }),
       });
 
@@ -189,8 +263,10 @@ export async function POST(request: Request) {
             price_data: {
               currency: currency.toLowerCase(),
               product_data: {
-                name: item.title || "Digital Purchase",
-                description: "Digital item purchase from Spiritans Sound.",
+                name: itemTitleWithFormat,
+                description: format === "paperback"
+                  ? `Physical paperback edition posted to: ${shippingAddress || "Specified address"}`
+                  : "Digital edition purchase from Spiritans Sound.",
               },
               unit_amount: amountSubUnits,
             },
@@ -198,13 +274,16 @@ export async function POST(request: Request) {
           },
         ],
         mode: "payment",
-        success_url: `${cleanOrigin}/purchase/complete?reference=${reference}&status=success&isPreorder=${item.isPreorder ? 'true' : 'false'}`,
+        success_url: `${cleanOrigin}/purchase/complete?reference=${reference}&status=success&isPreorder=${isPreorder ? 'true' : 'false'}&format=${format}`,
         cancel_url: `${cleanOrigin}/purchase/complete?status=cancelled`,
         metadata: {
           reference,
           orderId: order.id.toString(),
           itemType,
           itemId,
+          format,
+          shippingAddress: shippingAddress || "",
+          shippingPhone: shippingPhone || "",
           buyer_name: sanitizedName,
           origin: cleanOrigin,
           type: "purchase",
@@ -215,6 +294,9 @@ export async function POST(request: Request) {
             orderId: order.id.toString(),
             itemType,
             itemId,
+            format,
+            shippingAddress: shippingAddress || "",
+            shippingPhone: shippingPhone || "",
             buyer_name: sanitizedName,
             origin: cleanOrigin,
             type: "purchase",
@@ -235,7 +317,7 @@ export async function POST(request: Request) {
 
       return NextResponse.json({
         authorization_url: session.url,
-        reference: session.id, // Frontend uses reference optionally
+        reference: session.id,
       });
 
     } else {

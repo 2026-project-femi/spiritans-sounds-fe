@@ -10,6 +10,8 @@ function PurchaseContent() {
   const reference = searchParams.get("reference") || searchParams.get("trxref");
   const status = searchParams.get("status");
   const isPreorder = searchParams.get("isPreorder") === "true";
+  const format = searchParams.get("format");
+  const isPaperback = format === "paperback";
   const [countdown, setCountdown] = useState(15);
   
   const isCancelled = status === "cancelled";
@@ -43,9 +45,13 @@ function PurchaseContent() {
           <p className="mt-2 text-gray-400 text-sm leading-relaxed">
             {isCancelled 
               ? "Your payment was cancelled. No charges were made."
-              : isPreorder
-                ? "Your pre-order is confirmed! Your copy has been reserved."
-                : "Your purchase is confirmed. We are preparing your download link."}
+              : isPaperback
+                ? isPreorder
+                  ? "Your paperback pre-order is confirmed! Your physical copy has been reserved."
+                  : "Your paperback order is confirmed! Your physical copy is being prepared for dispatch."
+                : isPreorder
+                  ? "Your pre-order is confirmed! Your digital copy has been reserved."
+                  : "Your purchase is confirmed. We are preparing your download link."}
           </p>
         </div>
 
@@ -54,9 +60,13 @@ function PurchaseContent() {
           <div className="flex items-start gap-3 bg-brand-primary/5 border border-brand-primary/20 rounded-xl px-5 py-4 text-left">
             <Mail className="w-5 h-5 text-brand-primary mt-0.5 shrink-0" />
             <p className="text-sm text-gray-300 leading-relaxed">
-              {isPreorder
-                ? "A confirmation email has been sent. You will receive your download link as soon as the book is released."
-                : "Your download link will arrive by email within a few minutes. Please check your inbox (and spam folder)."}
+              {isPaperback
+                ? isPreorder
+                  ? "A confirmation email with your order receipt and shipping address has been sent. Your copy will be dispatched as soon as the book launches."
+                  : "A confirmation email with your order receipt and delivery details has been sent. Our team is preparing your package."
+                : isPreorder
+                  ? "A confirmation email has been sent. You will receive your download link as soon as the book is released."
+                  : "Your download link will arrive by email within a few minutes. Please check your inbox (and spam folder)."}
             </p>
           </div>
         )}

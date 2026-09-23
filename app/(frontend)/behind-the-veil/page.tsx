@@ -1,6 +1,9 @@
-import type { Metadata } from "next";
-import BehindTheVeilPage, { metadata as btvMetadata } from "../unveiler/books/behind-the-veil/page";
+import BehindTheVeilPage, { generateMetadata as btvGenerateMetadata } from "../unveiler/books/behind-the-veil/page";
 
-export const metadata: Metadata = btvMetadata;
+// The page ensures its associated publication on first request and must not be
+// prerendered (which would attempt that write during the build).
+export const dynamic = "force-dynamic";
+
+export const generateMetadata = btvGenerateMetadata;
 
 export default BehindTheVeilPage;

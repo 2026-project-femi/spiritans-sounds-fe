@@ -467,3 +467,145 @@ export async function sendBookLaunchConfirmationEmail(data: BookLaunchEmailData)
 		return false;
 	}
 }
+
+// ── Paperback Physical Order Emails ─────────────────────────────────────────
+
+export interface PaperbackEmailData {
+	to: string;
+	buyerName: string;
+	itemTitle: string;
+	amount: number;
+	currency: string;
+	transactionReference: string;
+	shippingAddress: string;
+	shippingCity?: string;
+	shippingCountry?: string;
+	shippingPhone?: string;
+	date: string;
+	isPreorder?: boolean;
+}
+
+export async function sendPaperbackConfirmationEmail(data: PaperbackEmailData): Promise<boolean> {
+	try {
+		const symbol = data.currency === "NGN" ? "₦" : data.currency === "GBP" ? "£" : "$";
+		const html = `
+      <div style="font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #2d3436; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: #ffffff;">
+        <div style="background-color: #ee0303; padding: 28px 24px; text-align: center;">
+          <h1 style="color: #ffffff; margin: 0; font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700;">
+            📚 Paperback Order Confirmed!
+          </h1>
+          <p style="color: rgba(255,255,255,0.9); margin: 6px 0 0 0; font-size: 14px;">
+            ${data.isPreorder ? "Pre-order reservation received" : "Your physical copy is being prepared"}
+          </p>
+        </div>
+
+        <div style="padding: 32px 24px; background-color: #ffffff;">
+          <p style="font-size: 15px; line-height: 1.6; margin: 0 0 16px 0;">
+            Dear <strong>${data.buyerName}</strong>,
+          </p>
+          <p style="font-size: 15px; line-height: 1.6; margin: 0 0 24px 0; color: #4b5563;">
+            Thank you for purchasing the paperback edition of <strong>${data.itemTitle}</strong>. We have received your payment and registered your delivery details.
+          </p>
+
+          <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 24px 0;">
+            <h3 style="margin: 0 0 14px 0; font-size: 15px; color: #111827; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px;">Order Details</h3>
+            <p style="margin: 4px 0; font-size: 14px;"><strong>Book:</strong> ${data.itemTitle} (Paperback Edition)</p>
+            <p style="margin: 4px 0; font-size: 14px;"><strong>Amount Paid:</strong> ${symbol}${data.amount.toLocaleString()} ${data.currency}</p>
+            <p style="margin: 4px 0; font-size: 14px;"><strong>Reference:</strong> <span style="font-family: monospace;">${data.transactionReference}</span></p>
+            <p style="margin: 4px 0; font-size: 14px;"><strong>Date:</strong> ${data.date}</p>
+          </div>
+
+          <div style="background-color: #fff9f5; border: 1px solid #fed7aa; border-left: 4px solid #f97316; border-radius: 8px; padding: 20px; margin: 24px 0;">
+            <h3 style="margin: 0 0 10px 0; font-size: 15px; color: #9a3412;">📦 Delivery Address</h3>
+            <p style="margin: 4px 0; font-size: 14px; color: #374151; white-space: pre-line;">${data.shippingAddress}</p>
+            ${data.shippingCity ? `<p style="margin: 4px 0; font-size: 14px; color: #374151;"><strong>City/State:</strong> ${data.shippingCity}</p>` : ""}
+            ${data.shippingCountry ? `<p style="margin: 4px 0; font-size: 14px; color: #374151;"><strong>Country:</strong> ${data.shippingCountry}</p>` : ""}
+            ${data.shippingPhone ? `<p style="margin: 4px 0; font-size: 14px; color: #374151;"><strong>Phone:</strong> ${data.shippingPhone}</p>` : ""}
+          </div>
+
+          <p style="font-size: 14px; line-height: 1.6; color: #6b7280; margin: 24px 0 0 0;">
+            ${data.isPreorder 
+              ? "As a pre-order customer, your copy will be posted as soon as the book officially launches. We will send you dispatch updates." 
+              : "Your book will be packaged and dispatched to the address above. If you need to make any changes to your delivery address, please reply directly to this email."}
+          </p>
+
+          <p style="font-size: 14px; line-height: 1.6; color: #111827; margin: 24px 0 0 0;">
+            Warm regards,<br />
+            <strong>Spiritans Sound Publishing Team</strong>
+          </p>
+        </div>
+
+        <div style="background-color: #f9fafb; padding: 20px; text-align: center; font-size: 12px; color: #9ca3af; border-top: 1px solid #e5e7eb;">
+          &copy; ${new Date().getFullYear()} Spiritans Sound · Congregation of the Holy Spirit (Spiritans)
+        </div>
+      </div>
+    `;
+
+		const { error } = await getResend().emails.send({
+			from: getFrom(),
+			to: data.to,
+			subject: `📦 Paperback Order Confirmed: ${data.itemTitle}`,
+			html,
+		});
+
+		if (error) {
+			console.error("❌ Failed to send paperback confirmation email:", error.message || error);
+			return false;
+		}
+
+		console.log(`✅ Paperback confirmation email sent to ${data.to}`);
+		return true;
+	} catch (error) {
+		console.error("❌ Failed to send paperback confirmation email:", error);
+		return false;
+	}
+}
+
+export async function sendPaperbackAdminNotification(data: PaperbackEmailData): Promise<boolean> {
+	try {
+		const adminEmail = process.env.ADMIN_EMAIL || "info@spiritanssound.com";
+		const symbol = data.currency === "NGN" ? "₦" : data.currency === "GBP" ? "£" : "$";
+		const html = `
+      <div style="font-family: 'Montserrat', sans-serif; color: #2d3436; max-width: 600px; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+        <div style="background-color: #111827; padding: 20px; text-align: center;">
+          <h2 style="color: #ffffff; margin: 0; font-size: 20px;">📦 New Paperback Order Requiring Dispatch</h2>
+        </div>
+        <div style="padding: 24px; background-color: #ffffff;">
+          <p>A customer has successfully purchased a physical paperback copy on Spiritans Sound.</p>
+          <div style="background-color: #f9fafb; padding: 16px; border-radius: 6px; border-left: 4px solid #ee0303; margin: 16px 0;">
+            <p style="margin: 4px 0;"><strong>Customer Name:</strong> ${data.buyerName}</p>
+            <p style="margin: 4px 0;"><strong>Customer Email:</strong> ${data.to}</p>
+            <p style="margin: 4px 0;"><strong>Customer Phone:</strong> ${data.shippingPhone || "N/A"}</p>
+            <p style="margin: 4px 0;"><strong>Book Title:</strong> ${data.itemTitle}</p>
+            <p style="margin: 4px 0;"><strong>Amount Paid:</strong> ${symbol}${data.amount.toLocaleString()} ${data.currency}</p>
+            <p style="margin: 4px 0;"><strong>Reference:</strong> ${data.transactionReference}</p>
+            <p style="margin: 4px 0;"><strong>Date:</strong> ${data.date}</p>
+          </div>
+          <div style="background-color: #fff8f8; padding: 16px; border-radius: 6px; border: 1px solid #fee2e2;">
+            <h4 style="margin: 0 0 8px 0; color: #991b1b;">Shipping Destination</h4>
+            <p style="margin: 4px 0; white-space: pre-line;">${data.shippingAddress}</p>
+            ${data.shippingCity ? `<p style="margin: 4px 0;">City: ${data.shippingCity}</p>` : ""}
+            ${data.shippingCountry ? `<p style="margin: 4px 0;">Country: ${data.shippingCountry}</p>` : ""}
+          </div>
+        </div>
+        <div style="background-color: #f9fafb; padding: 16px; text-align: center; font-size: 12px; color: #9ca3af;">
+          Spiritans Sound Admin Alert
+        </div>
+      </div>
+    `;
+
+		await getResend().emails.send({
+			from: getFrom(),
+			to: adminEmail,
+			subject: `🚨 New Paperback Order: ${data.itemTitle} (${data.buyerName})`,
+			html,
+		});
+
+		console.log(`✅ Admin notified of paperback order ${data.transactionReference}`);
+		return true;
+	} catch (error) {
+		console.error("❌ Failed to notify admin of paperback order:", error);
+		return false;
+	}
+}
+
