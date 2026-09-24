@@ -93,14 +93,6 @@ export default async function BehindTheVeilPage() {
     console.error("Error ensuring publication for Behind the Veil:", e);
   }
 
-  // Resolve preview PDF URL
-  let previewPdfUrl: string | null = null;
-  if (launchSettings?.previewPdf && typeof launchSettings.previewPdf === "object") {
-    previewPdfUrl = launchSettings.previewPdf.url || null;
-  } else if (publication?.file && typeof publication.file === "object") {
-    previewPdfUrl = publication.file.url || null;
-  }
-
   // Resolve audio preview items with URLs
   const audioPreviews = (launchSettings?.audioPreviews || []).map((a: any) => ({
     title: a.title,
@@ -116,42 +108,36 @@ export default async function BehindTheVeilPage() {
     eventDate: launchSettings?.eventDate || btvConfig.launch.dateLabel,
     meetingPlatform: launchSettings?.meetingPlatform || "Zoom",
     meetingLink: launchSettings?.meetingLink || "",
-    pages: launchSettings?.pages || btvConfig.book.publication.pages,
-    isbn: launchSettings?.isbn || btvConfig.book.publication.isbn,
+    streamGoLive: launchSettings?.streamGoLive ?? false,
+    youtubeStreamUrl: launchSettings?.youtubeStreamUrl || "",
+    facebookStreamUrl: launchSettings?.facebookStreamUrl || "",
     publisher: launchSettings?.publisher || btvConfig.book.publication.publisher,
     imprint: launchSettings?.imprint || btvConfig.book.publication.imprint,
+    publicationDate:
+      launchSettings?.publicationDate || btvConfig.book.publication.publicationDate,
     language: launchSettings?.language || btvConfig.book.publication.language,
+    pages: launchSettings?.pages || btvConfig.book.publication.pages,
+    isbn: launchSettings?.isbn || btvConfig.book.publication.isbn,
     category: launchSettings?.category || btvConfig.book.publication.category,
     isPreorder: launchSettings?.isPreorder ?? publication?.isPreorder ?? true,
-    // Pricing & Formats
-    ebookAvailable: launchSettings?.ebookAvailable ?? true,
+    // Pricing
     ebookPriceNGN: launchSettings?.ebookPriceNGN ?? 5000,
     ebookPriceUSD: launchSettings?.ebookPriceUSD ?? 10,
     ebookPriceGBP: launchSettings?.ebookPriceGBP ?? 8,
-    ebookPriceNote: launchSettings?.ebookPriceNote || btvConfig.formats[0].priceNote,
-    paperbackAvailable: launchSettings?.paperbackAvailable ?? true,
     paperbackPriceNGN: launchSettings?.paperbackPriceNGN ?? 12000,
     paperbackPriceUSD: launchSettings?.paperbackPriceUSD ?? 25,
     paperbackPriceGBP: launchSettings?.paperbackPriceGBP ?? 20,
-    paperbackPriceNote: launchSettings?.paperbackPriceNote || btvConfig.formats[1].priceNote,
-    // Preview & Excerpt
-    previewPdfUrl,
-    excerptTitle: launchSettings?.excerptTitle || btvConfig.book.excerptTitle,
-    excerptText: launchSettings?.excerptText || btvConfig.book.excerpt,
-    // Watch & Listen Videos
-    videosHeading: launchSettings?.videosHeading || btvConfig.sections.videos.eyebrow,
-    videosIntro: launchSettings?.videosIntro || btvConfig.videos.intro,
+    // Preview
+    previewChapterTitle:
+      launchSettings?.previewChapterTitle || btvConfig.book.excerptTitle,
+    previewChapter: launchSettings?.previewChapter || null,
+    // Watch & Listen
     videos: launchSettings?.videos && launchSettings.videos.length > 0 ? launchSettings.videos : btvConfig.videos.items,
-    // Audio Book Previews
-    audioHeading: launchSettings?.audioHeading || btvConfig.audio.heading,
-    audioIntro: launchSettings?.audioIntro || btvConfig.audio.intro,
+    // Audiobook previews
     audioPreviews: audioPreviews.length > 0 ? audioPreviews : btvConfig.audio.items,
     // Bookshops
-    bookshopsHeading: launchSettings?.bookshopsHeading || btvConfig.nigeriaBookshops.heading,
-    bookshopsIntro: launchSettings?.bookshopsIntro || btvConfig.nigeriaBookshops.intro,
     bookshops: launchSettings?.bookshops && launchSettings.bookshops.length > 0 ? launchSettings.bookshops : btvConfig.nigeriaBookshops.items,
-    // Testimonials
-    testimonialsHeading: launchSettings?.testimonialsHeading || btvConfig.sections.testimonials.title,
+    // Reader reviews
     testimonials: launchSettings?.testimonials && launchSettings.testimonials.length > 0 ? launchSettings.testimonials : btvConfig.testimonials.items,
   };
 
@@ -171,7 +157,7 @@ export default async function BehindTheVeilPage() {
     },
     inLanguage: launchData.language,
     image: btvConfig.book.coverImage,
-    datePublished: btvConfig.book.publication.publicationDate,
+    datePublished: launchData.publicationDate,
   };
 
   const jsonLdEvent = {

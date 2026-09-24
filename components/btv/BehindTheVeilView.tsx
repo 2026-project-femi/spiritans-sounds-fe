@@ -10,10 +10,13 @@ import {
   ChevronLeft,
   Clock,
   Eye,
+  Facebook,
   Handshake,
   Headphones,
   Heart,
   MapPin,
+  Video,
+  Youtube,
   Monitor,
   Phone,
   PlayCircle,
@@ -38,10 +41,11 @@ import {
 } from '@/components/ui/accordion';
 import Countdown from '@/components/btv/Countdown';
 import LaunchRegistrationForm from '@/components/btv/LaunchRegistrationForm';
+import { RichText as LexicalRichText } from '@payloadcms/richtext-lexical/react';
+import type { DefaultTypedEditorState } from '@payloadcms/richtext-lexical';
 import { btvConfig } from '@/config/behindTheVeil';
 import { timeStore } from '@/lib/timeStore';
 import { useCurrency, Currency } from '@/hooks/useCurrency';
-import { PdfPreviewModal } from '@/components/magazine/PdfPreviewModal';
 
 export interface BehindTheVeilLaunchData {
   publicationId?: string;
@@ -51,36 +55,30 @@ export interface BehindTheVeilLaunchData {
   eventDate?: string;
   meetingPlatform?: string;
   meetingLink?: string;
-  pages?: string;
-  isbn?: string;
+  streamGoLive?: boolean;
+  youtubeStreamUrl?: string;
+  facebookStreamUrl?: string;
   publisher?: string;
   imprint?: string;
+  publicationDate?: string;
   language?: string;
+  pages?: string;
+  isbn?: string;
   category?: string;
   isPreorder?: boolean;
-  // eBook Pricing
-  ebookAvailable?: boolean;
+  // Pricing
   ebookPriceNGN?: number;
   ebookPriceUSD?: number;
   ebookPriceGBP?: number;
-  ebookPriceNote?: string;
-  // Paperback Pricing
-  paperbackAvailable?: boolean;
   paperbackPriceNGN?: number;
   paperbackPriceUSD?: number;
   paperbackPriceGBP?: number;
-  paperbackPriceNote?: string;
   // Preview
-  previewPdfUrl?: string | null;
-  excerptTitle?: string;
-  excerptText?: string;
+  previewChapterTitle?: string;
+  previewChapter?: DefaultTypedEditorState | null;
   // Videos
-  videosHeading?: string;
-  videosIntro?: string;
   videos?: Array<{ title: string; description?: string; url: string; src?: string }>;
   // Audio
-  audioHeading?: string;
-  audioIntro?: string;
   audioPreviews?: Array<{
     title: string;
     description?: string;
@@ -89,11 +87,8 @@ export interface BehindTheVeilLaunchData {
     src?: string;
   }>;
   // Bookshops
-  bookshopsHeading?: string;
-  bookshopsIntro?: string;
   bookshops?: Array<{ name: string; address: string; city: string; phone?: string }>;
   // Testimonials
-  testimonialsHeading?: string;
   testimonials?: Array<{ name: string; detail?: string; quote: string }>;
 }
 
@@ -129,8 +124,11 @@ const VideoEmbed = ({ src, title }: { src: string; title: string }) => {
     try {
       const u = new URL(src);
       const host = u.hostname.replace('www.', '');
-      if (host === 'youtube.com' && u.searchParams.get('v')) {
-        return `https://www.youtube-nocookie.com/embed/${u.searchParams.get('v')}`;
+      if (host.endsWith('youtube.com')) {
+        const v = u.searchParams.get('v');
+        if (v) return `https://www.youtube-nocookie.com/embed/${v}`;
+        const livePath = u.pathname.match(/^\/(?:live|embed|shorts)\/([\w-]+)/);
+        if (livePath) return `https://www.youtube-nocookie.com/embed/${livePath[1]}`;
       }
       if (host === 'youtu.be') {
         return `https://www.youtube-nocookie.com/embed${u.pathname}`;
@@ -209,7 +207,6 @@ export default function BehindTheVeilView({
   const launched = useLaunched(launchData?.launchDateISO);
   const { currency, setCurrency, symbol } = useCurrency();
 
-  const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [purchaseModalFormat, setPurchaseModalFormat] = useState<'ebook' | 'paperback' | null>(
     null,
   );
@@ -259,14 +256,11 @@ export default function BehindTheVeilView({
         ? (launchData?.paperbackPriceGBP ?? 20)
         : (launchData?.paperbackPriceNGN ?? 12000);
 
-  const isPreorder = Boolean(launchData?.isPreorder ?? true);
-
-  // Dynamic formats for the purchase grid
+  // Purchase formats: eBook and paperback only. Audio is a preview section, not a purchase.
   const dynamicFormats = [
     {
       id: 'ebook' as const,
       name: 'eBook Edition',
-      available: launchData?.ebookAvailable ?? true,
       price: `${symbol}${ebookAmount.toLocaleString()}`,
       currencyNote:
         currency === 'NGN'
@@ -274,7 +268,7 @@ export default function BehindTheVeilView({
           : currency === 'GBP'
             ? 'Pounds · Instant Access'
             : 'USD · Instant Access',
-      priceNote: launchData?.ebookPriceNote || 'Instant download · PDF & ePub',
+      priceNote: 'Instant download · PDF & ePub',
       description:
         'Read it on phone, tablet or ereader. Delivered straight to your inbox upon purchase.',
       details: ['Instant digital delivery', 'PDF & ePub formats', 'Universal device support'],
@@ -283,7 +277,6 @@ export default function BehindTheVeilView({
     {
       id: 'paperback' as const,
       name: 'Paperback Edition',
-      available: launchData?.paperbackAvailable ?? true,
       price: `${symbol}${paperbackAmount.toLocaleString()}`,
       currencyNote:
         currency === 'NGN'
@@ -291,29 +284,15 @@ export default function BehindTheVeilView({
           : currency === 'GBP'
             ? 'Pounds · Postage Included'
             : 'USD · Shipping Available',
-      priceNote:
-        launchData?.paperbackPriceNote || 'UK & international delivery · posted on purchase',
+      priceNote: 'UK & international delivery · posted on purchase',
       description:
         'A premium physical print edition to hold, underline, and share with others. Posted to your doorstep.',
       details: ['Print edition', 'Delivered to your address', 'Signed copies on request'],
       featured: false,
     },
-    {
-      id: 'audiobook' as const,
-      name: 'Audiobook Edition',
-      available: true,
-      price: 'Listen to Previews',
-      currencyNote: 'Narration by the author',
-      priceNote: 'Official narration in preparation',
-      description:
-        'Sample narration clips available below in the Audiobook preview player. Full release coming soon.',
-      details: ['Narrated edition', 'Listen on any device', 'Official audio release'],
-      featured: false,
-      isAudioAction: true,
-    },
   ];
 
-  const availableFormats = dynamicFormats.filter((f) => f.available);
+  const availableFormats = dynamicFormats;
 
   // Dynamic videos list
   const videoItems: ReadonlyArray<{
@@ -427,13 +406,25 @@ export default function BehindTheVeilView({
             </div>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-2.5">
-            <button
-              onClick={() => setShowPreviewModal(true)}
+            {/* <button
+              onClick={scrollTo('excerpt')}
               className="hidden md:inline-flex items-center gap-1.5 h-9 rounded-md border border-white/20 bg-white/5 hover:bg-white/15 px-3 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-white transition-colors"
             >
               <Eye className="size-3.5 text-brand-primary" />
               <span>Preview</span>
-            </button>
+            </button> */}
+            {launchData?.streamGoLive && (
+              <Button
+                onClick={scrollTo('live')}
+                className="hidden sm:inline-flex h-9 sm:h-10 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.65rem] sm:text-[0.68rem] font-semibold uppercase tracking-[0.14em] px-3 sm:px-4 shadow-md shadow-brand-primary/25 cursor-pointer"
+              >
+                <span className="relative flex size-2 mr-1.5">
+                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-white opacity-75" />
+                  <span className="relative inline-flex size-2 rounded-full bg-white" />
+                </span>
+                Watch Live
+              </Button>
+            )}
             {!launched && (
               <Button
                 onClick={scrollTo('launch')}
@@ -517,7 +508,7 @@ export default function BehindTheVeilView({
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <Button
                   size="lg"
-                  onClick={() => setShowPreviewModal(true)}
+                  onClick={scrollTo('excerpt')}
                   className="w-full sm:w-auto h-12 sm:h-14 rounded-md bg-white/10 hover:bg-white/20 text-white text-xs sm:text-[0.72rem] font-semibold uppercase tracking-[0.14em] sm:tracking-[0.18em] px-6 sm:px-7 border border-white/20 cursor-pointer flex items-center justify-center gap-2"
                 >
                   <Eye className="size-4 text-brand-primary" />
@@ -599,6 +590,90 @@ export default function BehindTheVeilView({
           </div>
         </section>
 
+        {/* ---------------------------------------------- LIVE STREAM (admin toggle) */}
+        {launchData?.streamGoLive && (
+          <section
+            id="live"
+            className="relative section-pad bg-[#0a0a0c] text-white overflow-hidden border-y border-brand-primary/30"
+          >
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  'radial-gradient(60% 55% at 50% 0%, rgba(219, 23, 23, 0.28) 0%, transparent 70%)',
+              }}
+            />
+            <div className="relative max-w-5xl mx-auto text-center">
+              <span className="inline-flex items-center gap-2.5 rounded-full border border-brand-primary/50 bg-brand-primary/10 px-4 py-1.5">
+                <span className="relative flex size-2">
+                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-brand-primary opacity-75" />
+                  <span className="relative inline-flex size-2 rounded-full bg-brand-primary" />
+                </span>
+                <span className="text-[0.6rem] sm:text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-white/85">
+                  Live Now
+                </span>
+              </span>
+              <h2 className="mt-5 font-serif text-3xl sm:text-4xl md:text-5xl text-white">
+                Watch the Launch Live
+              </h2>
+              <p className="mt-4 text-white/60 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
+                The Zoom room is the main event, with YouTube and Facebook as additional streams.
+              </p>
+
+              {launchData?.youtubeStreamUrl && (
+                <div className="relative mt-8 aspect-video overflow-hidden rounded-2xl border border-white/10 bg-black shadow-2xl">
+                  <VideoEmbed
+                    src={launchData.youtubeStreamUrl}
+                    title="Behind the Veil online launch — live stream"
+                  />
+                </div>
+              )}
+
+              <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+                {launchData?.meetingLink && (
+                  <Button
+                    asChild
+                    className="h-14 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.7rem] font-semibold uppercase tracking-[0.18em] px-7 shadow-md shadow-brand-primary/25 cursor-pointer"
+                  >
+                    <a href={launchData.meetingLink} target="_blank" rel="noreferrer noopener">
+                      <Video className="size-4" />
+                      Join on Zoom
+                    </a>
+                  </Button>
+                )}
+                {launchData?.youtubeStreamUrl && (
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="h-14 rounded-md border-white/25 bg-transparent text-white hover:bg-white hover:text-gray-950 text-[0.7rem] font-semibold uppercase tracking-[0.18em] px-7 cursor-pointer"
+                  >
+                    <a href={launchData.youtubeStreamUrl} target="_blank" rel="noreferrer noopener">
+                      <Youtube className="size-4" />
+                      Watch on YouTube
+                    </a>
+                  </Button>
+                )}
+                {launchData?.facebookStreamUrl && (
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="h-14 rounded-md border-white/25 bg-transparent text-white hover:bg-white hover:text-gray-950 text-[0.7rem] font-semibold uppercase tracking-[0.18em] px-7 cursor-pointer"
+                  >
+                    <a
+                      href={launchData.facebookStreamUrl}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
+                      <Facebook className="size-4" />
+                      Watch on Facebook
+                    </a>
+                  </Button>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* --------------------------------------------------------- 2. THE BOOK */}
         <section id="the-book" className="section-pad bg-white">
           <div className="max-w-6xl mx-auto">
@@ -632,10 +707,10 @@ export default function BehindTheVeilView({
 
                 <figure className="mt-8 border-l-3 border-brand-primary pl-6 py-2 bg-stone-50/70 rounded-r-md">
                   <blockquote className="font-serif italic text-lg sm:text-xl leading-relaxed text-gray-900">
-                    “{(launchData?.excerptText || book.excerpt).split('\n\n')[0]}”
+                    “{book.excerpt.split('\n\n')[0]}”
                   </blockquote>
                   <figcaption className="mt-3 text-[0.68rem] uppercase tracking-[0.2em] text-gray-500 font-semibold">
-                    {launchData?.excerptTitle || sections.book.excerptCaption}
+                    {book.excerptTitle}
                   </figcaption>
                 </figure>
               </div>
@@ -650,7 +725,10 @@ export default function BehindTheVeilView({
                   {[
                     ['Publisher', launchData?.publisher || book.publication.publisher],
                     ['Imprint', launchData?.imprint || book.publication.imprint],
-                    ['Publication date', book.publication.publicationDate],
+                    [
+                      'Publication date',
+                      launchData?.publicationDate || book.publication.publicationDate,
+                    ],
                     ['Language', launchData?.language || book.publication.language],
                     ['Pages', launchData?.pages || book.publication.pages],
                     ['ISBN', launchData?.isbn || book.publication.isbn],
@@ -672,17 +750,9 @@ export default function BehindTheVeilView({
                     {sections.book.availableInLabel}
                   </p>
                   <p className="mt-2 font-bold text-gray-900">
-                    {availableFormats.map((f) => f.name).join(' · ')}
+                    {availableFormats.map((f) => f.name).join(' / ')}
                   </p>
                   <div className="mt-5 flex flex-col gap-2.5">
-                    <Button
-                      onClick={() => setShowPreviewModal(true)}
-                      variant="outline"
-                      className="w-full h-11 rounded-md border-gray-300 bg-white hover:bg-stone-100 text-[0.68rem] font-semibold uppercase tracking-[0.16em] cursor-pointer text-gray-900 flex items-center justify-center gap-2"
-                    >
-                      <Eye className="size-3.5 text-brand-primary" />
-                      Preview First 5 Pages
-                    </Button>
                     <Button
                       onClick={scrollTo('purchase')}
                       className="w-full h-12 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.68rem] font-semibold uppercase tracking-[0.16em] cursor-pointer"
@@ -732,26 +802,24 @@ export default function BehindTheVeilView({
 
         {/* ------------------------------------------------------------- 4. WHY */}
         <section id="why" className="section-pad bg-[#0c0c0e] text-white">
-          <div className="max-w-3xl mx-auto">
-            <SectionHead eyebrow={sections.why.eyebrow} title="Why I wrote this book" light />
-            <div className="mt-10 space-y-6 text-base sm:text-lg leading-relaxed text-white/80 font-serif">
-              <p>
-                In my years of pastoral counselling, I noticed that the deepest wounds were rarely
-                caused by overt malice. They came from quiet, sustained deception — from the slow
-                erosion of trust between people who had every reason to believe each other.
-              </p>
-              <p>
-                People would sit before me not just hurt, but disoriented. They had sensed that
-                something was wrong for months, sometimes years, but had talked themselves out of
-                their own perception. They were not naive; they were generous. And that generosity
-                had been weaponised against them.
-              </p>
-              <p>
-                I wrote <em>Behind the Veil</em> because there are plenty of books that teach you to
-                be suspicious, but very few that teach you to be discerning. Discernment does not
-                harden your heart; it clears your vision. It allows you to see the pattern clearly
-                and respond with both truth and love.
-              </p>
+          <div className="max-w-6xl mx-auto grid lg:grid-cols-[0.85fr_1.15fr] gap-12 lg:gap-16 items-center">
+            <div className="relative mx-auto w-full max-w-sm lg:max-w-none aspect-4/5 overflow-hidden rounded-2xl bg-white/5 border border-white/10 shadow-book">
+              <Image
+                src={author.photo}
+                alt={author.photoAlt}
+                fill
+                sizes="(max-width: 1024px) 100vw, 380px"
+                className="object-cover"
+              />
+            </div>
+            <div>
+              <SectionHead eyebrow={sections.why.eyebrow} title={author.whyTitle} light />
+              <div className="mt-7 space-y-5 text-base sm:text-lg leading-relaxed text-white/80 font-serif">
+                {author.whyBody.map((p) => (
+                  <p key={p.slice(0, 24)}>{p}</p>
+                ))}
+              </div>
+              <p className="mt-8 font-serif italic text-lg text-white/85">— {author.name}</p>
             </div>
           </div>
         </section>
@@ -759,24 +827,38 @@ export default function BehindTheVeilView({
         {/* ---------------------------------------------------------- 5. AUTHOR */}
         <section id="author" className="section-pad bg-white">
           <div className="max-w-6xl mx-auto">
-            <div className="grid lg:grid-cols-[0.85fr_1.15fr] gap-12 lg:gap-16 items-center">
-              <div className="relative mx-auto w-full max-w-md aspect-4/5 overflow-hidden rounded-2xl bg-stone-100 shadow-md">
-                <Image
-                  src={author.photo}
-                  alt={author.name}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 400px"
-                  className="object-cover"
-                />
-              </div>
-              <div className="space-y-6">
-                <SectionHead eyebrow={sections.author.eyebrow} title={author.name} />
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-brand-primary -mt-2">
-                  {author.role}
-                </p>
+            <SectionHead eyebrow={sections.author.eyebrow} title={author.name} />
+            <p className="mt-4 text-sm font-semibold uppercase tracking-[0.16em] text-brand-primary">
+              {author.role}
+            </p>
+            <div className="mt-10 grid lg:grid-cols-[1.2fr_0.8fr] gap-12">
+              <div className="space-y-5">
                 <div className="space-y-4 text-base sm:text-lg leading-relaxed text-gray-700">
-                  <p>{author.bio}</p>
+                  {author.bio.map((p) => (
+                    <p key={p.slice(0, 24)}>{p}</p>
+                  ))}
                 </div>
+                <a
+                  href={author.otherPublicationsUrl}
+                  className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.16em] text-brand-primary hover:gap-3 transition-all"
+                >
+                  Other publications by the author
+                  <ArrowRight className="size-4" strokeWidth={2} />
+                </a>
+              </div>
+              <div className="rounded-2xl border border-gray-200 bg-stone-50 p-5 h-fit">
+                <div className="relative w-full aspect-square overflow-hidden rounded-xl bg-stone-100">
+                  <Image
+                    src={author.photo}
+                    alt={author.photoAlt}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 360px"
+                    className="object-cover"
+                  />
+                </div>
+                <p className="mt-5 font-serif text-lg text-gray-950">{author.name}</p>
+                <p className="mt-1 text-sm text-gray-500">{author.role}</p>
+                <p className="mt-4 text-xs text-gray-500 leading-relaxed">{brand.footerNote}</p>
               </div>
             </div>
           </div>
@@ -903,22 +985,6 @@ export default function BehindTheVeilView({
               </span>
             </div>
 
-            {/* Preorder notification banner */}
-            {isPreorder && (
-              <div className="mt-8 max-w-2xl mx-auto bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 sm:p-5 flex items-start gap-3.5 text-left">
-                <Sparkles className="size-5 text-amber-500 shrink-0 mt-0.5" />
-                <div className="text-xs sm:text-sm text-gray-800 space-y-1">
-                  <p className="font-bold text-amber-700 uppercase tracking-wide">
-                    Online Book Pre-Order
-                  </p>
-                  <p className="text-gray-600 leading-relaxed font-light">
-                    Reserve your copy today before the official release. eBook downloads and
-                    paperback deliveries will be dispatched immediately on launch date.
-                  </p>
-                </div>
-              </div>
-            )}
-
             <div
               className={`mt-10 grid gap-6 ${
                 availableFormats.length === 1
@@ -944,8 +1010,6 @@ export default function BehindTheVeilView({
                   )}
                   {f.id === 'paperback' ? (
                     <Truck className="size-6 text-brand-primary" strokeWidth={1.75} />
-                  ) : f.id === 'audiobook' ? (
-                    <Headphones className="size-6 text-brand-primary" strokeWidth={1.75} />
                   ) : (
                     <BookOpen className="size-6 text-brand-primary" strokeWidth={1.75} />
                   )}
@@ -963,25 +1027,13 @@ export default function BehindTheVeilView({
                     ))}
                   </ul>
 
-                  {f.isAudioAction ? (
-                    <Button
-                      onClick={scrollTo('audio')}
-                      variant="outline"
-                      className="mt-7 h-14 rounded-md border-gray-300 bg-white hover:bg-stone-100 text-[0.72rem] font-semibold uppercase tracking-[0.18em] cursor-pointer text-gray-900"
-                    >
-                      Listen to Samples
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={() => setPurchaseModalFormat(f.id as 'ebook' | 'paperback')}
-                      className="mt-7 h-14 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.72rem] font-semibold uppercase tracking-[0.18em] shadow-md shadow-brand-primary/20 cursor-pointer flex items-center justify-center gap-2"
-                    >
-                      <ShoppingCart className="size-4" />
-                      {isPreorder
-                        ? `Pre-order ${f.name.split(' ')[0]}`
-                        : `Buy ${f.name.split(' ')[0]} Now`}
-                    </Button>
-                  )}
+                  <Button
+                    onClick={() => setPurchaseModalFormat(f.id)}
+                    className="mt-7 h-14 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.72rem] font-semibold uppercase tracking-[0.18em] shadow-md shadow-brand-primary/20 cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <ShoppingCart className="size-4" />
+                    {`Buy ${f.name.split(' ')[0]} Now`}
+                  </Button>
                 </article>
               ))}
             </div>
@@ -997,8 +1049,8 @@ export default function BehindTheVeilView({
             <SectionHead
               center
               eyebrow={sections.bookshops.eyebrow}
-              title={launchData?.bookshopsHeading || fallbackBookshops.heading}
-              intro={launchData?.bookshopsIntro || fallbackBookshops.intro}
+              title={fallbackBookshops.heading}
+              intro={fallbackBookshops.intro}
             />
             <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {bookshopItems.map((shop, i) => (
@@ -1042,7 +1094,7 @@ export default function BehindTheVeilView({
             <SectionHead
               center
               eyebrow={sections.testimonials.eyebrow}
-              title={launchData?.testimonialsHeading || sections.testimonials.title}
+              title={sections.testimonials.title}
             />
             <div className="mt-12 grid md:grid-cols-3 gap-6">
               {testimonialItems.map((t, i) => (
@@ -1071,25 +1123,25 @@ export default function BehindTheVeilView({
           </div>
           <div className="mt-12 max-w-3xl mx-auto rounded-xl border border-gray-200 bg-white p-8 sm:p-12 shadow-sm">
             <p className="text-[0.68rem] uppercase tracking-[0.22em] text-brand-primary font-bold">
-              {launchData?.excerptTitle || book.excerptTitle}
+              {launchData?.previewChapterTitle || book.excerptTitle}
             </p>
-            <div className="mt-6 space-y-5">
-              {(launchData?.excerptText || book.excerpt).split('\n\n').map((p, idx) => (
-                <p key={idx} className="font-serif text-lg sm:text-xl leading-[1.75] text-gray-800">
-                  {p}
-                </p>
-              ))}
-            </div>
+            {launchData?.previewChapter ? (
+              <div className="mt-6 text-left prose prose-stone max-w-none prose-headings:font-serif prose-p:font-serif prose-p:text-lg sm:prose-p:text-xl prose-p:leading-[1.75] prose-p:text-gray-800 prose-li:text-gray-800 prose-strong:text-gray-900">
+                <LexicalRichText data={launchData.previewChapter} />
+              </div>
+            ) : (
+              <div className="mt-6 space-y-5">
+                {book.excerpt.split('\n\n').map((p, idx) => (
+                  <p
+                    key={idx}
+                    className="font-serif text-lg sm:text-xl leading-[1.75] text-gray-800"
+                  >
+                    {p}
+                  </p>
+                ))}
+              </div>
+            )}
             <div className="mt-9 pt-8 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button
-                size="lg"
-                onClick={() => setShowPreviewModal(true)}
-                variant="outline"
-                className="w-full sm:w-auto h-14 rounded-md border-gray-300 bg-white hover:bg-stone-100 text-[0.72rem] font-semibold uppercase tracking-[0.18em] px-8 cursor-pointer flex items-center justify-center gap-2 text-gray-900"
-              >
-                <Eye className="size-4 text-brand-primary" />
-                Preview First 5 Pages
-              </Button>
               <Button
                 size="lg"
                 onClick={scrollTo('purchase')}
@@ -1108,8 +1160,8 @@ export default function BehindTheVeilView({
               center
               light
               eyebrow={sections.videos.eyebrow}
-              title={launchData?.videosHeading || fallbackVideos.heading}
-              intro={launchData?.videosIntro || fallbackVideos.intro}
+              title={fallbackVideos.heading}
+              intro={fallbackVideos.intro}
             />
             <div className="mt-14 grid sm:grid-cols-2 gap-6">
               {videoItems.map((v, i) => {
@@ -1151,8 +1203,8 @@ export default function BehindTheVeilView({
             <SectionHead
               center
               eyebrow={sections.audio.eyebrow}
-              title={launchData?.audioHeading || btvConfig.audio.heading}
-              intro={launchData?.audioIntro || btvConfig.audio.intro}
+              title={btvConfig.audio.heading}
+              intro={btvConfig.audio.intro}
             />
             <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {audioItems.map((a, i) => {
@@ -1344,7 +1396,7 @@ export default function BehindTheVeilView({
       {/* ------------------------------------------- mobile sticky action bar */}
       <div className="fixed bottom-0 inset-x-0 z-50 sm:hidden border-t border-white/10 bg-[#0c0c0e]/95 backdrop-blur-md p-2.5 sm:p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex gap-2">
         <Button
-          onClick={() => setShowPreviewModal(true)}
+          onClick={scrollTo('excerpt')}
           variant="outline"
           className="flex-1 h-11 rounded-md text-[0.62rem] font-semibold uppercase tracking-[0.14em] border-white/20 bg-transparent text-white hover:bg-white/10"
         >
@@ -1359,44 +1411,6 @@ export default function BehindTheVeilView({
         </Button>
       </div>
       <div className="h-20 sm:hidden" aria-hidden />
-
-      {/* ------------------------------------------- PDF Preview Modal */}
-      {showPreviewModal &&
-        (launchData?.previewPdfUrl ? (
-          <PdfPreviewModal
-            fileUrl={launchData.previewPdfUrl}
-            title={launchData?.bookTitle || book.title}
-            onClose={() => setShowPreviewModal(false)}
-          />
-        ) : (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-            <div className="bg-[#0d0d0d] border border-white/15 rounded-2xl p-6 sm:p-8 w-full max-w-md shadow-2xl relative text-center space-y-4">
-              <button
-                onClick={() => setShowPreviewModal(false)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-white"
-              >
-                <X size={20} />
-              </button>
-              <div className="size-12 rounded-full bg-brand-primary/10 border border-brand-primary/30 flex items-center justify-center mx-auto text-brand-primary">
-                <BookOpen size={24} />
-              </div>
-              <h3 className="text-xl font-bold text-white">Preview Sample</h3>
-              <p className="text-sm text-gray-400 leading-relaxed">
-                The sample PDF preview is currently being prepared by the publisher. You can read
-                the selected excerpt on this page or pre-order your full copy.
-              </p>
-              <Button
-                onClick={() => {
-                  setShowPreviewModal(false);
-                  scrollTo('excerpt')();
-                }}
-                className="w-full bg-brand-primary text-white hover:bg-brand-primary/90"
-              >
-                Read Selected Excerpt Passage
-              </Button>
-            </div>
-          </div>
-        ))}
 
       {/* ------------------------------------------- Purchase / Checkout Modal */}
       {purchaseModalFormat && (
@@ -1413,11 +1427,6 @@ export default function BehindTheVeilView({
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-brand-primary/20 text-brand-primary border border-brand-primary/30">
                 {purchaseModalFormat === 'paperback' ? 'Physical Paperback' : 'Digital eBook'}
               </span>
-              {isPreorder && (
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-400/10 text-amber-400 border border-amber-400/30">
-                  Pre-Order
-                </span>
-              )}
             </div>
 
             <h3 className="text-xl font-black text-white">
@@ -1568,9 +1577,7 @@ export default function BehindTheVeilView({
             <p className="mt-4 text-center text-[10px] text-gray-500 uppercase tracking-widest leading-relaxed">
               {purchaseModalFormat === 'paperback'
                 ? 'Physical order confirmation sent via email. Book packaged and dispatched to your address.'
-                : isPreorder
-                  ? 'Order receipt sent via email. Download link sent automatically on launch release.'
-                  : 'Order receipt & instant download link sent to your email after payment.'}
+                : 'Order receipt & instant download link sent to your email after payment.'}
             </p>
           </div>
         </div>

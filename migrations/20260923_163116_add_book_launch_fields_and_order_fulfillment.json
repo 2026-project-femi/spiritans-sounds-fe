@@ -5010,6 +5010,13 @@
           "notNull": false,
           "default": "'ebook'"
         },
+        "is_preorder": {
+          "name": "is_preorder",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
         "shipping_address": {
           "name": "shipping_address",
           "type": "varchar",
@@ -5030,6 +5037,38 @@
         },
         "shipping_phone": {
           "name": "shipping_phone",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fulfillment_status": {
+          "name": "fulfillment_status",
+          "type": "enum_orders_fulfillment_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'pending'"
+        },
+        "dispatched_at": {
+          "name": "dispatched_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "courier": {
+          "name": "courier",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tracking_number": {
+          "name": "tracking_number",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "admin_notes": {
+          "name": "admin_notes",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -17332,6 +17371,25 @@
           "primaryKey": false,
           "notNull": false
         },
+        "stream_go_live": {
+          "name": "stream_go_live",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "youtube_stream_url": {
+          "name": "youtube_stream_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "facebook_stream_url": {
+          "name": "facebook_stream_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "custom_note": {
           "name": "custom_note",
           "type": "varchar",
@@ -17344,20 +17402,6 @@
           "primaryKey": false,
           "notNull": false,
           "default": true
-        },
-        "pages": {
-          "name": "pages",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'320 pages'"
-        },
-        "isbn": {
-          "name": "isbn",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'978-978-782-140-3'"
         },
         "publisher": {
           "name": "publisher",
@@ -17373,12 +17417,33 @@
           "notNull": false,
           "default": "'Treasures Unveiler'"
         },
+        "publication_date": {
+          "name": "publication_date",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'21 November 2026'"
+        },
         "language": {
           "name": "language",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false,
           "default": "'English'"
+        },
+        "pages": {
+          "name": "pages",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'320 pages'"
+        },
+        "isbn": {
+          "name": "isbn",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'978-978-782-140-3'"
         },
         "category": {
           "name": "category",
@@ -17399,13 +17464,6 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
-        },
-        "ebook_available": {
-          "name": "ebook_available",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": true
         },
         "ebook_price_n_g_n": {
           "name": "ebook_price_n_g_n",
@@ -17428,20 +17486,6 @@
           "notNull": true,
           "default": 8
         },
-        "ebook_price_note": {
-          "name": "ebook_price_note",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'Instant download · PDF & ePub'"
-        },
-        "paperback_available": {
-          "name": "paperback_available",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": true
-        },
         "paperback_price_n_g_n": {
           "name": "paperback_price_n_g_n",
           "type": "numeric",
@@ -17463,81 +17507,18 @@
           "notNull": true,
           "default": 20
         },
-        "paperback_price_note": {
-          "name": "paperback_price_note",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'UK postage included · posted on purchase · physical delivery'"
-        },
-        "preview_pdf_id": {
-          "name": "preview_pdf_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "excerpt_title": {
-          "name": "excerpt_title",
+        "preview_chapter_title": {
+          "name": "preview_chapter_title",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false,
           "default": "'From Chapter One — The Veil'"
         },
-        "excerpt_text": {
-          "name": "excerpt_text",
-          "type": "varchar",
+        "preview_chapter": {
+          "name": "preview_chapter",
+          "type": "jsonb",
           "primaryKey": false,
-          "notNull": false,
-          "default": "'A lie rarely arrives as a lie. It arrives as an explanation — reasonable, well-timed, and delivered by someone whose face you know better than your own. That is what makes deception so difficult to detect: it does not contradict the truth so much as stand comfortably in its place.\n\nAnd so we do not begin by asking, \"Is this person lying?\" We begin by asking a gentler and far more useful question: \"What keeps repeating?\" Deception can survive a single conversation. It cannot survive a pattern honestly examined.'"
-        },
-        "videos_heading": {
-          "name": "videos_heading",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'Watch & Listen'"
-        },
-        "videos_intro": {
-          "name": "videos_intro",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'Launch interviews, author reflections and discussions on detecting deception.'"
-        },
-        "audio_heading": {
-          "name": "audio_heading",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'Listen to a Preview'"
-        },
-        "audio_intro": {
-          "name": "audio_intro",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'Sample clips from the audiobook edition. Listen to excerpts narrated by the author.'"
-        },
-        "bookshops_heading": {
-          "name": "bookshops_heading",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'Buy in Person in Nigeria'"
-        },
-        "bookshops_intro": {
-          "name": "bookshops_intro",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'Prefer to buy from a physical shop? Behind the Veil is stocked at the following Nigerian bookshops. Visit any of these to pick up your copy directly.'"
-        },
-        "testimonials_heading": {
-          "name": "testimonials_heading",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'What readers are saying'"
+          "notNull": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -17567,21 +17548,6 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
-        },
-        "book_launch_settings_preview_pdf_idx": {
-          "name": "book_launch_settings_preview_pdf_idx",
-          "columns": [
-            {
-              "expression": "preview_pdf_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
         }
       },
       "foreignKeys": {
@@ -17591,19 +17557,6 @@
           "tableTo": "publications",
           "columnsFrom": [
             "publication_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
-        "book_launch_settings_preview_pdf_id_media_id_fk": {
-          "name": "book_launch_settings_preview_pdf_id_media_id_fk",
-          "tableFrom": "book_launch_settings",
-          "tableTo": "media",
-          "columnsFrom": [
-            "preview_pdf_id"
           ],
           "columnsTo": [
             "id"
@@ -17889,6 +17842,17 @@
       "values": [
         "ebook",
         "paperback"
+      ]
+    },
+    "public.enum_orders_fulfillment_status": {
+      "name": "enum_orders_fulfillment_status",
+      "schema": "public",
+      "values": [
+        "pending",
+        "packed",
+        "dispatched",
+        "delivered",
+        "cancelled"
       ]
     },
     "public.enum_orders_currency": {
@@ -18239,6 +18203,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "d05a2cd8-d576-4f93-afcd-735fbc07dd1c",
+  "id": "fc9acd98-4d1f-48c7-8f29-73541247f53d",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

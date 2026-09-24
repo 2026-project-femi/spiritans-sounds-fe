@@ -52,6 +52,33 @@ export async function completePurchase({
       return
     }
 
+    // Verify the provider-reported amount and currency against the stored order
+    // before fulfilling, as defence-in-depth on top of webhook signature checks.
+    const paidAmount = Number(formattedAmount)
+    const orderAmount = Number(order.amount)
+    const currencyMatches =
+      String(order.currency || '').toUpperCase() === String(currency || '').toUpperCase()
+    const amountMatches =
+      Number.isFinite(orderAmount) &&
+      Number.isFinite(paidAmount) &&
+      Math.abs(orderAmount - paidAmount) < 0.01
+
+    if (!currencyMatches || !amountMatches) {
+      console.error(
+        `❌ Payment mismatch for order ${orderId}: order ${orderAmount} ${order.currency}, paid ${paidAmount} ${currency}. Not fulfilling.`
+      )
+      try {
+        await payloadCms.update({
+          collection: 'orders',
+          id: orderId,
+          data: { status: 'failed' },
+        })
+      } catch (e) {
+        console.error('Failed to mark mismatched order as failed', e)
+      }
+      return
+    }
+
     const firstItem = order.items?.[0]
     const item = firstItem?.value || firstItem
     const fileDoc = item?.file

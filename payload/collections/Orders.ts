@@ -6,8 +6,17 @@ export const Orders: CollectionConfig = {
   slug: 'orders',
   admin: {
     useAsTitle: 'id',
-    hidden: ({user})=>user.role === 'contributor' || user.role === 'author' 
-
+    defaultColumns: [
+      'customerName',
+      'customerEmail',
+      'format',
+      'status',
+      'fulfillmentStatus',
+      'amount',
+      'currency',
+      'createdAt',
+    ],
+    hidden: ({ user }) => user.role === 'contributor' || user.role === 'author',
   },
   access: {
       read: isAdminOrPublishingAdmin,
@@ -91,6 +100,56 @@ export const Orders: CollectionConfig = {
       name: 'shippingPhone',
       type: 'text',
       label: 'Customer Contact Phone',
+    },
+    {
+      name: 'fulfillmentStatus',
+      type: 'select',
+      label: 'Fulfillment Status',
+      defaultValue: 'pending',
+      options: [
+        { label: 'Pending Dispatch', value: 'pending' },
+        { label: 'Packed', value: 'packed' },
+        { label: 'Dispatched', value: 'dispatched' },
+        { label: 'Delivered', value: 'delivered' },
+        { label: 'Cancelled', value: 'cancelled' },
+      ],
+      admin: {
+        description: 'Dispatch workflow for physical paperback orders.',
+        condition: (data) => data?.format === 'paperback',
+      },
+    },
+    {
+      name: 'dispatchedAt',
+      type: 'date',
+      label: 'Dispatched At',
+      admin: {
+        date: { pickerAppearance: 'dayAndTime' },
+        condition: (data) => data?.format === 'paperback',
+      },
+    },
+    {
+      name: 'courier',
+      type: 'text',
+      label: 'Courier / Delivery Service',
+      admin: {
+        condition: (data) => data?.format === 'paperback',
+      },
+    },
+    {
+      name: 'trackingNumber',
+      type: 'text',
+      label: 'Tracking Number',
+      admin: {
+        condition: (data) => data?.format === 'paperback',
+      },
+    },
+    {
+      name: 'adminNotes',
+      type: 'textarea',
+      label: 'Internal Fulfillment Notes',
+      admin: {
+        condition: (data) => data?.format === 'paperback',
+      },
     },
     {
       name: 'currency',

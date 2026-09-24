@@ -711,6 +711,14 @@ export interface Order {
   shippingCity?: string | null;
   shippingCountry?: string | null;
   shippingPhone?: string | null;
+  /**
+   * Dispatch workflow for physical paperback orders.
+   */
+  fulfillmentStatus?: ('pending' | 'packed' | 'dispatched' | 'delivered' | 'cancelled') | null;
+  dispatchedAt?: string | null;
+  courier?: string | null;
+  trackingNumber?: string | null;
+  adminNotes?: string | null;
   currency?: ('NGN' | 'USD' | 'GBP') | null;
   paymentProvider?: ('paystack' | 'stripe') | null;
   paystackReference?: string | null;
@@ -2050,6 +2058,11 @@ export interface OrdersSelect<T extends boolean = true> {
   shippingCity?: T;
   shippingCountry?: T;
   shippingPhone?: T;
+  fulfillmentStatus?: T;
+  dispatchedAt?: T;
+  courier?: T;
+  trackingNumber?: T;
+  adminNotes?: T;
   currency?: T;
   paymentProvider?: T;
   paystackReference?: T;
@@ -2781,7 +2794,7 @@ export interface CommissionSetting {
   createdAt?: string | null;
 }
 /**
- * Configure online launch event, book pricing, preview PDF, video links, audiobook clips, bookstores, and testimonials.
+ * Manage the launch event plus the book details, prices, preview PDF, videos, audiobook clips, bookshops and reader reviews shown on the Behind the Veil page.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "book-launch-settings".
@@ -2806,13 +2819,25 @@ export interface BookLaunchSetting {
   eventDate?: string | null;
   meetingPlatform?: ('Zoom' | 'Google Meet' | 'YouTube Live' | 'Microsoft Teams' | 'Other') | null;
   /**
-   * Direct meeting link provided to registered attendees. If left blank, emails will inform attendees that the link is being finalized.
+   * Primary Zoom stream. Emailed to registered attendees and shown on the landing page while the stream is live.
    */
   meetingLink?: string | null;
   /**
    * Passcode or meeting ID required to join the stream.
    */
   meetingPasscode?: string | null;
+  /**
+   * Turn on while the launch stream is live. Visitors then see the Zoom, YouTube and Facebook stream links and the YouTube player.
+   */
+  streamGoLive?: boolean | null;
+  /**
+   * Secondary stream. When set, it is embedded as a player in the live section.
+   */
+  youtubeStreamUrl?: string | null;
+  /**
+   * Secondary stream. When set, a "Watch on Facebook" button is shown.
+   */
+  facebookStreamUrl?: string | null;
   /**
    * Custom notes or instructions appended to the registration confirmation email.
    */
@@ -2821,6 +2846,13 @@ export interface BookLaunchSetting {
    * When enabled, registrants receive an instant confirmation email with access details.
    */
   sendConfirmationEmail?: boolean | null;
+  publisher?: string | null;
+  imprint?: string | null;
+  /**
+   * Human-friendly publication date shown in the book details card.
+   */
+  publicationDate?: string | null;
+  language?: string | null;
   /**
    * Total number of pages of the book.
    */
@@ -2829,36 +2861,43 @@ export interface BookLaunchSetting {
    * International Standard Book Number.
    */
   isbn?: string | null;
-  publisher?: string | null;
-  imprint?: string | null;
-  language?: string | null;
   category?: string | null;
   /**
-   * When checked, purchases are marked as pre-orders and confirmation emails specify launch release delivery.
+   * When checked, purchases are treated as pre-orders and confirmation emails specify launch release delivery.
    */
   isPreorder?: boolean | null;
   /**
    * Attach to the Behind the Veil publication for tracking inventory, orders, and sales metrics.
    */
   publication?: (string | null) | Publication;
-  ebookAvailable?: boolean | null;
   ebookPriceNGN: number;
   ebookPriceUSD: number;
   ebookPriceGBP: number;
-  ebookPriceNote?: string | null;
-  paperbackAvailable?: boolean | null;
   paperbackPriceNGN: number;
   paperbackPriceUSD: number;
   paperbackPriceGBP: number;
-  paperbackPriceNote?: string | null;
   /**
-   * PDF used to render the interactive first 5 pages preview modal (same as the-road-to-success-tty).
+   * Small caption shown above the preview chapter.
    */
-  previewPdf?: (string | null) | Media;
-  excerptTitle?: string | null;
-  excerptText?: string | null;
-  videosHeading?: string | null;
-  videosIntro?: string | null;
+  previewChapterTitle?: string | null;
+  /**
+   * Chapter text shown on the landing page. Supports headings, paragraphs, lists, quotes and links.
+   */
+  previewChapter?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   videos?:
     | {
         title: string;
@@ -2867,8 +2906,6 @@ export interface BookLaunchSetting {
         id?: string | null;
       }[]
     | null;
-  audioHeading?: string | null;
-  audioIntro?: string | null;
   audioPreviews?:
     | {
         title: string;
@@ -2878,8 +2915,6 @@ export interface BookLaunchSetting {
         id?: string | null;
       }[]
     | null;
-  bookshopsHeading?: string | null;
-  bookshopsIntro?: string | null;
   bookshops?:
     | {
         name: string;
@@ -2889,7 +2924,6 @@ export interface BookLaunchSetting {
         id?: string | null;
       }[]
     | null;
-  testimonialsHeading?: string | null;
   testimonials?:
     | {
         name: string;
@@ -2970,31 +3004,28 @@ export interface BookLaunchSettingsSelect<T extends boolean = true> {
   meetingPlatform?: T;
   meetingLink?: T;
   meetingPasscode?: T;
+  streamGoLive?: T;
+  youtubeStreamUrl?: T;
+  facebookStreamUrl?: T;
   customNote?: T;
   sendConfirmationEmail?: T;
-  pages?: T;
-  isbn?: T;
   publisher?: T;
   imprint?: T;
+  publicationDate?: T;
   language?: T;
+  pages?: T;
+  isbn?: T;
   category?: T;
   isPreorder?: T;
   publication?: T;
-  ebookAvailable?: T;
   ebookPriceNGN?: T;
   ebookPriceUSD?: T;
   ebookPriceGBP?: T;
-  ebookPriceNote?: T;
-  paperbackAvailable?: T;
   paperbackPriceNGN?: T;
   paperbackPriceUSD?: T;
   paperbackPriceGBP?: T;
-  paperbackPriceNote?: T;
-  previewPdf?: T;
-  excerptTitle?: T;
-  excerptText?: T;
-  videosHeading?: T;
-  videosIntro?: T;
+  previewChapterTitle?: T;
+  previewChapter?: T;
   videos?:
     | T
     | {
@@ -3003,8 +3034,6 @@ export interface BookLaunchSettingsSelect<T extends boolean = true> {
         description?: T;
         id?: T;
       };
-  audioHeading?: T;
-  audioIntro?: T;
   audioPreviews?:
     | T
     | {
@@ -3014,8 +3043,6 @@ export interface BookLaunchSettingsSelect<T extends boolean = true> {
         audioUrl?: T;
         id?: T;
       };
-  bookshopsHeading?: T;
-  bookshopsIntro?: T;
   bookshops?:
     | T
     | {
@@ -3025,7 +3052,6 @@ export interface BookLaunchSettingsSelect<T extends boolean = true> {
         phone?: T;
         id?: T;
       };
-  testimonialsHeading?: T;
   testimonials?:
     | T
     | {

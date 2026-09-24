@@ -3,18 +3,58 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle, XCircle, Mail } from "lucide-react";
+import { CheckCircle, XCircle, Mail, Loader2 } from "lucide-react";
+
+interface OrderStatus {
+  status?: string;
+  format?: string;
+  isPreorder?: boolean;
+  fulfillmentStatus?: string;
+}
+
+const LoadingCard = () => (
+  <div className="min-h-screen bg-[#050505] flex items-center justify-center px-4">
+    <div className="w-16 h-16 rounded-full border-2 border-brand-primary/20 border-t-brand-primary animate-spin" />
+  </div>
+);
 
 function PurchaseContent() {
   const searchParams = useSearchParams();
-  const reference = searchParams.get("reference") || searchParams.get("trxref");
-  const status = searchParams.get("status");
-  const isPreorder = searchParams.get("isPreorder") === "true";
-  const format = searchParams.get("format");
-  const isPaperback = format === "paperback";
+
+  const [mounted, setMounted] = useState(false);
+  const [orderState, setOrderState] = useState<OrderStatus | null>(null);
+  const [isVerifying, setIsVerifying] = useState(false);
   const [countdown, setCountdown] = useState(15);
-  
-  const isCancelled = status === "cancelled";
+
+  // Everything below depends on client-only inputs (search params + fetch), so
+  // render a stable placeholder until mounted to avoid a hydration mismatch.
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const orderId = searchParams.get("orderId");
+
+  useEffect(() => {
+    if (!orderId) return;
+    setIsVerifying(true);
+    let cancelled = false;
+
+    fetch(`/api/checkout/status?orderId=${encodeURIComponent(orderId)}`, { cache: "no-store" })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled && data && !data.error) setOrderState(data);
+      })
+      .catch(() => {
+        /* Leave state null; fall back to the URL parameters below. */
+      })
+      .finally(() => {
+        if (!cancelled) setIsVerifying(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [orderId]);
 
   useEffect(() => {
     if (countdown === 0) {
@@ -25,14 +65,32 @@ function PurchaseContent() {
     return () => clearTimeout(t);
   }, [countdown]);
 
+  if (!mounted) {
+    return <LoadingCard />;
+  }
+
+  const reference = searchParams.get("reference") || searchParams.get("trxref");
+  const paramStatus = searchParams.get("status");
+  const paramFormat = searchParams.get("format");
+  const paramIsPreorder = searchParams.get("isPreorder") === "true";
+
+  const format = orderState?.format || paramFormat;
+  const isPaperback = format === "paperback";
+  const isPreorder = orderState?.isPreorder ?? paramIsPreorder;
+
+  const isCancelled = paramStatus === "cancelled" || orderState?.status === "failed";
+  const isPending = !isCancelled && (isVerifying || orderState?.status === "pending");
+
   return (
     <div className="min-h-screen bg-[#050505] flex items-center justify-center px-4">
       <div className="max-w-md w-full bg-white/3 border border-white/10 rounded-2xl p-10 text-center space-y-6">
 
         {/* Icon */}
-        <div className={`w-20 h-20 ${isCancelled ? 'bg-red-500/10 border-red-500/20' : 'bg-green-500/10 border-green-500/20'} rounded-full border flex items-center justify-center mx-auto`}>
+        <div className={`w-20 h-20 ${isCancelled ? 'bg-red-500/10 border-red-500/20' : isPending ? 'bg-amber-500/10 border-amber-500/20' : 'bg-green-500/10 border-green-500/20'} rounded-full border flex items-center justify-center mx-auto`}>
           {isCancelled ? (
             <XCircle className="w-10 h-10 text-red-400" />
+          ) : isPending ? (
+            <Loader2 className="w-10 h-10 text-amber-400 animate-spin" />
           ) : (
             <CheckCircle className="w-10 h-10 text-green-400" />
           )}
@@ -40,23 +98,25 @@ function PurchaseContent() {
 
         <div>
           <h2 className="text-2xl font-black text-white">
-            {isCancelled ? "Payment Cancelled" : "Payment Successful!"}
+            {isCancelled ? "Payment Cancelled" : isPending ? "Confirming Your Payment…" : "Payment Successful!"}
           </h2>
           <p className="mt-2 text-gray-400 text-sm leading-relaxed">
-            {isCancelled 
-              ? "Your payment was cancelled. No charges were made."
-              : isPaperback
-                ? isPreorder
-                  ? "Your paperback pre-order is confirmed! Your physical copy has been reserved."
-                  : "Your paperback order is confirmed! Your physical copy is being prepared for dispatch."
-                : isPreorder
-                  ? "Your pre-order is confirmed! Your digital copy has been reserved."
-                  : "Your purchase is confirmed. We are preparing your download link."}
+            {isCancelled
+              ? "Your payment was cancelled or did not complete. No charges were made."
+              : isPending
+                ? "We are verifying your payment with the provider. This page will update automatically — you can also check your email shortly."
+                : isPaperback
+                  ? isPreorder
+                    ? "Your paperback pre-order is confirmed! Your physical copy has been reserved."
+                    : "Your paperback order is confirmed! Your physical copy is being prepared for dispatch."
+                  : isPreorder
+                    ? "Your pre-order is confirmed! Your digital copy has been reserved."
+                    : "Your purchase is confirmed. We are preparing your download link."}
           </p>
         </div>
 
         {/* Email notice */}
-        {!isCancelled && (
+        {!isCancelled && !isPending && (
           <div className="flex items-start gap-3 bg-brand-primary/5 border border-brand-primary/20 rounded-xl px-5 py-4 text-left">
             <Mail className="w-5 h-5 text-brand-primary mt-0.5 shrink-0" />
             <p className="text-sm text-gray-300 leading-relaxed">
@@ -95,13 +155,7 @@ function PurchaseContent() {
 
 export default function PurchaseCompletePage() {
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen bg-[#050505] flex items-center justify-center">
-          <div className="w-16 h-16 rounded-full border-2 border-brand-primary/20 border-t-brand-primary animate-spin" />
-        </div>
-      }
-    >
+    <Suspense fallback={<LoadingCard />}>
       <PurchaseContent />
     </Suspense>
   );

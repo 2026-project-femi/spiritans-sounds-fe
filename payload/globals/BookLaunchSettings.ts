@@ -10,7 +10,7 @@ export const BookLaunchSettings: GlobalConfig = {
   },
   admin: {
     group: 'Funnels & Marketing',
-    description: 'Configure online launch event, book pricing, preview PDF, video links, audiobook clips, bookstores, and testimonials.',
+    description: 'Manage the launch event plus the book details, prices, preview PDF, videos, audiobook clips, bookshops and reader reviews shown on the Behind the Veil page.',
   },
   fields: [
     {
@@ -74,10 +74,10 @@ export const BookLaunchSettings: GlobalConfig = {
             {
               name: 'meetingLink',
               type: 'text',
-              label: 'Online Meeting / Stream URL',
+              label: 'Zoom Meeting / Primary Stream URL',
               admin: {
-                placeholder: 'https://zoom.us/j/123456789 or https://meet.google.com/...',
-                description: 'Direct meeting link provided to registered attendees. If left blank, emails will inform attendees that the link is being finalized.',
+                placeholder: 'https://zoom.us/j/123456789',
+                description: 'Primary Zoom stream. Emailed to registered attendees and shown on the landing page while the stream is live.',
               },
             },
             {
@@ -86,6 +86,33 @@ export const BookLaunchSettings: GlobalConfig = {
               label: 'Meeting Passcode / Access PIN (Optional)',
               admin: {
                 description: 'Passcode or meeting ID required to join the stream.',
+              },
+            },
+            {
+              name: 'streamGoLive',
+              type: 'checkbox',
+              label: 'Go Live — Show the Live Stream Section on the Landing Page',
+              defaultValue: false,
+              admin: {
+                description: 'Turn on while the launch stream is live. Visitors then see the Zoom, YouTube and Facebook stream links and the YouTube player.',
+              },
+            },
+            {
+              name: 'youtubeStreamUrl',
+              type: 'text',
+              label: 'YouTube Stream URL (Optional)',
+              admin: {
+                placeholder: 'https://www.youtube.com/live/... or https://youtu.be/...',
+                description: 'Secondary stream. When set, it is embedded as a player in the live section.',
+              },
+            },
+            {
+              name: 'facebookStreamUrl',
+              type: 'text',
+              label: 'Facebook Stream URL (Optional)',
+              admin: {
+                placeholder: 'https://www.facebook.com/.../videos/...',
+                description: 'Secondary stream. When set, a "Watch on Facebook" button is shown.',
               },
             },
             {
@@ -109,8 +136,35 @@ export const BookLaunchSettings: GlobalConfig = {
         },
         {
           label: 'Book Details',
-          description: 'Publication metadata displayed in the Publication Information card.',
+          description: 'Publication facts shown in the Publication Information card.',
           fields: [
+            {
+              name: 'publisher',
+              type: 'text',
+              label: 'Publisher',
+              defaultValue: 'Spiritans Sound',
+            },
+            {
+              name: 'imprint',
+              type: 'text',
+              label: 'Imprint',
+              defaultValue: 'Treasures Unveiler',
+            },
+            {
+              name: 'publicationDate',
+              type: 'text',
+              label: 'Publication Date',
+              defaultValue: '21 November 2026',
+              admin: {
+                description: 'Human-friendly publication date shown in the book details card.',
+              },
+            },
+            {
+              name: 'language',
+              type: 'text',
+              label: 'Language',
+              defaultValue: 'English',
+            },
             {
               name: 'pages',
               type: 'text',
@@ -132,24 +186,6 @@ export const BookLaunchSettings: GlobalConfig = {
               },
             },
             {
-              name: 'publisher',
-              type: 'text',
-              label: 'Publisher',
-              defaultValue: 'Spiritans Sound',
-            },
-            {
-              name: 'imprint',
-              type: 'text',
-              label: 'Imprint',
-              defaultValue: 'Treasures Unveiler',
-            },
-            {
-              name: 'language',
-              type: 'text',
-              label: 'Language',
-              defaultValue: 'English',
-            },
-            {
               name: 'category',
               type: 'text',
               label: 'Category',
@@ -159,7 +195,7 @@ export const BookLaunchSettings: GlobalConfig = {
         },
         {
           label: 'Pricing & Formats',
-          description: 'Control prices and availability for eBook and physical Paperback purchases.',
+          description: 'Prices for the eBook and physical Paperback editions.',
           fields: [
             {
               name: 'isPreorder',
@@ -167,7 +203,7 @@ export const BookLaunchSettings: GlobalConfig = {
               label: 'Sell as Pre-Order',
               defaultValue: true,
               admin: {
-                description: 'When checked, purchases are marked as pre-orders and confirmation emails specify launch release delivery.',
+                description: 'When checked, purchases are treated as pre-orders and confirmation emails specify launch release delivery.',
               },
             },
             {
@@ -187,12 +223,6 @@ export const BookLaunchSettings: GlobalConfig = {
                 initCollapsed: false,
               },
               fields: [
-                {
-                  name: 'ebookAvailable',
-                  type: 'checkbox',
-                  label: 'eBook Available for Purchase',
-                  defaultValue: true,
-                },
                 {
                   type: 'row',
                   fields: [
@@ -219,12 +249,6 @@ export const BookLaunchSettings: GlobalConfig = {
                     },
                   ],
                 },
-                {
-                  name: 'ebookPriceNote',
-                  type: 'text',
-                  label: 'eBook Note',
-                  defaultValue: 'Instant download · PDF & ePub',
-                },
               ],
             },
             // Paperback pricing
@@ -235,12 +259,6 @@ export const BookLaunchSettings: GlobalConfig = {
                 initCollapsed: false,
               },
               fields: [
-                {
-                  name: 'paperbackAvailable',
-                  type: 'checkbox',
-                  label: 'Paperback Available for Purchase',
-                  defaultValue: true,
-                },
                 {
                   type: 'row',
                   fields: [
@@ -267,59 +285,38 @@ export const BookLaunchSettings: GlobalConfig = {
                     },
                   ],
                 },
-                {
-                  name: 'paperbackPriceNote',
-                  type: 'text',
-                  label: 'Paperback Note / Delivery Terms',
-                  defaultValue: 'UK postage included · posted on purchase · physical delivery',
-                },
               ],
             },
           ],
         },
         {
           label: 'Preview of Book',
-          description: 'Upload PDF sample for 5-page preview modal and configure excerpt quote.',
+          description: 'The preview chapter text shown in the "Read a preview" section.',
           fields: [
             {
-              name: 'previewPdf',
-              type: 'upload',
-              relationTo: 'media',
-              label: 'Book Sample PDF File',
+              name: 'previewChapterTitle',
+              type: 'text',
+              label: 'Preview Subheading',
+              defaultValue: 'From Chapter One — The Veil',
               admin: {
-                description: 'PDF used to render the interactive first 5 pages preview modal (same as the-road-to-success-tty).',
+                placeholder: 'e.g. From Chapter One — The Veil',
+                description: 'Small caption shown above the preview chapter.',
               },
             },
             {
-              name: 'excerptTitle',
-              type: 'text',
-              label: 'Excerpt Title',
-              defaultValue: 'From Chapter One — The Veil',
-            },
-            {
-              name: 'excerptText',
-              type: 'textarea',
-              label: 'Excerpt Passage (Display Text)',
-              defaultValue: 'A lie rarely arrives as a lie. It arrives as an explanation — reasonable, well-timed, and delivered by someone whose face you know better than your own. That is what makes deception so difficult to detect: it does not contradict the truth so much as stand comfortably in its place.\n\nAnd so we do not begin by asking, "Is this person lying?" We begin by asking a gentler and far more useful question: "What keeps repeating?" Deception can survive a single conversation. It cannot survive a pattern honestly examined.',
+              name: 'previewChapter',
+              type: 'richText',
+              label: 'Preview Chapter',
+              admin: {
+                description: 'Chapter text shown on the landing page. Supports headings, paragraphs, lists, quotes and links.',
+              },
             },
           ],
         },
         {
           label: 'Watch & Listen',
-          description: 'Video links (YouTube, Vimeo, MP4) displayed in the Watch & Listen section.',
+          description: 'YouTube / video links displayed in the Watch & Listen section.',
           fields: [
-            {
-              name: 'videosHeading',
-              type: 'text',
-              label: 'Section Heading',
-              defaultValue: 'Watch & Listen',
-            },
-            {
-              name: 'videosIntro',
-              type: 'text',
-              label: 'Section Intro Text',
-              defaultValue: 'Launch interviews, author reflections and discussions on detecting deception.',
-            },
             {
               name: 'videos',
               type: 'array',
@@ -358,20 +355,8 @@ export const BookLaunchSettings: GlobalConfig = {
         },
         {
           label: 'Audio Book Preview',
-          description: 'Audio previews for the audiobook edition with playable audio tracks.',
+          description: 'Audio clips displayed in the "Listen to a Preview" section.',
           fields: [
-            {
-              name: 'audioHeading',
-              type: 'text',
-              label: 'Audio Section Heading',
-              defaultValue: 'Listen to a Preview',
-            },
-            {
-              name: 'audioIntro',
-              type: 'text',
-              label: 'Audio Section Intro',
-              defaultValue: 'Sample clips from the audiobook edition. Listen to excerpts narrated by the author.',
-            },
             {
               name: 'audioPreviews',
               type: 'array',
@@ -420,18 +405,6 @@ export const BookLaunchSettings: GlobalConfig = {
           label: 'Bookshops in Nigeria',
           description: 'Physical bookstore locations stocking copies in Nigeria.',
           fields: [
-            {
-              name: 'bookshopsHeading',
-              type: 'text',
-              label: 'Section Heading',
-              defaultValue: 'Buy in Person in Nigeria',
-            },
-            {
-              name: 'bookshopsIntro',
-              type: 'textarea',
-              label: 'Section Intro',
-              defaultValue: 'Prefer to buy from a physical shop? Behind the Veil is stocked at the following Nigerian bookshops. Visit any of these to pick up your copy directly.',
-            },
             {
               name: 'bookshops',
               type: 'array',
@@ -482,14 +455,8 @@ export const BookLaunchSettings: GlobalConfig = {
         },
         {
           label: 'What Readers Are Saying',
-          description: 'Reader reviews and testimonials displayed on the landing page.',
+          description: 'Reader reviews captured for the testimonials section.',
           fields: [
-            {
-              name: 'testimonialsHeading',
-              type: 'text',
-              label: 'Section Heading',
-              defaultValue: 'What readers are saying',
-            },
             {
               name: 'testimonials',
               type: 'array',

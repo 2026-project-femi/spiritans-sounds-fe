@@ -226,7 +226,7 @@ export async function POST(request: Request) {
             origin: cleanOrigin,
             original_currency: currency,
           },
-          callback_url: `${cleanOrigin}/purchase/complete?isPreorder=${isPreorder ? 'true' : 'false'}&format=${format}`,
+          callback_url: `${cleanOrigin}/purchase/complete?orderId=${order.id}&isPreorder=${isPreorder ? 'true' : 'false'}&format=${format}`,
         }),
       });
 
@@ -274,7 +274,7 @@ export async function POST(request: Request) {
           },
         ],
         mode: "payment",
-        success_url: `${cleanOrigin}/purchase/complete?reference=${reference}&status=success&isPreorder=${isPreorder ? 'true' : 'false'}&format=${format}`,
+        success_url: `${cleanOrigin}/purchase/complete?orderId=${order.id}&reference=${reference}&status=success&isPreorder=${isPreorder ? 'true' : 'false'}&format=${format}`,
         cancel_url: `${cleanOrigin}/purchase/complete?status=cancelled`,
         metadata: {
           reference,

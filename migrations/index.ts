@@ -8,7 +8,7 @@ import * as migration_20260903_195212_add_views_and_publishing_updates from './2
 import * as migration_20260916_211433_add_book_launch_registrations_and_comments_updates from './20260916_211433_add_book_launch_registrations_and_comments_updates';
 import * as migration_20260917_122741_add_user_profile_fields from './20260917_122741_add_user_profile_fields';
 import * as migration_20260917_134725_add_book_launch_settings from './20260917_134725_add_book_launch_settings';
-import * as migration_20260923_135130_add_book_launch_funnel_content_and_order_formats from './20260923_135130_add_book_launch_funnel_content_and_order_formats';
+import * as migration_20260923_163116_add_book_launch_fields_and_order_fulfillment from './20260923_163116_add_book_launch_fields_and_order_fulfillment';
 
 export const migrations = [
   {
@@ -62,8 +62,8 @@ export const migrations = [
     name: '20260917_134725_add_book_launch_settings',
   },
   {
-    up: migration_20260923_135130_add_book_launch_funnel_content_and_order_formats.up,
-    down: migration_20260923_135130_add_book_launch_funnel_content_and_order_formats.down,
-    name: '20260923_135130_add_book_launch_funnel_content_and_order_formats'
+    up: migration_20260923_163116_add_book_launch_fields_and_order_fulfillment.up,
+    down: migration_20260923_163116_add_book_launch_fields_and_order_fulfillment.down,
+    name: '20260923_163116_add_book_launch_fields_and_order_fulfillment'
   },
 ];
