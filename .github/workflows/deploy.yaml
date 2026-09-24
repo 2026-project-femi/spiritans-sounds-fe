@@ -30,6 +30,9 @@ jobs:
             echo "── Installing dependencies ──"
             CI=true /usr/local/bin/pnpm install --no-frozen-lockfile
 
+            echo "── Clearing dev schema-push marker (prevents interactive migrate prompt) ──"
+            /usr/local/bin/pnpm db:clear-dev-marker || true
+
             echo "── Running migrations ──"
             /usr/local/bin/pnpm payload migrate
 
