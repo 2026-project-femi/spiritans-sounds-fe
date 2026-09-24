@@ -15,7 +15,7 @@ export const Prayers: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     hidden: ({user})=>user?.role === 'contributor' || user?.role === 'publishing_admin',
-    defaultColumns: ['title', '_status', 'publishedAt', 'updatedAt'],
+    defaultColumns: ['title', 'views', '_status', 'publishedAt', 'updatedAt'],
   },
   access: {
     read: authenticatedOrPublished,
@@ -41,6 +41,16 @@ export const Prayers: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
+    },
+    {
+      name: 'views',
+      type: 'number',
+      defaultValue: 0,
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description: 'Total number of prayer page views',
+      },
     },
     {
       name: 'slug',

@@ -2,7 +2,16 @@ import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 
-const ALLOWED_COLLECTIONS = ['article', 'posts', 'homily', 'publications'] as const
+const ALLOWED_COLLECTIONS = [
+  'article',
+  'posts',
+  'homily',
+  'publications',
+  'prayer',
+  'events',
+  'music',
+  'magazineIssues',
+] as const
 type AllowedCollection = (typeof ALLOWED_COLLECTIONS)[number]
 
 export async function POST(req: Request) {

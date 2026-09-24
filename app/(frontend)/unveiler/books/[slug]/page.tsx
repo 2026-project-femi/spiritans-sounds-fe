@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { ChevronLeft, Calendar, BookOpen, User } from "lucide-react";
 import { ShareBookButton } from "@/components/magazine/ShareBookButton";
 import { BookPurchaseForm } from "./BookPurchaseForm";
+import { MediaCaption } from "@/components/common/MediaCaption";
 import { TrackContentRead } from "@/components/analytics/TrackContentRead";
 import type { Metadata } from "next";
 
@@ -57,6 +58,7 @@ export default async function BookDetailPage({
   }
 
   const doc = result.docs[0] as any;
+  const coverDoc = doc.cover && typeof doc.cover === 'object' ? doc.cover : null;
   const book = {
     _id: doc.id,
     title: doc.title,
@@ -96,25 +98,28 @@ export default async function BookDetailPage({
 
         <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-16 items-start">
           {/* Cover Section */}
-          <div className="relative aspect-3/4 rounded-3xl overflow-hidden bg-linear-to-br from-red-950/30 to-red-900/40 border border-white/10 shadow-2xl shadow-red-950/50">
-            {book.imageUrl ? (
-              <Image
-                src={book.imageUrl}
-                alt={book.title}
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 400px"
-                className="object-cover"
-              />
-            ) : (
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-8 text-center">
-                <BookOpen className="w-24 h-24 text-brand-primary/20" />
-                <span className="text-xs uppercase tracking-widest text-gray-500 font-bold">
-                  Treasures Unveiler Publication
-                </span>
-              </div>
-            )}
-          </div>
+          <figure className="space-y-3">
+            <div className="relative aspect-3/4 rounded-3xl overflow-hidden bg-linear-to-br from-red-950/30 to-red-900/40 border border-white/10 shadow-2xl shadow-red-950/50">
+              {book.imageUrl ? (
+                <Image
+                  src={book.imageUrl}
+                  alt={coverDoc?.alt || book.title}
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 400px"
+                  className="object-cover"
+                />
+              ) : (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-8 text-center">
+                  <BookOpen className="w-24 h-24 text-brand-primary/20" />
+                  <span className="text-xs uppercase tracking-widest text-gray-500 font-bold">
+                    Treasures Unveiler Publication
+                  </span>
+                </div>
+              )}
+            </div>
+            <MediaCaption caption={coverDoc?.caption} theme="dark" />
+          </figure>
 
           {/* Details Section */}
           <div className="space-y-8 py-4">

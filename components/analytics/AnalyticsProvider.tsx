@@ -7,6 +7,25 @@ import { initAnalytics, trackPageView } from "@/lib/analytics";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-FT59GPJLE3";
 
+// Routes that should never be recorded in the self-hosted page-view counter:
+// internal APIs, admin/auth surfaces and private dashboard pages.
+const EXCLUDED_PREFIXES = [
+	"/api",
+	"/admin",
+	"/_next",
+	"/unveiler/dashboard",
+	"/unveiler/login",
+	"/unveiler/publish",
+	"/unveiler/profile",
+	"/unsubscribe",
+];
+
+function isTrackablePath(pathname: string): boolean {
+	return !EXCLUDED_PREFIXES.some(
+		(prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+	);
+}
+
 function AnalyticsTracker() {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
@@ -16,10 +35,31 @@ function AnalyticsTracker() {
 	}, []);
 
 	useEffect(() => {
-		if (pathname) {
-			const url = searchParams?.toString() ? `${pathname}?${searchParams.toString()}` : pathname;
-			trackPageView(url);
+		if (!pathname) return;
+
+		const url = searchParams?.toString() ? `${pathname}?${searchParams.toString()}` : pathname;
+		trackPageView(url);
+
+		// Self-hosted page-view counter for basic analytics. Deduplicated per tab
+		// session so reloads and client-side navigations do not inflate the count.
+		if (!isTrackablePath(pathname)) return;
+
+		const sessionKey = `page_view_tracked_${pathname}`;
+		try {
+			if (sessionStorage.getItem(sessionKey)) return;
+			sessionStorage.setItem(sessionKey, "true");
+		} catch {
+			// Ignore sessionStorage errors (e.g. incognito restriction) and still record.
 		}
+
+		fetch("/api/analytics/track-pageview", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				path: pathname,
+				title: typeof document !== "undefined" ? document.title : undefined,
+			}),
+		}).catch((err) => console.error("Error logging DB page view:", err));
 	}, [pathname, searchParams]);
 
 	return null;

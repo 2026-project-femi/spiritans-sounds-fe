@@ -3,6 +3,8 @@ import { getPayload } from "payload";
 import configPromise from "@/payload.config";
 import RichText from '@/components/RichText';
 import { Sidebar } from "@/components/common/Sidebar"; // Import the new Sidebar component
+import { MediaCaption } from "@/components/common/MediaCaption";
+import { TrackContentRead } from "@/components/analytics/TrackContentRead";
 import { Prayer } from "@/lib/types";
 import Comments from "@/components/Comments";
 import type { Metadata } from "next";
@@ -64,6 +66,9 @@ export default async function SinglePrayerPage({ params }: { params: Promise<{ s
         } as Prayer;
     }
 
+    const featuredImageDoc =
+        rawDoc?.featuredImage && typeof rawDoc.featuredImage === 'object' ? rawDoc.featuredImage : null;
+
 	if (!prayer) {
 		return (
 			<div className="container py-12 text-center">
@@ -97,22 +102,32 @@ export default async function SinglePrayerPage({ params }: { params: Promise<{ s
 
 	return (
 		<main className="pt-32 pb-20">
+			<TrackContentRead
+				id={prayer._id}
+				slug={prayer.slug}
+				title={prayer.title}
+				type="prayer"
+				collection="prayer"
+			/>
 			<div className="max-w-7xl mx-auto px-6 md:px-12">
 				<div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
 					{/* Main Content Area */}
 					<article className="lg:col-span-8 relative z-0">
 						{prayer.imageUrl && (
 							// Image Section
-							<div className="aspect-[16/9] mb-12 bg-gray-100 overflow-hidden rounded-lg">
-								<Image
-									src={prayer.imageUrl}
-									alt={prayer.title}
-									width={800} // Explicit width
-									height={450} // Explicit height
-									className="object-cover transition-opacity duration-300"
-									priority
-								/>
-							</div>
+							<figure className="mb-12">
+								<div className="aspect-[16/9] bg-gray-100 overflow-hidden rounded-lg">
+									<Image
+										src={prayer.imageUrl}
+										alt={featuredImageDoc?.alt || prayer.title}
+										width={800} // Explicit width
+										height={450} // Explicit height
+										className="object-cover transition-opacity duration-300 w-full h-full"
+										priority
+									/>
+								</div>
+								<MediaCaption caption={featuredImageDoc?.caption} />
+							</figure>
 						)}
 
 						{/* Title and Content Section (below the image) */}

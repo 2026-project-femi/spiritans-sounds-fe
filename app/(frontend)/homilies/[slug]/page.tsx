@@ -7,6 +7,7 @@ import { YouTubeEmbed } from '@/components/PortableTextComponents'
 import { Sidebar } from '@/components/common/Sidebar'
 import Comments from '@/components/Comments'
 import { ShareButtons } from '@/components/common/ShareButtons'
+import { MediaCaption } from '@/components/common/MediaCaption'
 import { Comment } from '@/lib/types'
 import { getSidebarData } from '@/lib/payload'
 import { notFound } from 'next/navigation'
@@ -112,10 +113,12 @@ export default async function SingleHomilyPage({
   }))
 
 
-  const imageUrl =
+  const featuredImageDoc =
     doc.featuredImage && typeof doc.featuredImage === 'object'
-      ? (doc.featuredImage as any).url
+      ? (doc.featuredImage as any)
       : null
+
+  const imageUrl = featuredImageDoc?.url ?? null
 
   const audioUrl =
     doc.audio && typeof doc.audio === 'object'
@@ -137,16 +140,19 @@ export default async function SingleHomilyPage({
           {/* Main Content */}
           <article className="lg:col-span-8 relative z-0">
             {imageUrl && (
-              <div className="aspect-[16/9] mb-12 bg-gray-100 overflow-hidden rounded-lg">
-                <Image
-                  src={imageUrl}
-                  alt={doc.title}
-                  width={800}
-                  height={450}
-                  className="object-cover transition-opacity duration-300"
-                  priority
-                />
-              </div>
+              <figure className="mb-12">
+                <div className="aspect-[16/9] bg-gray-100 overflow-hidden rounded-lg">
+                  <Image
+                    src={imageUrl}
+                    alt={featuredImageDoc?.alt || doc.title}
+                    width={800}
+                    height={450}
+                    className="object-cover transition-opacity duration-300 w-full h-full"
+                    priority
+                  />
+                </div>
+                <MediaCaption caption={featuredImageDoc?.caption} />
+              </figure>
             )}
 
             <div className="pt-8">

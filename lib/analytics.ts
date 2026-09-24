@@ -92,7 +92,15 @@ export function trackContentRead(contentData: {
 	slug: string;
 	title: string;
 	author?: string;
-	type: "article" | "post" | "homily" | "book";
+	type:
+		| "article"
+		| "post"
+		| "homily"
+		| "book"
+		| "prayer"
+		| "event"
+		| "music"
+		| "magazine";
 }) {
 	trackEvent("Content Read", {
 		content_id: contentData.id,

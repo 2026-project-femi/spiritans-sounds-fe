@@ -93,6 +93,7 @@ export interface Config {
     'book-submissions': BookSubmission;
     'book-launch-registrations': BookLaunchRegistration;
     payouts: Payout;
+    pageViews: PageView;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -136,6 +137,7 @@ export interface Config {
     'book-submissions': BookSubmissionsSelect<false> | BookSubmissionsSelect<true>;
     'book-launch-registrations': BookLaunchRegistrationsSelect<false> | BookLaunchRegistrationsSelect<true>;
     payouts: PayoutsSelect<false> | PayoutsSelect<true>;
+    pageViews: PageViewsSelect<false> | PageViewsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -356,6 +358,10 @@ export interface Article {
 export interface Event {
   id: string;
   title: string;
+  /**
+   * Total number of event page views
+   */
+  views?: number | null;
   slug: string;
   eventType?: ('celebration' | 'workshop' | 'retreat' | 'concert' | 'symposium' | 'news' | 'other') | null;
   date: string;
@@ -435,6 +441,10 @@ export interface Homily {
 export interface Prayer {
   id: string;
   title: string;
+  /**
+   * Total number of prayer page views
+   */
+  views?: number | null;
   slug: string;
   category?: string | null;
   featuredImage?: (string | null) | Media;
@@ -466,6 +476,10 @@ export interface Prayer {
 export interface Music {
   id: string;
   title: string;
+  /**
+   * Total number of music page views
+   */
+  views?: number | null;
   slug: string;
   artist?: string | null;
   audio?: (string | null) | Media;
@@ -556,6 +570,10 @@ export interface Category {
 export interface MagazineIssue {
   id: string;
   title: string;
+  /**
+   * Total number of magazine issue page views
+   */
+  views?: number | null;
   slug: string;
   description?: string | null;
   excerpt?: string | null;
@@ -1425,6 +1443,30 @@ export interface Payout {
   createdAt: string;
 }
 /**
+ * Aggregated public page views, grouped by URL path.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pageViews".
+ */
+export interface PageView {
+  id: string;
+  /**
+   * Normalized URL path, e.g. /donations
+   */
+  path: string;
+  /**
+   * Most recently recorded page title for this path.
+   */
+  title?: string | null;
+  /**
+   * Total number of recorded page views for this path.
+   */
+  views: number;
+  lastViewedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
@@ -1719,6 +1761,10 @@ export interface PayloadLockedDocument {
         value: string | Payout;
       } | null)
     | ({
+        relationTo: 'pageViews';
+        value: string | PageView;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: string | Redirect;
       } | null)
@@ -1884,6 +1930,7 @@ export interface ArticleSelect<T extends boolean = true> {
  */
 export interface EventsSelect<T extends boolean = true> {
   title?: T;
+  views?: T;
   slug?: T;
   eventType?: T;
   date?: T;
@@ -1927,6 +1974,7 @@ export interface HomilySelect<T extends boolean = true> {
  */
 export interface PrayerSelect<T extends boolean = true> {
   title?: T;
+  views?: T;
   slug?: T;
   category?: T;
   featuredImage?: T;
@@ -1943,6 +1991,7 @@ export interface PrayerSelect<T extends boolean = true> {
  */
 export interface MusicSelect<T extends boolean = true> {
   title?: T;
+  views?: T;
   slug?: T;
   artist?: T;
   audio?: T;
@@ -1987,6 +2036,7 @@ export interface PublicationsSelect<T extends boolean = true> {
  */
 export interface MagazineIssuesSelect<T extends boolean = true> {
   title?: T;
+  views?: T;
   slug?: T;
   description?: T;
   excerpt?: T;
@@ -2440,6 +2490,18 @@ export interface PayoutsSelect<T extends boolean = true> {
   paymentDate?: T;
   reference?: T;
   status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pageViews_select".
+ */
+export interface PageViewsSelect<T extends boolean = true> {
+  path?: T;
+  title?: T;
+  views?: T;
+  lastViewedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -8,8 +8,24 @@ interface TrackContentReadProps {
 	slug: string;
 	title: string;
 	author?: string;
-	type: "article" | "post" | "homily" | "book";
-	collection: "article" | "posts" | "homily" | "publications";
+	type:
+		| "article"
+		| "post"
+		| "homily"
+		| "book"
+		| "prayer"
+		| "event"
+		| "music"
+		| "magazine";
+	collection:
+		| "article"
+		| "posts"
+		| "homily"
+		| "publications"
+		| "prayer"
+		| "events"
+		| "music"
+		| "magazineIssues";
 }
 
 export function TrackContentRead({

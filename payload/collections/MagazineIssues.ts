@@ -9,7 +9,7 @@ export const MagazineIssues: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     hidden: ({user})=>user.role === 'contributor',
-    defaultColumns: ['title', '_status', 'publishedAt', 'updatedAt'],
+    defaultColumns: ['title', 'views', '_status', 'publishedAt', 'updatedAt'],
   },
   access: {
     read: authenticatedOrPublished,
@@ -33,6 +33,16 @@ export const MagazineIssues: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
+    },
+    {
+      name: 'views',
+      type: 'number',
+      defaultValue: 0,
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description: 'Total number of magazine issue page views',
+      },
     },
     {
       name: 'slug',

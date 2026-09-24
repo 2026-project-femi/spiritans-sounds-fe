@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Calendar, ArrowLeft, BookOpen, Download, ShieldCheck, FileText } from "lucide-react";
 import { PurchaseButton } from "./PurchaseButton";
 import { PreviewButton } from "@/components/magazine/PreviewButton";
+import { MediaCaption } from "@/components/common/MediaCaption";
+import { TrackContentRead } from "@/components/analytics/TrackContentRead";
 import type { Metadata } from "next";
 import { getOgImageUrl } from '@/lib/getOgImageUrl'
 
@@ -54,6 +56,7 @@ interface MagazineIssue {
   priceAmountGBP?: number;
   description?: string;
   excerpt?: string;
+  cover?: { url?: string | null; alt?: string | null; caption?: unknown } | null;
 }
 
 export default async function SingleIssuePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -76,8 +79,9 @@ export default async function SingleIssuePage({ params }: { params: Promise<{ sl
         issue = {
             ...d,
             _id: d.id,
-            imageUrl: d.coverImage && typeof d.coverImage === 'object' ? d.coverImage.url : undefined,
-            fileUrl: d.pdfFile && typeof d.pdfFile === 'object' ? d.pdfFile.url : undefined,
+            imageUrl: d.cover && typeof d.cover === 'object' ? d.cover.url : undefined,
+            fileUrl: d.file && typeof d.file === 'object' ? d.file.url : undefined,
+            cover: d.cover && typeof d.cover === 'object' ? d.cover : null,
         } as MagazineIssue;
     }
   } catch {
@@ -105,8 +109,18 @@ export default async function SingleIssuePage({ params }: { params: Promise<{ sl
 
   const isPaid = issue.price === 'Paid';
 
+  const coverDoc =
+    issue.cover && typeof issue.cover === 'object' ? issue.cover : null;
+
   return (
     <main className="pb-24">
+      <TrackContentRead
+        id={String(issue._id)}
+        slug={issue.slug}
+        title={issue.title}
+        type="magazine"
+        collection="magazineIssues"
+      />
       {/* Back link */}
       <div className="max-w-6xl mx-auto px-6 pt-10">
         <Link href="/unveiler/issues"
@@ -120,16 +134,19 @@ export default async function SingleIssuePage({ params }: { params: Promise<{ sl
         <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-16 items-start">
           {/* Left: Cover & Actions */}
           <div className="space-y-8">
-            <div className="aspect-[3/4] relative rounded-2xl overflow-hidden bg-linear-to-br from-red-950/30 to-red-900/40 border border-white/10 shadow-2xl shadow-red-950/40">
-              {issue.imageUrl ? (
-                <Image src={issue.imageUrl} alt={issue.title} fill className="object-cover" />
-              ) : (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center px-8 text-white/10">
-                  <BookOpen size={80} />
-                  <p className="text-sm font-black uppercase tracking-widest">{issue.title}</p>
-                </div>
-              )}
-            </div>
+            <figure className="space-y-3">
+              <div className="aspect-[3/4] relative rounded-2xl overflow-hidden bg-linear-to-br from-red-950/30 to-red-900/40 border border-white/10 shadow-2xl shadow-red-950/40">
+                {issue.imageUrl ? (
+                  <Image src={issue.imageUrl} alt={coverDoc?.alt || issue.title} fill className="object-cover" />
+                ) : (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center px-8 text-white/10">
+                    <BookOpen size={80} />
+                    <p className="text-sm font-black uppercase tracking-widest">{issue.title}</p>
+                  </div>
+                )}
+              </div>
+              <MediaCaption caption={coverDoc?.caption} theme="dark" />
+            </figure>
 
             <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 rounded-xl bg-white/3 border border-white/5 text-center">

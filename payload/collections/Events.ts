@@ -21,7 +21,7 @@ export const Events: CollectionConfig = {
 	admin: {
 		useAsTitle: "title",
 		hidden: ({user})=>user.role === 'contributor',
-		defaultColumns: ['title', '_status', 'date', 'publishedAt', 'updatedAt'],
+		defaultColumns: ['title', 'views', '_status', 'date', 'publishedAt', 'updatedAt'],
 	},
 	access: {
 		read: authenticatedOrPublished,
@@ -45,6 +45,16 @@ export const Events: CollectionConfig = {
 			name: "title",
 			type: "text",
 			required: true,
+		},
+		{
+			name: "views",
+			type: "number",
+			defaultValue: 0,
+			admin: {
+				position: "sidebar",
+				readOnly: true,
+				description: "Total number of event page views",
+			},
 		},
 		{
 			name: "slug",

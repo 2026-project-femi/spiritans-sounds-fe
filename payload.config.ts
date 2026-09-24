@@ -32,6 +32,7 @@ import { ContactPage } from "./payload/collections/ContactPage";
 import { Radio } from "./payload/collections/Radio";
 import { MagazineLanding } from "./payload/collections/MagazineLanding";
 import { LyricsOfLight } from "./payload/collections/LyricsOfLight";
+import { PageViews } from "./payload/collections/PageViews";
 import { s3Storage } from "@payloadcms/storage-s3";
 
 import { Posts } from "./payload/collections/Posts";
@@ -73,6 +74,7 @@ export default buildConfig({
 			beforeDashboard: [
 				'@/components/Admin/WelcomeMessage#WelcomeMessage',
 				'@/components/Admin/AdminFinancialDashboard#AdminFinancialDashboard',
+				'@/components/Admin/AdminAnalyticsDashboard#AdminAnalyticsDashboard',
 			],
 		},
 		importMap: {
@@ -107,6 +109,7 @@ export default buildConfig({
 		BookSubmissions,
 		BookLaunchRegistrations,
 		Payouts,
+		PageViews,
 	],
 	globals: [Footer, Header, CommissionSettings, BookLaunchSettings],
 	editor: defaultLexical,

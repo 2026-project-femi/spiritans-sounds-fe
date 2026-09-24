@@ -6,10 +6,10 @@ import { YouTubeEmbed } from "@/components/PortableTextComponents";
 import { Sidebar } from "@/components/common/Sidebar";
 import Comments from "@/components/Comments";
 import { ShareButtons } from "@/components/common/ShareButtons";
+import { MediaCaption } from "@/components/common/MediaCaption";
 import { Comment } from "@/lib/types";
 import type { Metadata } from "next";
 import { getOgImageUrl } from '@/lib/getOgImageUrl'
-import { hasTextContent } from '@/payload/utilities/hasTextContent'
 import { TrackContentRead } from "@/components/analytics/TrackContentRead";
 
 
@@ -129,7 +129,6 @@ export default async function SingleArticlePage({ params }: { params: Promise<{ 
 
     const featuredImageDoc = rawDoc?.featuredImage && typeof rawDoc.featuredImage === 'object' ? rawDoc.featuredImage : null;
     const featuredCaption = featuredImageDoc?.caption;
-    const showFeaturedCaption = hasTextContent(featuredCaption);
 
     return (
         <main className="pt-32 pb-20">
@@ -151,22 +150,14 @@ export default async function SingleArticlePage({ params }: { params: Promise<{ 
                                 <div className="aspect-[16/9] bg-gray-100 overflow-hidden rounded-lg">
                                     <Image
                                         src={article.imageUrl}
-                                        alt={article.title}
+                                        alt={featuredImageDoc?.alt || article.title}
                                         width={800} // Explicit width
                                         height={450} // Explicit height
                                         className="object-cover transition-opacity duration-300 w-full h-full"
                                         priority
                                     />
                                 </div>
-                                {showFeaturedCaption && featuredCaption && (
-                                    <figcaption className="mt-3 text-center text-sm italic text-gray-500">
-                                        {typeof featuredCaption === 'string' ? (
-                                            <p>{featuredCaption}</p>
-                                        ) : (
-                                            <RichText data={featuredCaption as any} enableGutter={false} enableProse={false} />
-                                        )}
-                                    </figcaption>
-                                )}
+                                <MediaCaption caption={featuredCaption} />
                             </figure>
                         )}
 
