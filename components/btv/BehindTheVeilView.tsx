@@ -205,6 +205,10 @@ export default function BehindTheVeilView({
   launchData?: BehindTheVeilLaunchData;
 }) {
   const launched = useLaunched(launchData?.launchDateISO);
+  // Purchase and preview CTAs stay hidden until the admin enables "Go Live" in
+  // the Book Launch Settings global. This lets the launch run as a register-first
+  // funnel, then reveal buying/previewing when the event goes live.
+  const launchLive = Boolean(launchData?.streamGoLive);
   const { currency, setCurrency, symbol } = useCurrency();
 
   const [purchaseModalFormat, setPurchaseModalFormat] = useState<'ebook' | 'paperback' | null>(
@@ -413,7 +417,7 @@ export default function BehindTheVeilView({
               <Eye className="size-3.5 text-brand-primary" />
               <span>Preview</span>
             </button> */}
-            {launchData?.streamGoLive && (
+            {launchLive && (
               <Button
                 onClick={scrollTo('live')}
                 className="hidden sm:inline-flex h-9 sm:h-10 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.65rem] sm:text-[0.68rem] font-semibold uppercase tracking-[0.14em] px-3 sm:px-4 shadow-md shadow-brand-primary/25 cursor-pointer"
@@ -434,12 +438,14 @@ export default function BehindTheVeilView({
                 {cta.registerShort}
               </Button>
             )}
-            <Button
-              onClick={scrollTo('purchase')}
-              className="h-9 sm:h-10 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.65rem] sm:text-[0.68rem] font-semibold uppercase tracking-[0.14em] px-3 sm:px-4 shadow-md shadow-brand-primary/25 cursor-pointer whitespace-nowrap"
-            >
-              {cta.buy}
-            </Button>
+            {launchLive && (
+              <Button
+                onClick={scrollTo('purchase')}
+                className="h-9 sm:h-10 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.65rem] sm:text-[0.68rem] font-semibold uppercase tracking-[0.14em] px-3 sm:px-4 shadow-md shadow-brand-primary/25 cursor-pointer whitespace-nowrap"
+              >
+                {cta.buy}
+              </Button>
+            )}
           </div>
         </div>
       </header>
@@ -506,33 +512,26 @@ export default function BehindTheVeilView({
               )}
 
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                <Button
-                  size="lg"
-                  onClick={scrollTo('excerpt')}
-                  className="w-full sm:w-auto h-12 sm:h-14 rounded-md bg-white/10 hover:bg-white/20 text-white text-xs sm:text-[0.72rem] font-semibold uppercase tracking-[0.14em] sm:tracking-[0.18em] px-6 sm:px-7 border border-white/20 cursor-pointer flex items-center justify-center gap-2"
-                >
-                  <Eye className="size-4 text-brand-primary" />
-                  Preview Book
-                </Button>
-                {!launched ? (
-                  <>
-                    <Button
-                      size="lg"
-                      onClick={scrollTo('launch')}
-                      className="w-full sm:w-auto h-12 sm:h-14 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-xs sm:text-[0.72rem] font-semibold uppercase tracking-[0.14em] sm:tracking-[0.18em] px-6 sm:px-7 shadow-lg shadow-brand-primary/30 cursor-pointer"
-                    >
-                      {cta.register}
-                    </Button>
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      onClick={scrollTo('purchase')}
-                      className="w-full sm:w-auto h-12 sm:h-14 rounded-md border-white/25 bg-white/5 text-white hover:bg-white hover:text-black text-xs sm:text-[0.72rem] font-semibold uppercase tracking-[0.14em] sm:tracking-[0.18em] px-6 sm:px-7 cursor-pointer"
-                    >
-                      {cta.buy}
-                    </Button>
-                  </>
-                ) : (
+                {launchLive && (
+                  <Button
+                    size="lg"
+                    onClick={scrollTo('excerpt')}
+                    className="w-full sm:w-auto h-12 sm:h-14 rounded-md bg-white/10 hover:bg-white/20 text-white text-xs sm:text-[0.72rem] font-semibold uppercase tracking-[0.14em] sm:tracking-[0.18em] px-6 sm:px-7 border border-white/20 cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <Eye className="size-4 text-brand-primary" />
+                    Preview Book
+                  </Button>
+                )}
+                {!launched && (
+                  <Button
+                    size="lg"
+                    onClick={scrollTo('launch')}
+                    className="w-full sm:w-auto h-12 sm:h-14 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-xs sm:text-[0.72rem] font-semibold uppercase tracking-[0.14em] sm:tracking-[0.18em] px-6 sm:px-7 shadow-lg shadow-brand-primary/30 cursor-pointer"
+                  >
+                    {cta.register}
+                  </Button>
+                )}
+                {launchLive && (
                   <Button
                     size="lg"
                     onClick={scrollTo('purchase')}
@@ -591,7 +590,7 @@ export default function BehindTheVeilView({
         </section>
 
         {/* ---------------------------------------------- LIVE STREAM (admin toggle) */}
-        {launchData?.streamGoLive && (
+        {launchLive && (
           <section
             id="live"
             className="relative section-pad bg-[#0a0a0c] text-white overflow-hidden border-y border-brand-primary/30"
@@ -753,12 +752,14 @@ export default function BehindTheVeilView({
                     {availableFormats.map((f) => f.name).join(' / ')}
                   </p>
                   <div className="mt-5 flex flex-col gap-2.5">
-                    <Button
-                      onClick={scrollTo('purchase')}
-                      className="w-full h-12 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.68rem] font-semibold uppercase tracking-[0.16em] cursor-pointer"
-                    >
-                      {cta.buy}
-                    </Button>
+                    {launchLive && (
+                      <Button
+                        onClick={scrollTo('purchase')}
+                        className="w-full h-12 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.68rem] font-semibold uppercase tracking-[0.16em] cursor-pointer"
+                      >
+                        {cta.buy}
+                      </Button>
+                    )}
                   </div>
                 </div>
               </aside>
@@ -939,13 +940,15 @@ export default function BehindTheVeilView({
                   <p className="text-white/70 text-base max-w-lg mx-auto">
                     {sections.launch.postLaunchThanks} {sections.launch.postLaunchNote}
                   </p>
-                  <Button
-                    size="lg"
-                    onClick={scrollTo('purchase')}
-                    className="h-14 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.72rem] font-semibold uppercase tracking-[0.18em] px-8 shadow-lg shadow-brand-primary/30 cursor-pointer"
-                  >
-                    {cta.buy}
-                  </Button>
+                  {launchLive && (
+                    <Button
+                      size="lg"
+                      onClick={scrollTo('purchase')}
+                      className="h-14 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.72rem] font-semibold uppercase tracking-[0.18em] px-8 shadow-lg shadow-brand-primary/30 cursor-pointer"
+                    >
+                      {cta.buy}
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
@@ -1027,13 +1030,15 @@ export default function BehindTheVeilView({
                     ))}
                   </ul>
 
-                  <Button
-                    onClick={() => setPurchaseModalFormat(f.id)}
-                    className="mt-7 h-14 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.72rem] font-semibold uppercase tracking-[0.18em] shadow-md shadow-brand-primary/20 cursor-pointer flex items-center justify-center gap-2"
-                  >
-                    <ShoppingCart className="size-4" />
-                    {`Buy ${f.name.split(' ')[0]} Now`}
-                  </Button>
+                  {launchLive && (
+                    <Button
+                      onClick={() => setPurchaseModalFormat(f.id)}
+                      className="mt-7 h-14 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.72rem] font-semibold uppercase tracking-[0.18em] shadow-md shadow-brand-primary/20 cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      <ShoppingCart className="size-4" />
+                      {`Buy ${f.name.split(' ')[0]} Now`}
+                    </Button>
+                  )}
                 </article>
               ))}
             </div>
@@ -1141,15 +1146,17 @@ export default function BehindTheVeilView({
                 ))}
               </div>
             )}
-            <div className="mt-9 pt-8 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button
-                size="lg"
-                onClick={scrollTo('purchase')}
-                className="w-full sm:w-auto h-14 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.72rem] font-semibold uppercase tracking-[0.18em] px-8 shadow-md shadow-brand-primary/20 cursor-pointer"
-              >
-                {cta.buyFullBook}
-              </Button>
-            </div>
+            {launchLive && (
+              <div className="mt-9 pt-8 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Button
+                  size="lg"
+                  onClick={scrollTo('purchase')}
+                  className="w-full sm:w-auto h-14 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.72rem] font-semibold uppercase tracking-[0.18em] px-8 shadow-md shadow-brand-primary/20 cursor-pointer"
+                >
+                  {cta.buyFullBook}
+                </Button>
+              </div>
+            )}
           </div>
         </section>
 
@@ -1332,18 +1339,20 @@ export default function BehindTheVeilView({
                   {cta.registerFinal}
                 </Button>
               )}
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={scrollTo('purchase')}
-                className={`w-full sm:w-auto h-12 sm:h-14 rounded-md text-xs sm:text-[0.72rem] font-semibold uppercase tracking-[0.14em] sm:tracking-[0.18em] px-7 sm:px-8 cursor-pointer ${
-                  launched
-                    ? 'bg-brand-primary text-white border-brand-primary hover:bg-brand-primary/90'
-                    : 'border-white/25 bg-white/5 text-white hover:bg-white hover:text-black'
-                }`}
-              >
-                {cta.buy}
-              </Button>
+              {launchLive && (
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={scrollTo('purchase')}
+                  className={`w-full sm:w-auto h-12 sm:h-14 rounded-md text-xs sm:text-[0.72rem] font-semibold uppercase tracking-[0.14em] sm:tracking-[0.18em] px-7 sm:px-8 cursor-pointer ${
+                    launched
+                      ? 'bg-brand-primary text-white border-brand-primary hover:bg-brand-primary/90'
+                      : 'border-white/25 bg-white/5 text-white hover:bg-white hover:text-black'
+                  }`}
+                >
+                  {cta.buy}
+                </Button>
+              )}
             </div>
             {!launched && (
               <div className="mt-8 sm:mt-12 flex justify-center">
@@ -1394,23 +1403,27 @@ export default function BehindTheVeilView({
       </footer>
 
       {/* ------------------------------------------- mobile sticky action bar */}
-      <div className="fixed bottom-0 inset-x-0 z-50 sm:hidden border-t border-white/10 bg-[#0c0c0e]/95 backdrop-blur-md p-2.5 sm:p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex gap-2">
-        <Button
-          onClick={scrollTo('excerpt')}
-          variant="outline"
-          className="flex-1 h-11 rounded-md text-[0.62rem] font-semibold uppercase tracking-[0.14em] border-white/20 bg-transparent text-white hover:bg-white/10"
-        >
-          <Eye className="size-3.5 mr-1" />
-          Preview
-        </Button>
-        <Button
-          onClick={scrollTo('purchase')}
-          className="flex-1 h-11 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.62rem] font-semibold uppercase tracking-[0.14em] shadow-md shadow-brand-primary/30"
-        >
-          {cta.buy}
-        </Button>
-      </div>
-      <div className="h-20 sm:hidden" aria-hidden />
+      {launchLive && (
+        <>
+          <div className="fixed bottom-0 inset-x-0 z-50 sm:hidden border-t border-white/10 bg-[#0c0c0e]/95 backdrop-blur-md p-2.5 sm:p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex gap-2">
+            <Button
+              onClick={scrollTo('excerpt')}
+              variant="outline"
+              className="flex-1 h-11 rounded-md text-[0.62rem] font-semibold uppercase tracking-[0.14em] border-white/20 bg-transparent text-white hover:bg-white/10"
+            >
+              <Eye className="size-3.5 mr-1" />
+              Preview
+            </Button>
+            <Button
+              onClick={scrollTo('purchase')}
+              className="flex-1 h-11 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.62rem] font-semibold uppercase tracking-[0.14em] shadow-md shadow-brand-primary/30"
+            >
+              {cta.buy}
+            </Button>
+          </div>
+          <div className="h-20 sm:hidden" aria-hidden />
+        </>
+      )}
 
       {/* ------------------------------------------- Purchase / Checkout Modal */}
       {purchaseModalFormat && (
