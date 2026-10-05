@@ -120,8 +120,8 @@ export const btvConfig = {
   launch: {
     dateISO: '2026-11-21T17:00:00+01:00',
     dateLabel: '21 November 2026',
-    timeLabel: 'TIME TO BE CONFIRMED',
-    platformLabel: 'ONLINE PLATFORM TO BE CONFIRMED',
+    timeLabel: 'To be confirmed',
+    platformLabel: 'Online',
     mode: 'auto' as LaunchMode,
     replayUrl: '',
     registrationUrl: '',

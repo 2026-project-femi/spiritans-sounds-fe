@@ -2,6 +2,10 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { NextResponse } from 'next/server'
 import { sendBookLaunchConfirmationEmail } from '@/lib/emails/sendEmail'
+import {
+  DEFAULT_LAUNCH_TIMEZONE,
+  formatLaunchDateTime,
+} from '@/lib/formatLaunchDateTime'
 
 export async function POST(req: Request) {
   try {
@@ -45,6 +49,13 @@ export async function POST(req: Request) {
       // Graceful fallback if settings haven't been saved yet
     }
 
+    // Derive the human-readable date/time and platform from the configured
+    // launch date field rather than any hardcoded strings.
+    const launchTimezone = launchSettings?.timezone || DEFAULT_LAUNCH_TIMEZONE
+    const eventDateLabel =
+      formatLaunchDateTime(launchSettings?.launchDateTime, launchTimezone) || 'To be confirmed'
+    const platformName = launchSettings?.meetingPlatform?.trim() || 'Online'
+
     // Check for existing registration
     const existing = await payload.find({
       collection: 'book-launch-registrations',
@@ -77,9 +88,9 @@ export async function POST(req: Request) {
           fullName: fullName.trim(),
           bookTitle: launchSettings?.bookTitle || targetTitle,
           meetingLink: launchSettings?.meetingLink || '',
-          meetingPlatform: launchSettings?.meetingPlatform || 'Online',
+          meetingPlatform: platformName,
           meetingPasscode: launchSettings?.meetingPasscode || '',
-          eventDate: launchSettings?.eventDate || 'Saturday, 21 November 2026',
+          eventDate: eventDateLabel,
           customNote: launchSettings?.customNote || '',
         }).catch((err) => console.error('Failed to send confirmation email:', err))
       }
@@ -114,9 +125,9 @@ export async function POST(req: Request) {
         fullName: fullName.trim(),
         bookTitle: launchSettings?.bookTitle || targetTitle,
         meetingLink: launchSettings?.meetingLink || '',
-        meetingPlatform: launchSettings?.meetingPlatform || 'Online',
+        meetingPlatform: platformName,
         meetingPasscode: launchSettings?.meetingPasscode || '',
-        eventDate: launchSettings?.eventDate || 'Saturday, 21 November 2026',
+        eventDate: eventDateLabel,
         customNote: launchSettings?.customNote || '',
       }).catch((err) => console.error('Failed to send confirmation email:', err))
     }

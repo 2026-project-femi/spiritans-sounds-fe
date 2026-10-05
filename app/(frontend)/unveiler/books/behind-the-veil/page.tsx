@@ -3,6 +3,13 @@ import { getPayload } from "payload";
 import configPromise from "@/payload.config";
 import BehindTheVeilView, { BehindTheVeilLaunchData } from "@/components/btv/BehindTheVeilView";
 import { btvConfig } from "@/config/behindTheVeil";
+import {
+  DEFAULT_LAUNCH_TIMEZONE,
+  formatLaunchDate,
+  formatLaunchDateTime,
+  formatLaunchTime,
+  toLaunchISO,
+} from "@/lib/formatLaunchDateTime";
 
 export const dynamic = "force-dynamic";
 
@@ -100,13 +107,25 @@ export default async function BehindTheVeilPage() {
     audioUrl: (a.audioFile && typeof a.audioFile === "object" ? a.audioFile.url : null) || a.audioUrl || "",
   }));
 
+  // Launch date & time come from a real admin date field, rendered in the
+  // configured event timezone.
+  const timezone = launchSettings?.timezone || DEFAULT_LAUNCH_TIMEZONE;
+  const launchDateTime = launchSettings?.launchDateTime || btvConfig.launch.dateISO;
+  const launchDateISO = toLaunchISO(launchDateTime) || btvConfig.launch.dateISO;
+  const eventDateLabel = formatLaunchDate(launchDateTime, timezone) || btvConfig.launch.dateLabel;
+  const eventTimeLabel = formatLaunchTime(launchDateTime, timezone) || btvConfig.launch.timeLabel;
+  const eventDate = formatLaunchDateTime(launchDateTime, timezone) || eventDateLabel;
+
   const launchData: BehindTheVeilLaunchData = {
     publicationId: publication?.id ? String(publication.id) : undefined,
     bookTitle: launchSettings?.bookTitle || publication?.title || btvConfig.book.title,
     bookSlug: launchSettings?.bookSlug || "behind-the-veil",
-    launchDateISO: launchSettings?.launchDateISO || btvConfig.launch.dateISO,
-    eventDate: launchSettings?.eventDate || btvConfig.launch.dateLabel,
-    meetingPlatform: launchSettings?.meetingPlatform || "Zoom",
+    launchDateISO,
+    eventDate,
+    eventDateLabel,
+    eventTimeLabel,
+    timezone,
+    meetingPlatform: launchSettings?.meetingPlatform || "",
     meetingLink: launchSettings?.meetingLink || "",
     streamGoLive: launchSettings?.streamGoLive ?? false,
     youtubeStreamUrl: launchSettings?.youtubeStreamUrl || "",

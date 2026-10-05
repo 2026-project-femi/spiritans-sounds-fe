@@ -41,35 +41,55 @@ export const BookLaunchSettings: GlobalConfig = {
               },
             },
             {
-              name: 'launchDateISO',
-              type: 'text',
-              label: 'Launch Target Date (ISO Format for Countdown)',
+              name: 'launchDateTime',
+              type: 'date',
+              label: 'Launch Date & Time',
+              required: true,
               defaultValue: '2026-11-21T17:00:00+01:00',
               admin: {
-                description: 'Used by the countdown timer on the launch page (e.g. 2026-11-21T17:00:00+01:00).',
+                date: {
+                  pickerAppearance: 'dayAndTime',
+                },
+                description:
+                  'Drives the countdown timer and the Date & Time shown on the launch page and in confirmation emails.',
               },
             },
             {
+              name: 'timezone',
+              type: 'text',
+              label: 'Event Timezone',
+              defaultValue: 'Africa/Lagos',
+              admin: {
+                description:
+                  'IANA timezone used to display the launch date and time (e.g. Africa/Lagos, Europe/London, America/New_York).',
+              },
+            },
+            {
+              // Deprecated: replaced by `launchDateTime`. Retained for backwards
+              // compatibility with existing data; hidden from the admin UI.
+              name: 'launchDateISO',
+              type: 'text',
+              admin: {
+                hidden: true,
+              },
+            },
+            {
+              // Deprecated: the display string is now derived from `launchDateTime`.
               name: 'eventDate',
               type: 'text',
-              label: 'Event Date & Time (Display String)',
-              defaultValue: 'Saturday, 21 November 2026 at 5:00 PM (WAT) / 4:00 PM (GMT)',
               admin: {
-                description: 'Human-friendly date and time displayed in confirmation emails and UI headers.',
+                hidden: true,
               },
             },
             {
               name: 'meetingPlatform',
-              type: 'select',
+              type: 'text',
               label: 'Meeting Platform',
-              defaultValue: 'Zoom',
-              options: [
-                { label: 'Zoom', value: 'Zoom' },
-                { label: 'Google Meet', value: 'Google Meet' },
-                { label: 'YouTube Live', value: 'YouTube Live' },
-                { label: 'Microsoft Teams', value: 'Microsoft Teams' },
-                { label: 'Other', value: 'Other' },
-              ],
+              admin: {
+                placeholder: 'Zoom, Google Meet, YouTube Live…',
+                description:
+                  'Shown on the launch page and in confirmation emails. Leave blank to show a generic label.',
+              },
             },
             {
               name: 'meetingLink',

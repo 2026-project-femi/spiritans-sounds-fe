@@ -2872,14 +2872,19 @@ export interface BookLaunchSetting {
    */
   bookSlug: string;
   /**
-   * Used by the countdown timer on the launch page (e.g. 2026-11-21T17:00:00+01:00).
+   * Drives the countdown timer and the Date & Time shown on the launch page and in confirmation emails.
    */
-  launchDateISO?: string | null;
+  launchDateTime: string;
   /**
-   * Human-friendly date and time displayed in confirmation emails and UI headers.
+   * IANA timezone used to display the launch date and time (e.g. Africa/Lagos, Europe/London, America/New_York).
    */
+  timezone?: string | null;
+  launchDateISO?: string | null;
   eventDate?: string | null;
-  meetingPlatform?: ('Zoom' | 'Google Meet' | 'YouTube Live' | 'Microsoft Teams' | 'Other') | null;
+  /**
+   * Shown on the launch page and in confirmation emails. Leave blank to show a generic label.
+   */
+  meetingPlatform?: string | null;
   /**
    * Primary Zoom stream. Emailed to registered attendees and shown on the landing page while the stream is live.
    */
@@ -3061,6 +3066,8 @@ export interface CommissionSettingsSelect<T extends boolean = true> {
 export interface BookLaunchSettingsSelect<T extends boolean = true> {
   bookTitle?: T;
   bookSlug?: T;
+  launchDateTime?: T;
+  timezone?: T;
   launchDateISO?: T;
   eventDate?: T;
   meetingPlatform?: T;

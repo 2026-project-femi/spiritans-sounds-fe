@@ -357,7 +357,7 @@ export async function sendBookLaunchConfirmationEmail(data: BookLaunchEmailData)
 	try {
 		const hasMeetingLink = Boolean(data.meetingLink && data.meetingLink.trim());
 		const platform = data.meetingPlatform || "Online";
-		const eventDate = data.eventDate || "Saturday, 21 November 2026 at 5:00 PM (WAT) / 4:00 PM (GMT)";
+		const eventDate = data.eventDate || "To be confirmed";
 
 		const html = `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1f2937; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background-color: #ffffff;">

@@ -53,6 +53,9 @@ export interface BehindTheVeilLaunchData {
   bookSlug?: string;
   launchDateISO?: string;
   eventDate?: string;
+  eventDateLabel?: string;
+  eventTimeLabel?: string;
+  timezone?: string;
   meetingPlatform?: string;
   meetingLink?: string;
   streamGoLive?: boolean;
@@ -209,6 +212,8 @@ export default function BehindTheVeilView({
   // the Book Launch Settings global. This lets the launch run as a register-first
   // funnel, then reveal buying/previewing when the event goes live.
   const launchLive = Boolean(launchData?.streamGoLive);
+  const platformLabel = launchData?.meetingPlatform?.trim() || btvConfig.launch.platformLabel;
+  const hasPlatform = Boolean(launchData?.meetingPlatform?.trim());
   const { currency, setCurrency, symbol } = useCurrency();
 
   const [purchaseModalFormat, setPurchaseModalFormat] = useState<'ebook' | 'paperback' | null>(
@@ -616,7 +621,9 @@ export default function BehindTheVeilView({
                 Watch the Launch Live
               </h2>
               <p className="mt-4 text-white/60 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
-                The Zoom room is the main event, with YouTube and Facebook as additional streams.
+                {hasPlatform
+                  ? `The ${platformLabel} room is the main event, with YouTube and Facebook as additional streams.`
+                  : 'The main stream is the primary way to watch, with YouTube and Facebook as additional streams.'}
               </p>
 
               {launchData?.youtubeStreamUrl && (
@@ -636,7 +643,7 @@ export default function BehindTheVeilView({
                   >
                     <a href={launchData.meetingLink} target="_blank" rel="noreferrer noopener">
                       <Video className="size-4" />
-                      Join on Zoom
+                      {hasPlatform ? `Join on ${platformLabel}` : 'Join the Stream'}
                     </a>
                   </Button>
                 )}
@@ -906,7 +913,7 @@ export default function BehindTheVeilView({
                         Date
                       </p>
                       <p className="text-xs font-bold text-white mt-0.5">
-                        {launchData?.eventDate || launch.dateLabel}
+                        {launchData?.eventDateLabel || launchData?.eventDate || launch.dateLabel}
                       </p>
                     </div>
                     <div>
@@ -914,7 +921,9 @@ export default function BehindTheVeilView({
                       <p className="text-[0.62rem] uppercase tracking-[0.16em] text-white/50">
                         Time
                       </p>
-                      <p className="text-xs font-bold text-white mt-0.5">{launch.timeLabel}</p>
+                      <p className="text-xs font-bold text-white mt-0.5">
+                        {launchData?.eventTimeLabel || launch.timeLabel}
+                      </p>
                     </div>
                     <div>
                       <Monitor className="size-5 text-brand-primary mx-auto mb-1.5" />
@@ -922,7 +931,7 @@ export default function BehindTheVeilView({
                         Platform
                       </p>
                       <p className="text-xs font-bold text-white mt-0.5">
-                        {launchData?.meetingPlatform || launch.platformLabel}
+                        {platformLabel}
                       </p>
                     </div>
                   </div>
