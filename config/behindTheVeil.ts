@@ -137,7 +137,7 @@ export const btvConfig = {
     heroHeadline: 'Can you recognise deception before it costs you?',
     heroIntro:
       'A pastoral and psychological guide to seeing clearly — for anyone who has ever sensed that something was wrong long before they could name it.',
-    coverImage: '/images/behind-the-veil/behind-the-veil-front-cover.jpg',
+    coverImage: '/images/behind-the-veil/behind-the-veil-front-cover.jpeg',
     coverAlt:
       'Behind the Veil: How to Detect Deception and Deal with Liars by Oluwafemi Victor Orilua CSSp',
     coverIsPlaceholder: false,
@@ -425,7 +425,7 @@ export const btvConfig = {
     description:
       'Discover Behind the Veil by Fr. Oluwafemi Victor Orilua, CSSp — a thought-provoking book exploring deception, dishonesty, relationships, trust and discernment.',
     canonical: 'https://www.spiritanssound.com/unveiler/books/behind-the-veil',
-    ogImage: '/images/behind-the-veil/behind-the-veil-front-cover.jpg',
+    ogImage: '/images/behind-the-veil/behind-the-veil-front-cover.jpeg',
     siteName: 'Spiritans Sound',
   },
 } as const;

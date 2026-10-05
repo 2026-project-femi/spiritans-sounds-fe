@@ -83,7 +83,7 @@ export default async function BooksPage() {
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
               <div className="relative w-28 sm:w-36 shrink-0 aspect-[2/3] rounded-md overflow-hidden shadow-2xl border border-brand-primary/30 group-hover:scale-105 transition-transform">
                 <Image
-                  src="/images/behind-the-veil/behind-the-veil-front-cover.jpg"
+                  src="/images/behind-the-veil/behind-the-veil-front-cover.jpeg"
                   alt="Behind the Veil cover"
                   width={200}
                   height={300}
