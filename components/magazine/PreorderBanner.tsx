@@ -25,7 +25,7 @@ export function PreorderBanner({ book, books }: PreorderBannerProps) {
   const preorderList: PreorderBook[] = books && books.length > 0 ? books : book ? [book] : [];
 
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1208] via-[#0d0904] to-[#08080a] border border-amber-500/30 p-8 md:p-12 shadow-2xl shadow-amber-950/20">
+    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1208] via-[#0d0904] to-[#08080a] border border-amber-500/30 p-5 sm:p-8 md:p-12 shadow-2xl shadow-amber-950/20">
       {/* Decorative ambient lighting */}
       <div className="absolute -top-24 -right-24 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-amber-600/5 rounded-full blur-3xl pointer-events-none" />
@@ -40,7 +40,7 @@ export function PreorderBanner({ book, books }: PreorderBannerProps) {
 
           {/* Heading & Subtitle */}
           <div className="space-y-3">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight tracking-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight tracking-tight">
               Reserve Your Copy Before Release
             </h2>
             <p className="text-gray-300 text-base md:text-lg font-light leading-relaxed max-w-3xl">
@@ -77,12 +77,12 @@ export function PreorderBanner({ book, books }: PreorderBannerProps) {
 
           {/* Single book CTA if exactly 1 book */}
           {preorderList.length === 1 && (
-            <div className="pt-4 flex flex-wrap items-center gap-4">
+            <div className="pt-4 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 sm:gap-4">
               <Link
                 href={`/unveiler/books/${preorderList[0].slug}`}
-                className="inline-flex items-center gap-3 px-8 py-4 bg-amber-500 hover:bg-amber-400 text-black font-black text-xs uppercase tracking-widest rounded-full transition-all duration-300 shadow-xl shadow-amber-950/40 hover:scale-105"
+                className="inline-flex w-full sm:w-auto items-center justify-center gap-2.5 px-6 py-3 text-[11px] sm:px-8 sm:py-4 sm:text-xs bg-amber-500 hover:bg-amber-400 text-black font-black uppercase tracking-widest rounded-full transition-all duration-300 shadow-xl shadow-amber-950/40 hover:scale-105"
               >
-                <span>Pre-Order "{preorderList[0].title}"</span>
+                <span>Pre-Order &ldquo;{preorderList[0].title}&rdquo;</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>

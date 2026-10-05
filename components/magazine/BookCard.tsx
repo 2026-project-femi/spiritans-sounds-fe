@@ -93,7 +93,7 @@ export function BookCard({ book }: { book: Book }) {
           )}
         </Link>
 
-        <div className="p-6 flex flex-col flex-1 gap-4">
+        <div className="p-5 sm:p-6 flex flex-col flex-1 gap-4">
           <div className="space-y-2">
             <div className="flex justify-between items-start">
               <Link href={`/unveiler/books/${book.slug}`}>
@@ -131,11 +131,11 @@ export function BookCard({ book }: { book: Book }) {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 w-full">
+            <div className="flex items-center gap-1.5 sm:gap-2 w-full">
               {book.fileUrl && (
                 <button
                   onClick={() => setShowPreview(true)}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-white/10 text-white text-xs font-black rounded-full hover:bg-white/20 transition-all uppercase tracking-widest"
+                  className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-[11px] sm:px-4 sm:py-2.5 sm:text-xs bg-white/10 text-white font-black rounded-full hover:bg-white/20 transition-all uppercase tracking-widest"
                 >
                   <Eye size={14} /> Preview
                 </button>
@@ -144,19 +144,19 @@ export function BookCard({ book }: { book: Book }) {
               {isPaid ? (
                 <button
                   onClick={() => setShowModal(true)}
-                  className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-black rounded-full transition-all uppercase tracking-widest ${book.isPreorder ? 'bg-amber-500 hover:bg-amber-600 text-black' : 'bg-white hover:bg-brand-primary hover:text-white text-black'}`}
+                  className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-[11px] sm:px-4 sm:py-2.5 sm:text-xs font-black rounded-full transition-all uppercase tracking-widest ${book.isPreorder ? 'bg-amber-500 hover:bg-amber-600 text-black' : 'bg-white hover:bg-brand-primary hover:text-white text-black'}`}
                 >
                   <ShoppingCart size={14} /> {book.isPreorder ? "Pre-order" : "Buy"}
                 </button>
               ) : book.fileUrl ? (
                 <a
                   href={`${book.fileUrl}?dl=${book.title}.pdf`}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-linear-to-r from-brand-primary to-red-700 text-white text-xs font-black rounded-full hover:opacity-90 transition-all uppercase tracking-widest shadow-lg shadow-red-900/20"
+                  className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-[11px] sm:px-4 sm:py-2.5 sm:text-xs bg-linear-to-r from-brand-primary to-red-700 text-white font-black rounded-full hover:opacity-90 transition-all uppercase tracking-widest shadow-lg shadow-red-900/20"
                 >
                   <Download size={14} /> Download
                 </a>
               ) : (
-                <span className="flex-1 text-center text-[10px] font-bold uppercase tracking-widest text-gray-600 border border-white/10 px-4 py-2.5 rounded-full">
+                <span className="flex-1 text-center text-[10px] font-bold uppercase tracking-widest text-gray-600 border border-white/10 px-3 py-2 sm:px-4 sm:py-2.5 rounded-full">
                   Coming Soon
                 </span>
               )}
