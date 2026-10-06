@@ -154,7 +154,7 @@ export const btvConfig = {
       'Confrontation with charity',
       'Trust: repairing, rebuilding, releasing',
     ],
-    excerptTitle: 'From Chapter One — The Veil',
+    excerptTitle: 'An exerpt',
     excerpt:
       'A lie rarely arrives as a lie. It arrives as an explanation — reasonable, well-timed, and delivered by someone whose face you know better than your own. That is what makes deception so difficult to detect: it does not contradict the truth so much as stand comfortably in its place.\n\nAnd so we do not begin by asking, "Is this person lying?" We begin by asking a gentler and far more useful question: "What keeps repeating?" Deception can survive a single conversation. It cannot survive a pattern honestly examined.',
     publication: {

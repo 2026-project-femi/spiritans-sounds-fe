@@ -551,35 +551,9 @@ export default function BehindTheVeilView({
             {/* 3D Case-bound hardcover book mockup */}
             <div className="relative flex justify-center lg:justify-end animate-fade pt-4 lg:pt-0">
               <div className="relative mb-4 sm:mb-8 pt-2 sm:pt-5">
-                <div
-                  className="absolute -inset-8 pointer-events-none"
-                  style={{
-                    background:
-                      'radial-gradient(circle, rgba(219, 23, 23, 0.35) 0%, transparent 70%)',
-                  }}
-                />
-
                 <div className="relative w-[210px] min-[360px]:w-[240px] -rotate-1 sm:w-[300px] md:w-[340px] lg:w-[380px] mx-auto">
                   {/* Page block edge */}
-                  <div
-                    className="absolute -right-4 top-3 bottom-[-0.15rem] w-6 rounded-r-xs border-y-2 border-r-2 border-[#6d050c] bg-stone-100 shadow-book"
-                    aria-hidden="true"
-                  >
-                    <div className="absolute inset-y-2 left-1 w-px bg-stone-300" />
-                    <div className="absolute inset-y-2 right-1 w-px bg-stone-300" />
-                  </div>
-                  {/* Hardcover bevel frame */}
-                  <div
-                    className="absolute -inset-[5px] rounded-xs border-[5px] border-[#6d050c] bg-[#6d050c] shadow-book"
-                    aria-hidden="true"
-                  />
-                  {/* Spine hinge line */}
-                  <div
-                    className="absolute inset-y-0 left-0 z-10 w-3 rounded-l-xs bg-[#6d050c]/80"
-                    aria-hidden="true"
-                  >
-                    <div className="absolute inset-y-3 right-0 w-px bg-white/30" />
-                  </div>
+
                   <Image
                     src={book.coverImage}
                     alt={book.coverAlt}
@@ -930,9 +904,7 @@ export default function BehindTheVeilView({
                       <p className="text-[0.62rem] uppercase tracking-[0.16em] text-white/50">
                         Platform
                       </p>
-                      <p className="text-xs font-bold text-white mt-0.5">
-                        {platformLabel}
-                      </p>
+                      <p className="text-xs font-bold text-white mt-0.5">{platformLabel}</p>
                     </div>
                   </div>
 
