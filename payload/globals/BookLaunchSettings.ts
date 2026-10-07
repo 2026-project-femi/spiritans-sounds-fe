@@ -1,5 +1,6 @@
 import { GlobalConfig } from 'payload'
 import { isAdminOrPublishingAdmin } from '@/access/roles'
+import { normalizeExternalUrl } from '@/lib/externalUrl'
 
 export const BookLaunchSettings: GlobalConfig = {
   slug: 'book-launch-settings',
@@ -12,6 +13,18 @@ export const BookLaunchSettings: GlobalConfig = {
     group: 'Funnels & Marketing',
     description: 'Manage the launch event plus the book details, prices, preview PDF, videos, audiobook clips, bookshops and reader reviews shown on the Behind the Veil page.',
     hidden: ({ user }) => user?.role !== 'admin' && user?.role !== 'publishing_admin',
+  },
+  hooks: {
+    beforeChange: [
+      ({ data }) => {
+        // Normalise stream URLs on save so a bare "zoom.com" is stored (and
+        // later linked/embedded) as an absolute https URL.
+        data.meetingLink = normalizeExternalUrl(data?.meetingLink)
+        data.youtubeStreamUrl = normalizeExternalUrl(data?.youtubeStreamUrl)
+        data.facebookStreamUrl = normalizeExternalUrl(data?.facebookStreamUrl)
+        return data
+      },
+    ],
   },
   fields: [
     {

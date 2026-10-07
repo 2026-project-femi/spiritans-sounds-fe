@@ -10,6 +10,7 @@ import {
   formatLaunchTime,
   toLaunchISO,
 } from "@/lib/formatLaunchDateTime";
+import { normalizeExternalUrl } from "@/lib/externalUrl";
 
 export const dynamic = "force-dynamic";
 
@@ -126,10 +127,10 @@ export default async function BehindTheVeilPage() {
     eventTimeLabel,
     timezone,
     meetingPlatform: launchSettings?.meetingPlatform || "",
-    meetingLink: launchSettings?.meetingLink || "",
+    meetingLink: normalizeExternalUrl(launchSettings?.meetingLink) || "",
     streamGoLive: launchSettings?.streamGoLive ?? false,
-    youtubeStreamUrl: launchSettings?.youtubeStreamUrl || "",
-    facebookStreamUrl: launchSettings?.facebookStreamUrl || "",
+    youtubeStreamUrl: normalizeExternalUrl(launchSettings?.youtubeStreamUrl) || "",
+    facebookStreamUrl: normalizeExternalUrl(launchSettings?.facebookStreamUrl) || "",
     publisher: launchSettings?.publisher || btvConfig.book.publication.publisher,
     imprint: launchSettings?.imprint || btvConfig.book.publication.imprint,
     publicationDate:

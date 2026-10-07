@@ -6,6 +6,7 @@ import {
   DEFAULT_LAUNCH_TIMEZONE,
   formatLaunchDateTime,
 } from '@/lib/formatLaunchDateTime'
+import { normalizeExternalUrl } from '@/lib/externalUrl'
 
 export async function POST(req: Request) {
   try {
@@ -55,6 +56,7 @@ export async function POST(req: Request) {
     const eventDateLabel =
       formatLaunchDateTime(launchSettings?.launchDateTime, launchTimezone) || 'To be confirmed'
     const platformName = launchSettings?.meetingPlatform?.trim() || 'Online'
+    const meetingLink = normalizeExternalUrl(launchSettings?.meetingLink) || ''
 
     // Check for existing registration
     const existing = await payload.find({
@@ -87,7 +89,7 @@ export async function POST(req: Request) {
           to: trimmedEmail,
           fullName: fullName.trim(),
           bookTitle: launchSettings?.bookTitle || targetTitle,
-          meetingLink: launchSettings?.meetingLink || '',
+          meetingLink,
           meetingPlatform: platformName,
           meetingPasscode: launchSettings?.meetingPasscode || '',
           eventDate: eventDateLabel,
@@ -99,7 +101,7 @@ export async function POST(req: Request) {
         success: true,
         alreadyRegistered: true,
         message: "You are already on the launch guest list! We've updated your information and sent confirmation details to your email.",
-        hasMeetingLink: Boolean(launchSettings?.meetingLink),
+        hasMeetingLink: Boolean(meetingLink),
       })
     }
 
@@ -124,7 +126,7 @@ export async function POST(req: Request) {
         to: trimmedEmail,
         fullName: fullName.trim(),
         bookTitle: launchSettings?.bookTitle || targetTitle,
-        meetingLink: launchSettings?.meetingLink || '',
+        meetingLink,
         meetingPlatform: platformName,
         meetingPasscode: launchSettings?.meetingPasscode || '',
         eventDate: eventDateLabel,
@@ -136,7 +138,7 @@ export async function POST(req: Request) {
       success: true,
       message: "You're registered for the Behind the Veil online launch! A confirmation email with access details has been sent.",
       id: created.id,
-      hasMeetingLink: Boolean(launchSettings?.meetingLink),
+      hasMeetingLink: Boolean(meetingLink),
     })
   } catch (error) {
     console.error('Error creating book launch registration:', error)
