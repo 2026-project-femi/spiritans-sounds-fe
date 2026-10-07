@@ -13,6 +13,7 @@ import {
   Star,
   Users,
   Award,
+  SlidersHorizontal,
 } from "lucide-react";
 import { UnveilerNewsletter } from "@/components/UnveilerNewsletter";
 import type { Metadata } from "next";
@@ -361,9 +362,92 @@ function EventsSidebar({
   );
 }
 
+// ─── Event Type Filter ──────────────────────────────────────────────────────────
+// Conference (`symposium`) and Workshop appear first so the priority types lead
+// the filter row too.
+const FILTER_ORDER = [
+  { value: "all", label: "All Events" },
+  { value: "symposium", label: "Conference" },
+  { value: "workshop", label: "Workshop" },
+  { value: "celebration", label: "Celebration" },
+  { value: "retreat", label: "Retreat" },
+  { value: "concert", label: "Concert" },
+  { value: "news", label: "News" },
+  { value: "other", label: "Other" },
+] as const;
+
+function EventTypeFilter({
+  activeType,
+  counts,
+}: {
+  activeType?: string;
+  counts: Record<string, number>;
+}) {
+  const buildHref = (type: string) => {
+    if (type === "all") return "/unveiler";
+    return `/unveiler?type=${type}`;
+  };
+
+  return (
+    <div className="relative">
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 -mx-1 px-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        <span className="hidden sm:inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-black text-gray-500 shrink-0 pr-2">
+          <SlidersHorizontal className="w-3.5 h-3.5 text-brand-primary" />
+          Filter
+        </span>
+        {FILTER_ORDER.map(({ value, label }) => {
+          const isActive = (value === "all" && !activeType) || value === activeType;
+          const count = counts[value] ?? 0;
+          // Event types with no events are hidden (always keep "All" and the active one).
+          if (value !== "all" && count === 0 && !isActive) return null;
+          return (
+            <Link
+              key={value}
+              href={buildHref(value)}
+              scroll={false}
+              aria-current={isActive ? "true" : undefined}
+              className={`shrink-0 inline-flex items-center gap-2 rounded-full px-4 py-2 text-[11px] font-bold uppercase tracking-widest transition-all border ${
+                isActive
+                  ? "bg-linear-to-r from-brand-primary to-red-600 text-white border-transparent shadow-lg shadow-red-900/30"
+                  : "bg-white/3 text-gray-400 border-white/10 hover:border-brand-primary/40 hover:text-white"
+              }`}
+            >
+              {label}
+              {count > 0 && (
+                <span
+                  className={`rounded-full px-1.5 text-[9px] font-black ${
+                    isActive ? "bg-white/25 text-white" : "bg-white/10 text-gray-400"
+                  }`}
+                >
+                  {count}
+                </span>
+              )}
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // ─── Pagination ────────────────────────────────────────────────────────────────
-function Pagination({ currentPage, totalPages }: { currentPage: number; totalPages: number }) {
+function Pagination({
+  currentPage,
+  totalPages,
+  activeType,
+}: {
+  currentPage: number;
+  totalPages: number;
+  activeType?: string;
+}) {
   if (totalPages <= 1) return null;
+
+  const href = (page: number) => {
+    const params = new URLSearchParams();
+    if (activeType) params.set("type", activeType);
+    params.set("page", String(page));
+    return `/unveiler?${params.toString()}`;
+  };
 
   const getPageNumbers = () => {
     const pages = [];
@@ -381,7 +465,7 @@ function Pagination({ currentPage, totalPages }: { currentPage: number; totalPag
     <div className="flex items-center justify-center gap-2 pt-12">
       {currentPage > 1 && (
         <Link
-          href={`/unveiler?page=${currentPage - 1}`}
+          href={href(currentPage - 1)}
           className="w-10 h-10 flex items-center justify-center rounded-xl border border-white/5 bg-white/3 text-gray-400 hover:border-brand-primary/40 hover:text-brand-primary transition-all"
         >
           <ChevronLeft className="w-5 h-5" />
@@ -392,7 +476,7 @@ function Pagination({ currentPage, totalPages }: { currentPage: number; totalPag
         typeof p === "number" ? (
           <Link
             key={i}
-            href={`/unveiler?page=${p}`}
+            href={href(p)}
             className={`w-10 h-10 flex items-center justify-center rounded-xl text-sm font-black transition-all ${
               p === currentPage
                 ? "bg-linear-to-r from-brand-primary to-red-600 text-white shadow-lg shadow-red-900/30"
@@ -410,7 +494,7 @@ function Pagination({ currentPage, totalPages }: { currentPage: number; totalPag
 
       {currentPage < totalPages && (
         <Link
-          href={`/unveiler?page=${currentPage + 1}`}
+          href={href(currentPage + 1)}
           className="w-10 h-10 flex items-center justify-center rounded-xl border border-white/5 bg-white/3 text-gray-400 hover:border-brand-primary/40 hover:text-brand-primary transition-all"
         >
           <ChevronRight className="w-5 h-5" />
@@ -424,44 +508,43 @@ function Pagination({ currentPage, totalPages }: { currentPage: number; totalPag
 export default async function UnveilerHomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; type?: string }>;
 }) {
-  const { page: pageParam } = await searchParams;
+  const { page: pageParam, type: typeParam } = await searchParams;
   const currentPage = Math.max(1, parseInt(pageParam ?? "1", 10));
+  const activeType =
+    typeParam && FILTER_ORDER.some((t) => t.value === typeParam && t.value !== "all")
+      ? typeParam
+      : undefined;
 
+  let events: Event[] = [];
   let featuredEvent: Event | null = null;
-  let paginatedEvents: Event[] = [];
-  let popularEvents: Event[] = [];
-  let totalCount = 0;
   let isDummy = false;
 
   try {
 	const payload = await getPayload({ config: configPromise });
     
-    // Attempt fetching a featured event
-    const featuredRes = await payload.find({ collection: 'events', where: { _status: { equals: 'published' } }, limit: 1, sort: '-date' }); // Fallback sorting, maybe no isFeatured in schema yet
-    if (featuredRes.docs.length > 0) {
-        const d = featuredRes.docs[0];
-        featuredEvent = { ...d, _id: d.id, imageUrl: d.featuredImage && typeof d.featuredImage === 'object' ? d.featuredImage.url : undefined } as any;
-    }
+    const allRes = await payload.find({
+      collection: 'events',
+      where: { _status: { equals: 'published' } },
+      limit: 200,
+      sort: '-date',
+    });
+    const allEvents = allRes.docs.map((d) => ({
+      ...d,
+      _id: d.id,
+      imageUrl: d.featuredImage && typeof d.featuredImage === 'object' ? d.featuredImage.url : undefined,
+    })) as Event[];
+    if (allEvents.length === 0) throw new Error("No events found");
 
-    const popularRes = await payload.find({ collection: 'events', where: { _status: { equals: 'published' } }, limit: 4, sort: '-date' });
-    popularEvents = popularRes.docs.map((d: any) => ({ ...d, _id: d.id, imageUrl: d.featuredImage && typeof d.featuredImage === 'object' ? d.featuredImage.url : undefined })) as any[];
-
-    const start = (currentPage - 1) * POSTS_PER_PAGE;
-    const end = start + POSTS_PER_PAGE;
-
-    const allRes = await payload.find({ collection: 'events', where: { _status: { equals: 'published' } }, limit: 100, sort: '-date' });
-    const allRecent = allRes.docs.map((d: any) => ({ ...d, _id: d.id, imageUrl: d.featuredImage && typeof d.featuredImage === 'object' ? d.featuredImage.url : undefined })) as any[];
-    totalCount = allRes.totalDocs;
-
-    paginatedEvents = (allRecent as Event[]).filter((e) => e._id !== featuredEvent?._id).slice(start, end);
-
-    if (allRecent.length === 0) throw new Error("No events found");
-  } catch (err) {
+    // Featured, priority, counts and pagination are all derived from `events`
+    // after the try/catch so the dummy fallback behaves the same way.
+    events = allEvents;
+  } catch {
     isDummy = true;
+    const baseTime = new Date("2025-07-12T10:00:00Z").getTime();
     // Enhanced dummy data matching new schema fields
-    const mockEvents: Event[] = [
+    events = [
       {
         _id: "d1",
         title: "Treasures Unveiled 2025 — Annual Celebration",
@@ -476,35 +559,61 @@ export default async function UnveilerHomePage({
         _id: `d${i + 2}`,
         title: `Community Outreach Program #${i + 2}`,
         slug: `outreach-${i + 2}`,
-        date: new Date(Date.now() - (i - 2) * 86400000 * 10).toISOString(),
+        date: new Date(baseTime - (i - 2) * 86400000 * 10).toISOString(),
         location: "Ibadan, Nigeria",
         excerpt: "Building faith through community action and creative engagement.",
-        eventType: i % 3 === 0 ? "workshop" : "retreat" as any,
+        eventType: (i % 3 === 0 ? "workshop" : "retreat") as Event["eventType"],
         isPopular: i < 3,
       })),
-    ];
-
-    featuredEvent = mockEvents.find((e) => e.isFeatured) || mockEvents[0];
-    popularEvents = mockEvents.filter((e) => e.isPopular);
-    const remaining = mockEvents.filter((e) => e._id !== featuredEvent?._id);
-    totalCount = remaining.length;
-    const start = (currentPage - 1) * POSTS_PER_PAGE;
-    paginatedEvents = remaining.slice(start, start + POSTS_PER_PAGE);
+    ] as Event[];
   }
 
-  // Sidebar grouping logic
-  const upcomingEvents = (isDummy ? paginatedEvents : paginatedEvents).filter((e) => isUpcoming(e.date)).slice(0, 4);
-  const recentActivity = (isDummy ? paginatedEvents : paginatedEvents).filter((e) => !isUpcoming(e.date)).slice(0, 4);
+  // Conference (`symposium`) and Workshop are the priority event types.
+  const priorityTypes = ["symposium", "workshop"];
+  const priorityEvents = events.filter((e) => e.eventType && priorityTypes.includes(e.eventType));
 
-  // Group events by type for sections (only on page 1)
-  const groupedEvents = paginatedEvents.reduce((acc, event) => {
-    const type = event.eventType || "other";
-    if (!acc[type]) acc[type] = [];
-    acc[type].push(event);
-    return acc;
-  }, {} as Record<string, Event[]>);
+  // Feature a priority event when available (upcoming first), else the latest.
+  featuredEvent =
+    priorityEvents.find((e) => isUpcoming(e.date)) || priorityEvents[0] || events[0] || null;
+
+  const popularEvents = (
+    events.some((e) => e.isPopular) ? events.filter((e) => e.isPopular) : events
+  ).slice(0, 4);
+
+  // Grid contents: filter by the selected type, otherwise show everything that
+  // is not already surfaced in the priority sections / hero.
+  const start = (currentPage - 1) * POSTS_PER_PAGE;
+  const conferenceEvents = priorityEvents.filter(
+    (e) => e.eventType === "symposium" && e._id !== featuredEvent?._id
+  );
+  const workshopEvents = priorityEvents.filter(
+    (e) => e.eventType === "workshop" && e._id !== featuredEvent?._id
+  );
+  const gridEvents = activeType
+    ? events.filter(
+        (e) => e.eventType === activeType || (activeType === "other" && !e.eventType)
+      )
+    : events.filter(
+        (e) => !(e.eventType && priorityTypes.includes(e.eventType)) && e._id !== featuredEvent?._id
+      );
+
+  const totalCount = gridEvents.length;
+  const paginatedEvents = gridEvents.slice(start, start + POSTS_PER_PAGE);
+
+  // Counts for the filter pills.
+  const typeCounts: Record<string, number> = { all: events.length };
+  for (const e of events) {
+    const type = e.eventType || "other";
+    typeCounts[type] = (typeCounts[type] || 0) + 1;
+  }
+
+  const upcomingEvents = events.filter((e) => isUpcoming(e.date)).slice(0, 4);
+  const recentActivity = events.filter((e) => !isUpcoming(e.date)).slice(0, 4);
 
   const totalPages = Math.ceil(totalCount / POSTS_PER_PAGE);
+  const activeLabel = activeType
+    ? FILTER_ORDER.find((t) => t.value === activeType)?.label
+    : undefined;
 
   return (
     <main className="min-h-screen bg-[#08080a] text-foreground pb-32">
@@ -543,9 +652,14 @@ export default async function UnveilerHomePage({
           </div>
         </section>
 
+        {/* Event Type Filter */}
+        <section className="max-w-7xl mx-auto px-6 -mt-4 mb-10">
+          <EventTypeFilter activeType={activeType} counts={typeCounts} />
+        </section>
+
         <div className="max-w-7xl mx-auto px-6 space-y-16">
           {/* 1. Hero / Featured (Only Page 1) */}
-          {currentPage === 1 && featuredEvent && (
+          {currentPage === 1 && !activeType && featuredEvent && (
             <section>
               <HeroEvent event={featuredEvent} isDummy={isDummy} />
             </section>
@@ -554,16 +668,35 @@ export default async function UnveilerHomePage({
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-16">
             {/* ─── Main Content ─── */}
             <div className="space-y-20">
-              {/* 2. Grouped Sections (Example: Celebrations) - Only on Page 1 */}
-              {currentPage === 1 && groupedEvents["celebration"] && (
+              {/* 2. Priority: Conference, then Workshops (page 1, unfiltered) */}
+              {currentPage === 1 && !activeType && conferenceEvents.length > 0 && (
                 <section className="space-y-10">
                   <div className="flex items-center gap-4">
                     <Award className="w-6 h-6 text-brand-primary" />
-                    <h2 className="text-2xl font-black text-white uppercase tracking-tight">Focus: Celebrations</h2>
+                    <h2 className="text-2xl font-black text-white uppercase tracking-tight">
+                      Conference
+                    </h2>
                     <div className="flex-1 h-[1px] bg-white/5" />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {groupedEvents["celebration"].map((event) => (
+                    {conferenceEvents.map((event) => (
+                      <EventCard key={event._id} event={event} isDummy={isDummy} />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {currentPage === 1 && !activeType && workshopEvents.length > 0 && (
+                <section className="space-y-10">
+                  <div className="flex items-center gap-4">
+                    <Award className="w-6 h-6 text-brand-primary" />
+                    <h2 className="text-2xl font-black text-white uppercase tracking-tight">
+                      Workshops
+                    </h2>
+                    <div className="flex-1 h-[1px] bg-white/5" />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {workshopEvents.map((event) => (
                       <EventCard key={event._id} event={event} isDummy={isDummy} />
                     ))}
                   </div>
@@ -575,27 +708,33 @@ export default async function UnveilerHomePage({
                 <div className="flex items-center gap-4">
                   <Users className="w-6 h-6 text-red-700" />
                   <h2 className="text-2xl font-black text-white uppercase tracking-tight">
-                    {currentPage === 1 ? "Latest Activity" : `Archive - Page ${currentPage}`}
+                    {activeType
+                      ? `${activeLabel} Events`
+                      : currentPage === 1
+                        ? "Latest Activity"
+                        : `Archive - Page ${currentPage}`}
                   </h2>
                   <div className="flex-1 h-[1px] bg-white/5" />
                 </div>
 
                 {paginatedEvents.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {paginatedEvents
-                      .filter(e => currentPage !== 1 || e.eventType !== "celebration")
-                      .map((event) => (
-                        <EventCard key={event._id} event={event} isDummy={isDummy} />
-                      ))}
+                    {paginatedEvents.map((event) => (
+                      <EventCard key={event._id} event={event} isDummy={isDummy} />
+                    ))}
                   </div>
                 ) : (
                   <div className="bg-white/5 border border-dashed border-white/10 rounded-2xl p-20 text-center">
                     <CalendarDays className="w-16 h-16 text-gray-800 mx-auto mb-4" />
-                    <p className="text-gray-500 text-lg">The archive is empty at this depth.</p>
+                    <p className="text-gray-500 text-lg">
+                      {activeType
+                        ? `No ${activeLabel?.toLowerCase()} events yet.`
+                        : "The archive is empty at this depth."}
+                    </p>
                   </div>
                 )}
 
-                <Pagination currentPage={currentPage} totalPages={totalPages} />
+                <Pagination currentPage={currentPage} totalPages={totalPages} activeType={activeType} />
               </section>
             </div>
 
