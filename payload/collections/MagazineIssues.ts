@@ -1,5 +1,6 @@
 import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished';
+import { isAdmin, isAdminOrPublishingAdmin } from '@/access/roles';
 import { publishedAtField } from '@/payload/fields/statusField';
 import { revalidatePath } from 'next/cache';
 import { CollectionConfig } from 'payload'
@@ -8,15 +9,15 @@ export const MagazineIssues: CollectionConfig = {
   slug: 'magazineIssues',
   admin: {
     useAsTitle: 'title',
-    hidden: ({user})=>user.role === 'contributor',
+    hidden: ({ user }) => user?.role === 'contributor' || user?.role === 'author',
     defaultColumns: ['title', 'views', '_status', 'publishedAt', 'updatedAt'],
   },
   access: {
     read: authenticatedOrPublished,
     readVersions: authenticated,
-    create: authenticated,
-    update: authenticated,
-    delete: authenticated,
+    create: isAdminOrPublishingAdmin,
+    update: isAdminOrPublishingAdmin,
+    delete: isAdmin,
   },
   hooks: {
     afterChange: [({doc})=>{

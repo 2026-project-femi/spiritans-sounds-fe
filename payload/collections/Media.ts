@@ -9,6 +9,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { authenticated } from '@/access/authenticated'
 import { anyone } from '@/access/anyone'
+import { isAdminOrPublishingAdmin } from '@/access/roles'
 
 
 const filename = fileURLToPath(import.meta.url)
@@ -19,13 +20,12 @@ export const Media: CollectionConfig = {
   folders: true,
   access: {
     create: authenticated,
-    delete: authenticated,
+    delete: isAdminOrPublishingAdmin,
     read: anyone,
     update: authenticated,
   },
   admin: {
-    hidden: ({user})=>user.role === 'contributor' 
-
+    hidden: ({ user }) => user?.role === 'contributor' || user?.role === 'author',
   },
   fields: [
     {

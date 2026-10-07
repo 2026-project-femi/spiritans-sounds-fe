@@ -11,6 +11,7 @@ export const BookLaunchSettings: GlobalConfig = {
   admin: {
     group: 'Funnels & Marketing',
     description: 'Manage the launch event plus the book details, prices, preview PDF, videos, audiobook clips, bookshops and reader reviews shown on the Behind the Veil page.',
+    hidden: ({ user }) => user?.role !== 'admin' && user?.role !== 'publishing_admin',
   },
   fields: [
     {

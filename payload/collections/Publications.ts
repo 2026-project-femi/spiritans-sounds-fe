@@ -1,10 +1,55 @@
-import { authenticated } from '@/access/authenticated'
-import { authenticatedOrPublished } from '@/access/authenticatedOrPublished';
-import { isAdmin, isAdminOrEditor } from '@/access/roles';
+import { isAdmin } from '@/access/roles';
 import { publishedAtField } from '@/payload/fields/statusField';
 import { revalidatePath } from 'next/cache';
-import { CollectionConfig, CollectionAfterChangeHook } from 'payload'
+import { CollectionConfig, CollectionAfterChangeHook, CollectionBeforeChangeHook, Access, Where } from 'payload'
 import { sendPurchaseConfirmationEmail } from '@/lib/emails/sendEmail';
+
+const canReadPublications: Access = ({ req: { user } }) => {
+  if (user?.role === 'admin' || user?.role === 'publishing_admin' || user?.role === 'editor') return true;
+  if (user?.role === 'author') {
+    const query: Where = {
+      author: {
+        equals: user.id,
+      },
+    };
+    return query;
+  }
+  const query: Where = {
+    _status: {
+      equals: 'published',
+    },
+  };
+  return query;
+};
+
+const canReadPublicationVersions: Access = ({ req: { user } }) => {
+  if (user?.role === 'admin' || user?.role === 'publishing_admin' || user?.role === 'editor') return true;
+  if (user?.role === 'author') {
+    const query: Where = {
+      author: {
+        equals: user.id,
+      },
+    };
+    return query;
+  }
+  return false;
+};
+
+/**
+ * Authors may edit their own book's content, but they must not be able to change
+ * its status. The custom `publishingStatus` field is already access-locked for
+ * authors, but Payload's draft/publish control (`_status`, plus the auto-set
+ * `publishedAt`) is a system field, so it is enforced here by restoring the
+ * previous values on every author save.
+ */
+const lockPublicationStatusForAuthors: CollectionBeforeChangeHook = ({ data, req, originalDoc }) => {
+  if (req.user?.role === 'author' && originalDoc) {
+    data._status = originalDoc._status ?? 'draft';
+    data.publishingStatus = originalDoc.publishingStatus ?? 'draft';
+    data.publishedAt = originalDoc.publishedAt ?? null;
+  }
+  return data;
+};
 
 const handlePreorderRelease: CollectionAfterChangeHook = async ({ doc, previousDoc, req: { payload } }) => {
   if (previousDoc?.isPreorder === true && doc.isPreorder === false) {
@@ -59,8 +104,8 @@ export const Publications: CollectionConfig = {
     defaultColumns: ['title', 'views', 'totalSales', '_status', 'publishedAt', 'updatedAt'],
   },
   access: {
-    read: authenticatedOrPublished,
-    readVersions: authenticated,
+    read: canReadPublications,
+    readVersions: canReadPublicationVersions,
     update: ({ req: { user } }) => {
       if (user?.role === 'admin' || user?.role === 'publishing_admin') return true;
       if (user?.role === 'author') {
@@ -78,6 +123,7 @@ export const Publications: CollectionConfig = {
     },
     
   },hooks: {
+    beforeChange: [lockPublicationStatusForAuthors],
     afterChange: [({doc})=>{
       // revalidatePath throws when the write happens during a render (e.g. the
       // Behind the Veil funnel ensuring its publication on first request), so it
@@ -171,6 +217,9 @@ export const Publications: CollectionConfig = {
       admin: {
         position: 'sidebar',
       },
+      access: {
+        update: ({ req: { user } }) => Boolean(user?.role === 'admin' || user?.role === 'publishing_admin'),
+      },
     },
     {
       name: 'category',
@@ -195,6 +244,9 @@ export const Publications: CollectionConfig = {
       defaultValue: 'draft',
       admin: {
         position: 'sidebar',
+      },
+      access: {
+        update: ({ req: { user } }) => Boolean(user?.role === 'admin' || user?.role === 'publishing_admin'),
       },
     },
     {

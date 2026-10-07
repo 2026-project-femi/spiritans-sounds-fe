@@ -12,6 +12,7 @@ import {
 } from "@payloadcms/richtext-lexical";
 import { authenticated } from "@/access/authenticated";
 import { authenticatedOrPublished } from "@/access/authenticatedOrPublished";
+import { isAdmin, isAdminOrEditor } from "@/access/roles";
 import { publishedAtField } from "@/payload/fields/statusField";
 import { revalidatePath } from "next/cache";
 import { CollectionConfig } from "payload";
@@ -20,15 +21,15 @@ export const Events: CollectionConfig = {
 	slug: "events",
 	admin: {
 		useAsTitle: "title",
-		hidden: ({user})=>user.role === 'contributor',
+		hidden: ({ user }) => user?.role === 'contributor' || user?.role === 'publishing_admin' || user?.role === 'author',
 		defaultColumns: ['title', 'views', '_status', 'date', 'publishedAt', 'updatedAt'],
 	},
 	access: {
 		read: authenticatedOrPublished,
 		readVersions: authenticated,
-		create: authenticated,
-		update: authenticated,
-		delete: authenticated,
+		create: isAdminOrEditor,
+		update: isAdminOrEditor,
+		delete: isAdmin,
 	},
 	hooks: {
 		afterChange: [({doc})=>{

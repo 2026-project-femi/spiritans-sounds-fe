@@ -42,7 +42,21 @@ export function WelcomeMessage() {
         <h2 className="custom-welcome-title">
           Welcome back, {displayName}! 👋
         </h2>
-        <p className="custom-welcome-desc">Manage your content, approve comments, and track audio uploads here.</p>
+        {user?.role === 'author' ? (
+          <>
+            <p className="custom-welcome-desc">Manage your book publications and listings here.</p>
+            <div style={{ marginTop: '0.75rem' }}>
+              <a
+                href="/unveiler/dashboard"
+                style={{ color: '#eb3c3c', fontWeight: 600, fontSize: '0.875rem', textDecoration: 'underline' }}
+              >
+                Go to Author Portal & Analytics &rarr;
+              </a>
+            </div>
+          </>
+        ) : (
+          <p className="custom-welcome-desc">Manage your content, approve comments, and track audio uploads here.</p>
+        )}
       </div>
     </>
   )

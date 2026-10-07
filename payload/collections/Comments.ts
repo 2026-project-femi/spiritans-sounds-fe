@@ -1,3 +1,5 @@
+import { isAdminOrEditor } from "@/access/roles";
+import { anyoneExceptAuthor } from "@/access/anyoneExceptAuthor";
 import { revalidatePath } from "next/cache";
 import { CollectionConfig } from "payload";
 
@@ -7,10 +9,13 @@ export const Comments: CollectionConfig = {
 		useAsTitle: "name",
 		defaultColumns: ["name", "comment", "parent", "approved", "createdAt"],
 		description: "Comments won't show on the site without approval. Replies to approved comments are published immediately.",
-		hidden: ({user})=>user?.role === 'contributor' || user?.role === 'publishing_admin'
+		hidden: ({ user }) => user?.role === 'contributor' || user?.role === 'publishing_admin' || user?.role === 'author',
 	},
 	access: {
-		read: () => true,
+		read: anyoneExceptAuthor,
+		create: () => true,
+		update: isAdminOrEditor,
+		delete: isAdminOrEditor,
 	},
 	hooks: {
 		afterChange: [({doc})=>{

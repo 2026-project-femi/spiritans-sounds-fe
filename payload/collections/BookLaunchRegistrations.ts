@@ -12,6 +12,7 @@ export const BookLaunchRegistrations: CollectionConfig = {
     useAsTitle: 'fullName',
     defaultColumns: ['fullName', 'email', 'whatsapp', 'country', 'book', 'createdAt'],
     group: 'Funnels & Marketing',
+    hidden: ({ user }) => user?.role !== 'admin' && user?.role !== 'publishing_admin',
   },
   access: {
     read: isAdminOrPublishingAdmin,

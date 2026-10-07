@@ -5,8 +5,7 @@ import { CollectionConfig } from 'payload'
 export const Radio: CollectionConfig = {
   slug: 'radio',
   admin: {
-    hidden: ({user})=>user.role === 'contributor' 
-
+    hidden: ({ user }) => user?.role !== 'admin' && user?.role !== 'editor',
   },
   access: {
     read: isAdminOrEditor,

@@ -3,6 +3,9 @@ import { isAdmin, isAdminOrPublishingAdmin } from '@/access/roles'
 
 export const CommissionSettings: GlobalConfig = {
   slug: 'commission-settings',
+  admin: {
+    hidden: ({ user }) => user?.role !== 'admin' && user?.role !== 'publishing_admin',
+  },
   access: {
     read: isAdminOrPublishingAdmin,
     update: isAdmin,

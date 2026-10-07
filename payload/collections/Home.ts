@@ -1,3 +1,5 @@
+import { isAdmin, isAdminOrEditor } from '@/access/roles';
+import { anyoneExceptAuthor } from '@/access/anyoneExceptAuthor';
 import { revalidatePath } from 'next/cache';
 import { CollectionConfig } from 'payload'
 
@@ -14,7 +16,13 @@ export const HomePage: CollectionConfig = {
 		}]
   },
   admin: {
-    hidden: ({user})=>user?.role === 'contributor' || user?.role === 'publishing_admin'
+    hidden: ({ user }) => user?.role === 'contributor' || user?.role === 'publishing_admin' || user?.role === 'author',
+  },
+  access: {
+    read: anyoneExceptAuthor,
+    create: isAdminOrEditor,
+    update: isAdminOrEditor,
+    delete: isAdmin,
   },
   fields: [
     {

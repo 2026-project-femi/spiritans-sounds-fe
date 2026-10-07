@@ -6,7 +6,7 @@ export const Donations: CollectionConfig = {
   slug: 'donations',
   admin: {
     useAsTitle: 'reference',
-    hidden: ({user}) => user.role === 'contributor',
+    hidden: ({ user }) => user?.role !== 'admin' && user?.role !== 'editor',
   },
   access: {
     read: isAdminOrEditor,

@@ -1,5 +1,6 @@
 import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
+import { isAdmin, isAdminOrEditor } from '@/access/roles'
 import { Banner } from '@/blocks/Banner/config'
 import { Code } from '@/blocks/Code/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
@@ -12,15 +13,15 @@ export const Articles: CollectionConfig = {
   slug: 'article',
   admin: {
     useAsTitle: 'title',
-    hidden: ({user})=>user?.role === 'contributor' || user?.role === 'publishing_admin',
+    hidden: ({ user }) => user?.role === 'contributor' || user?.role === 'publishing_admin' || user?.role === 'author',
     defaultColumns: ['title', 'views', '_status', 'publishedAt', 'updatedAt'],
   },
   access: {
     read: authenticatedOrPublished,
     readVersions: authenticated,
-    create: authenticated,
-    update: authenticated,
-    delete: authenticated,
+    create: isAdminOrEditor,
+    update: isAdminOrEditor,
+    delete: isAdmin,
   },
   hooks: {
     afterChange: [({doc})=>{

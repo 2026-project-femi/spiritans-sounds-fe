@@ -9,7 +9,7 @@ export const Music: CollectionConfig = {
   slug: 'music',
   admin: {
     useAsTitle: 'title',
-    hidden: ({user})=>user?.role === 'contributor' || user?.role === 'publishing_admin',
+    hidden: ({ user }) => user?.role === 'contributor' || user?.role === 'publishing_admin' || user?.role === 'author',
     defaultColumns: ['title', 'views', '_status', 'publishedAt', 'updatedAt'],
   },
   access: {
