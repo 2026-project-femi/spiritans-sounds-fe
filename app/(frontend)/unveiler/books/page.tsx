@@ -108,7 +108,7 @@ export default async function BooksPage() {
                   Behind the Veil
                 </h2>
                 <p className="text-sm sm:text-base text-gray-300 font-serif italic mt-1">
-                  How to Detect Deception and Deal with Liars
+                  How to Detect Deception and Handle Manipulation
                 </p>
                 <p className="text-xs text-gray-400 uppercase tracking-widest mt-1">
                   By Fr. Oluwafemi Victor Orilua, CSSp

@@ -130,7 +130,7 @@ export const btvConfig = {
   /* ------------------------------------------------------------------ book */
   book: {
     title: 'Behind the Veil',
-    subtitle: 'How to Detect Deception and Deal with Liars',
+    subtitle: 'How to Detect Deception and Handle Manipulation',
     author: 'Fr. Oluwafemi Victor Orilua, CSSp',
     heroTitleTop: 'Behind',
     heroTitleAccent: 'the Veil',
@@ -139,7 +139,7 @@ export const btvConfig = {
       'A pastoral and psychological guide to seeing clearly — for anyone who has ever sensed that something was wrong long before they could name it.',
     coverImage: '/images/behind-the-veil/behind-the-veil-front-cover.jpeg',
     coverAlt:
-      'Behind the Veil: How to Detect Deception and Deal with Liars by Oluwafemi Victor Orilua CSSp',
+      'Behind the Veil: How to Detect Deception and Handle Manipulation by Oluwafemi Victor Orilua CSSp',
     coverIsPlaceholder: false,
     description: [
       'Behind the Veil is a careful, unhurried look at one of the oldest wounds in human relationship: being lied to by someone you trusted.',
@@ -421,7 +421,7 @@ export const btvConfig = {
 
   /* ------------------------------------------------------------------- seo */
   seo: {
-    title: 'Behind the Veil: How to Detect Deception and Deal with Liars | Spiritans Sound',
+    title: 'Behind the Veil: How to Detect Deception and Handle Manipulation | Spiritans Sound',
     description:
       'Discover Behind the Veil by Fr. Oluwafemi Victor Orilua, CSSp — a thought-provoking book exploring deception, dishonesty, relationships, trust and discernment.',
     canonical: 'https://www.spiritanssound.com/unveiler/books/behind-the-veil',

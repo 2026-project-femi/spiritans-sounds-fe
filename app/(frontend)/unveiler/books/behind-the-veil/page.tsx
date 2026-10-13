@@ -24,7 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 
   const title = launchSettings?.bookTitle 
-    ? `${launchSettings.bookTitle}: How to Detect Deception and Deal with Liars | Spiritans Sound`
+    ? `${launchSettings.bookTitle}: How to Detect Deception and Handle Manipulation | Spiritans Sound`
     : btvConfig.seo.title;
   const description = btvConfig.seo.description;
 
