@@ -35,7 +35,7 @@ export default function MagazineNav() {
   };
 
   return (
-    <nav className="border-b border-brand-primary/10 bg-[#0c0c0e]/95 backdrop-blur-md pt-20 sticky top-0 z-40">
+    <nav className="border-b border-brand-primary/10 bg-[#0c0c0e]/95 backdrop-blur-md sticky top-0 z-40">
       <div className="text-center py-4 border-b border-white/5">
         <Link href="/unveiler" className="text-white font-black text-2xl tracking-[0.15em] uppercase hover:text-brand-primary transition-colors">
           <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-primary to-brand-primary/80">TREASURES</span>{" "}

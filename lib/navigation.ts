@@ -7,6 +7,7 @@ export const MAIN_NAV = [
 	{ label: "Online Radio", href: "/radio" },
 	{ label: "Publications", href: "/publications" },
 	{ label: "Unveiler Magazine", href: "/unveiler" },
+	{ label: "Young Creators", href: "/young-creators" },
 	{ label: "News & Events", href: "/events" },
 	{ label: "Donations", href: "/donate" },
 	{ label: "Newsletter", href: "/newsletter" },

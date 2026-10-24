@@ -221,3 +221,110 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgb(var(--brand-primary));
 }
+
+/* ===============================
+   Young Creators Network (YCN) identity
+   Scoped to .ycn-theme so the main site palette is unaffected.
+   =============================== */
+
+/*
+ * Register the extra semantic tokens without binding them to a global colour.
+ * Outside .ycn-theme the referenced variables are unset, so existing components
+ * keep their previous behaviour; inside .ycn-theme the tokens are overridden.
+ */
+@theme {
+  --color-card: var(--ycn-card);
+  --color-card-foreground: var(--ycn-card-foreground);
+  --color-secondary: var(--ycn-secondary);
+  --color-secondary-foreground: var(--ycn-secondary-foreground);
+  --color-input: var(--ycn-input);
+  --color-ring: var(--ycn-ring);
+  --color-destructive: var(--ycn-destructive);
+  --color-destructive-foreground: var(--ycn-destructive-foreground);
+}
+
+@theme inline {
+  --color-ink: var(--yc-ink);
+  --color-ink-foreground: var(--yc-ink-foreground);
+  --color-tangerine: var(--yc-tangerine);
+  --color-teal: var(--yc-teal);
+  --color-sun: var(--yc-sun);
+  --color-cream: var(--yc-cream);
+
+  --font-display: var(--ycn-font-display);
+}
+
+.ycn-theme {
+  --yc-ink: oklch(0.24 0.05 265);
+  --yc-ink-foreground: oklch(0.97 0.01 85);
+  --yc-tangerine: oklch(0.7 0.17 45);
+  --yc-teal: oklch(0.58 0.1 195);
+  --yc-sun: oklch(0.86 0.14 88);
+  --yc-cream: oklch(0.975 0.015 85);
+
+  --ycn-font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --ycn-font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+
+  /* Core tokens consumed by the site's rgb(var(--...)) mappings. */
+  --background: 251 246 236;
+  --foreground: 17 26 45;
+  --primary: 242 118 54;
+  --primary-foreground: 253 252 248;
+  --muted: 242 234 221;
+  --muted-foreground: 85 94 111;
+  --accent: 194 243 242;
+  --accent-foreground: 0 54 58;
+  --border: 226 218 204;
+  --input: 219 211 198;
+  --ring: 242 118 54;
+
+  /* YCN-specific semantic tokens. */
+  --ycn-card: 255 255 255;
+  --ycn-card-foreground: 17 26 45;
+  --ycn-secondary: 244 234 217;
+  --ycn-secondary-foreground: 19 30 55;
+  --ycn-input: 219 211 198;
+  --ycn-ring: 242 118 54;
+  --ycn-destructive: 231 0 11;
+  --ycn-destructive-foreground: 248 250 252;
+
+  /* Drive the semantic utilities only inside the YCN section. */
+  --color-card: rgb(var(--ycn-card));
+  --color-card-foreground: rgb(var(--ycn-card-foreground));
+  --color-secondary: rgb(var(--ycn-secondary));
+  --color-secondary-foreground: rgb(var(--ycn-secondary-foreground));
+  --color-input: rgb(var(--ycn-input));
+  --color-ring: rgb(var(--ycn-ring));
+  --color-destructive: rgb(var(--ycn-destructive));
+  --color-destructive-foreground: rgb(var(--ycn-destructive-foreground));
+
+  --radius: 0.9rem;
+
+  font-family: var(--ycn-font-sans);
+}
+
+.ycn-theme h1,
+.ycn-theme h2,
+.ycn-theme h3,
+.ycn-theme h4,
+.ycn-theme h5,
+.ycn-theme h6,
+.ycn-theme .font-display {
+  font-family: var(--ycn-font-display);
+  letter-spacing: -0.02em;
+}
+
+@keyframes yc-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.ycn-theme .yc-rise {
+  animation: yc-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}

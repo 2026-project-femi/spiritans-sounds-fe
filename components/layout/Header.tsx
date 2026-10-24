@@ -4,17 +4,19 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/providers/AuthProvider";
+import NetworkBar from "@/components/layout/NetworkBar";
 
 const navLinks = [
 	{ href: "/", label: "Home" },
 	{ href: "/homilies", label: "Homilies" },
 	{ href: "/articles", label: "Articles" },
-	{ href: "/unveiler", label: "Treasures  Unveiler" },
+	{ href: "/unveiler", label: "Treasures Unveiler" },
 	{ href: "/lyrics-of-light", label: "Lyrics of Light" },
 	{ href: "/about", label: "About" },
 ];
 
 const moreLinks = [
+	{ href: "/young-creators", label: "Young Creators" },
 	{ href: "/contact", label: "Contact" },
 	{ href: "/unveiler/issues", label: "Magazine Issues" },
 	{ href: "/unveiler/books", label: "Book Store" },
@@ -78,103 +80,101 @@ const Header: React.FC = () => {
 		return pathname.startsWith(href);
 	};
 
-	// Hide main site header on dedicated book launch funnel pages
-	if (pathname?.startsWith("/unveiler/books/behind-the-veil") || pathname === "/behind-the-veil") {
-		return null;
-	}
-
 	return (
 		<header
-			className={`fixed top-0 left-0 right-0 z-50 transition-gentle px-4 sm:px-6 md:px-12 py-3 sm:py-4 ${
-				isScrolled ? "bg-white md:bg-white/80 md:backdrop-blur-md shadow-sm py-2.5 sm:py-3" : "bg-transparent py-4 sm:py-6"
+			className={`fixed top-0 left-0 right-0 z-50 transition-gentle ${
+				isScrolled ? "bg-white md:bg-white/80 md:backdrop-blur-md shadow-sm" : "bg-transparent"
 			}`}>
-			<div className="max-w-7xl mx-auto flex items-center justify-between">
-				{/* Logo Section */}
-				<Link href="/" className="flex items-center gap-2 shrink-0 min-w-0">
-					<Image
-						src="/assets/cropped-SpritansLogo.png"
-						alt="Logo"
-						width={36}
-						height={36}
-						className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 object-contain"
-					/>
-					<span className="font-bold text-base sm:text-lg text-primary whitespace-nowrap truncate">
-						Spiritans Sound
-					</span>
-				</Link>
-
-				{/* Desktop Navigation */}
-				<nav className="hidden lg:flex items-center space-x-8">
-					{navLinks.map((item) => {
-						const active = isActiveLink(item.href);
-						return (
-							<Link
-								key={item.label}
-								href={item.href}
-								className={`text-sm font-medium tracking-widest uppercase transition-gentle ${
-									active
-										? "text-brand-primary"
-										: "text-sacred-slate/70 hover:text-brand-primary"
-								}`}>
-								{item.label}
-							</Link>
-						);
-					})}
-
-					{/* More Dropdown */}
-					<div className="relative group">
-						<button className="text-sm font-medium tracking-widest uppercase text-sacred-slate/70 hover:text-brand-primary transition-gentle ">
-							More
-						</button>
-						<div className="absolute top-full left-0 w-56 bg-white shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-gentle border-t-2 border-brand-primary py-2 z-50 rounded-b-md">
-							{dynamicMoreLinks.map((link) => {
-								const active = isActiveLink(link.href);
-								return (
-									<Link
-										key={link.label}
-										href={link.href}
-										className={`block px-4 py-2 text-xs uppercase tracking-widest transition-gentle ${
-											active
-												? "bg-sacred-ivory text-brand-primary"
-												: "text-sacred-slate/60 hover:bg-sacred-ivory hover:text-brand-primary"
-										}`}>
-										{link.label}
-									</Link>
-								);
-							})}
-							{user && (
-								<button
-									onClick={handleLogout}
-									className="block w-full text-left px-4 py-2 text-xs uppercase tracking-widest transition-gentle text-red-500 hover:bg-red-50 font-medium"
-								>
-									Log Out
-								</button>
-							)}
-						</div>
-					</div>
-
-					<Link
-						href="/donations"
-						className="px-6 py-2 border text-brand-primary text-xs font-semibold tracking-widest uppercase hover:bg-brand-primary transition-all duration-300 hover:text-white rounded-md">
-						Donate
-					</Link>
-				</nav>
-
-				{/* Mobile Menu Toggle */}
-				<button
-					aria-label="Toggle navigation menu"
-					aria-expanded={isMobileMenuOpen}
-					className="lg:hidden text-sacred-slate p-2 rounded-lg hover:bg-black/5 transition-colors focus:outline-none min-h-[44px] min-w-[44px] flex items-center justify-center"
-					onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-					<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth={1.75}
-							d={isMobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16m-7 6h7"}
+			<NetworkBar current="spiritans" />
+			<div className={`px-4 sm:px-6 md:px-12 ${isScrolled ? "py-2.5 sm:py-3" : "py-3 sm:py-4"}`}>
+				<div className="max-w-7xl mx-auto flex items-center justify-between">
+					{/* Logo Section */}
+					<Link href="/" className="flex items-center gap-2 shrink-0 min-w-0">
+						<Image
+							src="/assets/cropped-SpritansLogo.png"
+							alt="Logo"
+							width={36}
+							height={36}
+							className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 object-contain"
 						/>
-					</svg>
-				</button>
+						<span className="font-bold text-base sm:text-lg text-primary whitespace-nowrap truncate">
+							Spiritans Sound
+						</span>
+					</Link>
+
+					{/* Desktop Navigation */}
+					<nav className="hidden lg:flex items-center space-x-8">
+						{navLinks.map((item) => {
+							const active = isActiveLink(item.href);
+							return (
+								<Link
+									key={item.label}
+									href={item.href}
+									className={`text-sm font-medium tracking-widest uppercase transition-gentle ${
+										active
+											? "text-brand-primary"
+											: "text-sacred-slate/70 hover:text-brand-primary"
+									}`}>
+									{item.label}
+								</Link>
+							);
+						})}
+
+						{/* More Dropdown */}
+						<div className="relative group">
+							<button className="text-sm font-medium tracking-widest uppercase text-sacred-slate/70 hover:text-brand-primary transition-gentle ">
+								More
+							</button>
+							<div className="absolute top-full left-0 w-56 bg-white shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-gentle border-t-2 border-brand-primary py-2 z-50 rounded-b-md">
+								{dynamicMoreLinks.map((link) => {
+									const active = isActiveLink(link.href);
+									return (
+										<Link
+											key={link.label}
+											href={link.href}
+											className={`block px-4 py-2 text-xs uppercase tracking-widest transition-gentle ${
+												active
+													? "bg-sacred-ivory text-brand-primary"
+													: "text-sacred-slate/60 hover:bg-sacred-ivory hover:text-brand-primary"
+											}`}>
+											{link.label}
+										</Link>
+									);
+								})}
+								{user && (
+									<button
+										onClick={handleLogout}
+										className="block w-full text-left px-4 py-2 text-xs uppercase tracking-widest transition-gentle text-red-500 hover:bg-red-50 font-medium"
+									>
+										Log Out
+									</button>
+								)}
+							</div>
+						</div>
+
+						<Link
+							href="/donations"
+							className="px-6 py-2 border text-brand-primary text-xs font-semibold tracking-widest uppercase hover:bg-brand-primary transition-all duration-300 hover:text-white rounded-md">
+							Donate
+						</Link>
+					</nav>
+
+					{/* Mobile Menu Toggle */}
+					<button
+						aria-label="Toggle navigation menu"
+						aria-expanded={isMobileMenuOpen}
+						className="lg:hidden text-sacred-slate p-2 rounded-lg hover:bg-black/5 transition-colors focus:outline-none min-h-[44px] min-w-[44px] flex items-center justify-center"
+						onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+						<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={1.75}
+								d={isMobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16m-7 6h7"}
+							/>
+						</svg>
+					</button>
+				</div>
 			</div>
 
 			{/* Mobile Menu Overlay */}
