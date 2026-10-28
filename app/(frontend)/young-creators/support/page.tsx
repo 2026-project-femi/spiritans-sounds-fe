@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { getImpactStats } from "@/components/young-creators/api";
-import { workshopImage } from "@/components/young-creators/data/demo-creators";
+import { getYcnSettings } from "@/components/young-creators/api";
 import { ImpactSection } from "@/components/young-creators/components/ImpactSection";
 import { SupportYoungCreators } from "@/components/young-creators/components/SupportYoungCreators";
 import { SectionHeading } from "@/components/young-creators/components/primitives";
@@ -15,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function SupportPage() {
-	const stats = await getImpactStats();
+	const settings = await getYcnSettings();
 
 	return (
 		<>
@@ -41,7 +40,7 @@ export default async function SupportPage() {
 				</div>
 				<SupportYoungCreators />
 			</section>
-			<ImpactSection stats={stats} image={workshopImage} />
+			<ImpactSection stats={settings.impactStats} image={settings.workshopImage.src} />
 		</>
 	);
 }

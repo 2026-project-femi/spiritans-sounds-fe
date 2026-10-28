@@ -135,3 +135,11 @@ export interface ImpactStat {
   value: string;
   label: string;
 }
+
+/** Programme-wide content managed in the `ycn-settings` Payload global. */
+export interface YcnSiteSettings {
+  heroImage: MediaItem;
+  workshopImage: MediaItem;
+  impactStats: ImpactStat[];
+  contact: { label: string; href: string } | null;
+}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, DM_Sans } from "next/font/google";
 import NetworkBar from "@/components/layout/NetworkBar";
+import { getYcnSettings } from "@/components/young-creators/api";
 import { YcnBreadcrumb, YcnFooter, YcnSubNav } from "@/components/young-creators/components/YcnShell";
 
 const bricolage = Bricolage_Grotesque({
@@ -32,7 +33,9 @@ export const metadata: Metadata = {
 	},
 };
 
-export default function YoungCreatorsLayout({ children }: { children: React.ReactNode }) {
+export default async function YoungCreatorsLayout({ children }: { children: React.ReactNode }) {
+	const settings = await getYcnSettings();
+
 	return (
 		<section
 			className={`ycn-theme flex min-h-screen flex-col bg-background text-foreground ${bricolage.variable} ${dmSans.variable}`}
@@ -41,7 +44,7 @@ export default function YoungCreatorsLayout({ children }: { children: React.Reac
 			<YcnSubNav />
 			<YcnBreadcrumb />
 			<main className="flex-1">{children}</main>
-			<YcnFooter />
+			<YcnFooter contact={settings.contact} />
 		</section>
 	);
 }

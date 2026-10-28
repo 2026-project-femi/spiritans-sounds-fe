@@ -20,6 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	return {
 		title,
 		description: creator.tagline,
+		robots: creator.isMinor ? { index: false, follow: true } : undefined,
 		openGraph: {
 			title,
 			description: creator.tagline,

@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import {
 	getFeaturedCreators,
-	getImpactStats,
 	getLatestPosts,
+	getYcnSettings,
 	listCreators,
 } from "@/components/young-creators/api";
-import { heroImage, workshopImage } from "@/components/young-creators/data/demo-creators";
 import { YoungCreatorsHero } from "@/components/young-creators/components/YoungCreatorsHero";
 import { JourneySection } from "@/components/young-creators/components/JourneySection";
 import { CreatorSpotlight } from "@/components/young-creators/components/CreatorSpotlight";
@@ -31,16 +30,16 @@ export const metadata: Metadata = {
 };
 
 export default async function YoungCreatorsPage() {
-	const [featured, creators, latest, stats] = await Promise.all([
+	const [featured, creators, latest, settings] = await Promise.all([
 		getFeaturedCreators(),
 		listCreators(),
 		getLatestPosts(),
-		getImpactStats(),
+		getYcnSettings(),
 	]);
 
 	return (
 		<>
-			<YoungCreatorsHero image={heroImage} />
+			<YoungCreatorsHero image={settings.heroImage.src} />
 			<JourneySection />
 			{featured[0] && <CreatorSpotlight creator={featured[0]} />}
 			<section className="mx-auto max-w-7xl px-5 py-24">
@@ -54,7 +53,7 @@ export default async function YoungCreatorsPage() {
 			</section>
 			<LatestCreators posts={latest} />
 			<GetInvolved />
-			<ImpactSection stats={stats} image={workshopImage} />
+			<ImpactSection stats={settings.impactStats} image={settings.workshopImage.src} />
 			<FinalCTA />
 		</>
 	);

@@ -111,7 +111,7 @@ export function YcnBreadcrumb() {
   );
 }
 
-export function YcnFooter() {
+export function YcnFooter({ contact }: { contact?: { label: string; href: string } | null | undefined }) {
   return (
     <footer className="mt-24 bg-ink text-ink-foreground">
       <div className="mx-auto grid max-w-7xl gap-8 px-5 py-14 md:grid-cols-3">
@@ -132,8 +132,8 @@ export function YcnFooter() {
           {[...NAV, { href: YCN_PATHS.support, label: "Support Young Creators" }].map((n) => (
             <YcnLink key={n.href} href={n.href} className="text-ink-foreground/80 hover:text-sun">{n.label}</YcnLink>
           ))}
-          {ORG.contact.href && (
-            <a href={ORG.contact.href} className="text-ink-foreground/80 hover:text-sun">{ORG.contact.label}</a>
+          {contact && (
+            <a href={contact.href} className="text-ink-foreground/80 hover:text-sun">{contact.label}</a>
           )}
         </div>
       </div>
