@@ -7,6 +7,7 @@ import {
   sendFailedChargeNotification
 } from "@/lib/emails/sendEmail";
 import { completePurchase } from "@/lib/payments/completePurchase";
+import { recordSubscriptionDonation } from "@/lib/payments/stripeSubscription";
 import { getPayload } from 'payload';
 import configPromise from '@/payload.config';
 
@@ -51,6 +52,14 @@ export async function POST(request: NextRequest) {
             case "checkout.session.completed": {
                 const session = event.data.object as Stripe.Checkout.Session;
                 
+                // Subscription payments (including the first invoice) are recorded
+                // from `invoice.paid`, so skip the checkout session to avoid
+                // double-counting the initial payment.
+                if (session.metadata?.type === "donation" && session.mode === "subscription") {
+                    console.log(`⏭️ Subscription ${session.id} will be recorded from invoice.paid`);
+                    break;
+                }
+
                 // Route based on metadata type
                 if (session.metadata?.type === "purchase") {
                     await handleSuccessfulPurchase(session, payloadCms);
@@ -59,8 +68,14 @@ export async function POST(request: NextRequest) {
                 }
                 break;
             }
+            case "invoice.paid": {
+                const invoice = event.data.object as Stripe.Invoice;
+                await recordSubscriptionDonation(invoice, payloadCms);
+                break;
+            }
             case "checkout.session.async_payment_failed":
-            case "payment_intent.payment_failed": {
+            case "payment_intent.payment_failed":
+            case "invoice.payment_failed": {
                 const session = event.data.object as Stripe.Checkout.Session | Stripe.PaymentIntent;
                 await handleFailedCharge(session);
                 break;
