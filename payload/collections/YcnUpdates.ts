@@ -2,15 +2,11 @@ import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { isAdmin, isAdminOrEditor } from '@/access/roles'
 import { publishedAtField } from '@/payload/fields/statusField'
-import { revalidatePath } from 'next/cache'
+import { safeRevalidatePath } from '@/lib/revalidate'
 import type { CollectionConfig } from 'payload'
 
 const revalidateUpdates = () => {
-  try {
-    revalidatePath('/young-creators')
-  } catch {
-    // revalidatePath is only available inside a Next.js request context.
-  }
+  safeRevalidatePath('/young-creators')
 }
 
 export const YcnUpdates: CollectionConfig = {

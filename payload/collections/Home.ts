@@ -1,17 +1,17 @@
 import { isAdmin, isAdminOrEditor } from '@/access/roles';
 import { anyoneExceptAuthor } from '@/access/anyoneExceptAuthor';
-import { revalidatePath } from 'next/cache';
+import { safeRevalidatePath } from '@/lib/revalidate';
 import { CollectionConfig } from 'payload'
 
 export const HomePage: CollectionConfig = {
   slug: 'homepage',
   hooks: {
     afterChange: [({doc})=>{
-      revalidatePath('/');
+      safeRevalidatePath('/');
       return doc;
     }],
 		afterDelete: [({doc})=>{
-			revalidatePath('/');
+			safeRevalidatePath('/');
 			return doc;
 		}]
   },

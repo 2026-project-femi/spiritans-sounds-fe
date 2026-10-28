@@ -1,5 +1,5 @@
 import { isAdminOrEditor } from '@/access/roles';
-import { revalidatePath } from 'next/cache';
+import { safeRevalidatePath } from '@/lib/revalidate';
 import { CollectionConfig } from 'payload'
 
 export const Radio: CollectionConfig = {
@@ -16,11 +16,11 @@ export const Radio: CollectionConfig = {
   },
   hooks: {
     afterChange: [({doc})=>{
-      revalidatePath('/unveiler/radio');
+      safeRevalidatePath('/unveiler/radio');
       return doc;
     }],
     afterDelete: [({doc})=>{
-      revalidatePath('/unveiler/radio');
+      safeRevalidatePath('/unveiler/radio');
       return doc;
     }], 
   },

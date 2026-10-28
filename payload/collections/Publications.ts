@@ -1,6 +1,6 @@
 import { isAdmin } from '@/access/roles';
 import { publishedAtField } from '@/payload/fields/statusField';
-import { revalidatePath } from 'next/cache';
+import { safeRevalidatePath } from '@/lib/revalidate';
 import { CollectionConfig, CollectionAfterChangeHook, CollectionBeforeChangeHook, Access, Where } from 'payload'
 import { sendPurchaseConfirmationEmail } from '@/lib/emails/sendEmail';
 
@@ -129,8 +129,8 @@ export const Publications: CollectionConfig = {
       // Behind the Veil funnel ensuring its publication on first request), so it
       // must never be allowed to break the underlying write.
       try {
-        revalidatePath('/unveiler/books');
-        revalidatePath(`/unveiler/books/${doc.slug}`);
+        safeRevalidatePath('/unveiler/books');
+        safeRevalidatePath(`/unveiler/books/${doc.slug}`);
       } catch {
         // Revalidation is skipped outside of server actions / route handlers.
       }
@@ -138,8 +138,8 @@ export const Publications: CollectionConfig = {
     }, handlePreorderRelease],
     afterDelete: [({doc})=>{
       try {
-        revalidatePath('/unveiler/books');
-        revalidatePath(`/unveiler/books/${doc.slug}`);
+        safeRevalidatePath('/unveiler/books');
+        safeRevalidatePath(`/unveiler/books/${doc.slug}`);
       } catch {
         // Revalidation is skipped outside of server actions / route handlers.
       }

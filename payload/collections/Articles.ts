@@ -6,7 +6,7 @@ import { Code } from '@/blocks/Code/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
 import { publishedAtField } from '@/payload/fields/statusField'
 import { BlocksFeature, FixedToolbarFeature, HeadingFeature, HorizontalRuleFeature, InlineToolbarFeature, lexicalEditor, UploadFeature } from '@payloadcms/richtext-lexical'
-import { revalidatePath } from 'next/cache'
+import { safeRevalidatePath } from '@/lib/revalidate'
 import { CollectionConfig } from 'payload'
 
 export const Articles: CollectionConfig = {
@@ -25,13 +25,13 @@ export const Articles: CollectionConfig = {
   },
   hooks: {
     afterChange: [({doc})=>{
-      revalidatePath('/articles');
-      revalidatePath('/')
+      safeRevalidatePath('/articles');
+      safeRevalidatePath('/')
       return doc;
     }],
     afterDelete: [({doc})=>{
-      revalidatePath('/articles');
-      revalidatePath('/')
+      safeRevalidatePath('/articles');
+      safeRevalidatePath('/')
       return doc;
     }]
   },

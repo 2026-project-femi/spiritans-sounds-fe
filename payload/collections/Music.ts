@@ -2,7 +2,7 @@ import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { isAdmin, isAdminOrEditor } from '@/access/roles';
 import { publishedAtField } from '@/payload/fields/statusField';
-import { revalidatePath } from 'next/cache';
+import { safeRevalidatePath } from '@/lib/revalidate';
 import { CollectionConfig } from 'payload'
 
 export const Music: CollectionConfig = {
@@ -21,8 +21,8 @@ export const Music: CollectionConfig = {
   },
   hooks: {
     afterChange: [({doc})=>{
-      revalidatePath('/music');
-      revalidatePath('/')
+      safeRevalidatePath('/music');
+      safeRevalidatePath('/')
       return doc;
     }]
   },

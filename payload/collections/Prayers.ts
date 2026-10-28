@@ -7,7 +7,7 @@ import { Code } from '@/blocks/Code/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
 import { publishedAtField } from '@/payload/fields/statusField'
 import { BlocksFeature, FixedToolbarFeature, HeadingFeature, HorizontalRuleFeature, InlineToolbarFeature, lexicalEditor, UploadFeature } from '@payloadcms/richtext-lexical'
-import { revalidatePath } from 'next/cache'
+import { safeRevalidatePath } from '@/lib/revalidate'
 import { CollectionConfig } from 'payload'
 
 export const Prayers: CollectionConfig = {
@@ -26,13 +26,13 @@ export const Prayers: CollectionConfig = {
   },
   hooks: {
     afterChange: [({doc})=>{
-      revalidatePath('/prayers');
-      revalidatePath('/')
+      safeRevalidatePath('/prayers');
+      safeRevalidatePath('/')
       return doc;
     }],
     afterDelete: [({doc})=>{
-      revalidatePath('/prayers');
-      revalidatePath('/')
+      safeRevalidatePath('/prayers');
+      safeRevalidatePath('/')
       return doc;
     }], 
   },

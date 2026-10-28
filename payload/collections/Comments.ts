@@ -1,6 +1,6 @@
 import { isAdminOrEditor } from "@/access/roles";
 import { anyoneExceptAuthor } from "@/access/anyoneExceptAuthor";
-import { revalidatePath } from "next/cache";
+import { safeRevalidatePath } from '@/lib/revalidate';
 import { CollectionConfig } from "payload";
 
 export const Comments: CollectionConfig = {
@@ -19,17 +19,17 @@ export const Comments: CollectionConfig = {
 	},
 	hooks: {
 		afterChange: [({doc})=>{
-		  revalidatePath('/articles');
-		  revalidatePath('/homilies');
-		  revalidatePath('/prayers');
-		  revalidatePath('/unveiler/events');
+		  safeRevalidatePath('/articles');
+		  safeRevalidatePath('/homilies');
+		  safeRevalidatePath('/prayers');
+		  safeRevalidatePath('/unveiler/events');
 		  return doc;
 		}],
 		afterDelete: [({doc})=>{
-		  revalidatePath('/articles');
-		  revalidatePath('/homilies');
-		  revalidatePath('/prayers');
-		  revalidatePath('/unveiler/events');
+		  safeRevalidatePath('/articles');
+		  safeRevalidatePath('/homilies');
+		  safeRevalidatePath('/prayers');
+		  safeRevalidatePath('/unveiler/events');
 		  return doc;
 		}]
 	},

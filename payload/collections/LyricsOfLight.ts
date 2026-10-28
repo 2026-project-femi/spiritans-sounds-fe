@@ -2,7 +2,7 @@ import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { isAdmin, isAdminOrEditor } from '@/access/roles';
 import { publishedAtField } from '@/payload/fields/statusField';
-import { revalidatePath } from 'next/cache';
+import { safeRevalidatePath } from '@/lib/revalidate';
 import { CollectionConfig } from 'payload'
 
 export const LyricsOfLight: CollectionConfig = {
@@ -22,8 +22,8 @@ export const LyricsOfLight: CollectionConfig = {
   },
   hooks: {
     afterChange: [({doc}) => {
-      revalidatePath('/lyrics-of-light');
-      revalidatePath('/');
+      safeRevalidatePath('/lyrics-of-light');
+      safeRevalidatePath('/');
       return doc;
     }]
   },

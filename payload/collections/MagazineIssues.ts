@@ -2,7 +2,7 @@ import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished';
 import { isAdmin, isAdminOrPublishingAdmin } from '@/access/roles';
 import { publishedAtField } from '@/payload/fields/statusField';
-import { revalidatePath } from 'next/cache';
+import { safeRevalidatePath } from '@/lib/revalidate';
 import { CollectionConfig } from 'payload'
 
 export const MagazineIssues: CollectionConfig = {
@@ -21,11 +21,11 @@ export const MagazineIssues: CollectionConfig = {
   },
   hooks: {
     afterChange: [({doc})=>{
-      revalidatePath('/unveiler/issues');
+      safeRevalidatePath('/unveiler/issues');
       return doc;
     }],
     afterDelete: [({doc})=>{
-      revalidatePath('/unveiler/issues');
+      safeRevalidatePath('/unveiler/issues');
       return doc;
     }],
   },

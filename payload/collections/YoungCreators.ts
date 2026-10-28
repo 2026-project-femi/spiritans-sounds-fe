@@ -3,7 +3,7 @@ import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { adminOrEditorField, authenticatedField } from '@/access/fieldAccess'
 import { isAdmin, isAdminOrEditor } from '@/access/roles'
 import { publishedAtField } from '@/payload/fields/statusField'
-import { revalidatePath } from 'next/cache'
+import { safeRevalidatePath } from '@/lib/revalidate'
 import type { CollectionConfig, FieldHook } from 'payload'
 
 const TALENT_CATEGORIES = [
@@ -57,19 +57,10 @@ const slugify: FieldHook = ({ value, data }) => {
     .slice(0, 96)
 }
 
-const safeRevalidate = (path: string) => {
-  try {
-    revalidatePath(path)
-  } catch {
-    // revalidatePath is only available inside a Next.js request context
-    // (for example, not when running seed scripts).
-  }
-}
-
 const revalidateCreator = ({ doc }: { doc?: { slug?: string } | null }) => {
-  safeRevalidate('/young-creators')
-  safeRevalidate('/young-creators/creators')
-  if (doc?.slug) safeRevalidate(`/young-creators/creators/${doc.slug}`)
+  safeRevalidatePath('/young-creators')
+  safeRevalidatePath('/young-creators/creators')
+  if (doc?.slug) safeRevalidatePath(`/young-creators/creators/${doc.slug}`)
   return doc
 }
 

@@ -14,7 +14,7 @@ import { authenticated } from "@/access/authenticated";
 import { authenticatedOrPublished } from "@/access/authenticatedOrPublished";
 import { isAdmin, isAdminOrEditor } from "@/access/roles";
 import { publishedAtField } from "@/payload/fields/statusField";
-import { revalidatePath } from "next/cache";
+import { safeRevalidatePath } from '@/lib/revalidate';
 import { CollectionConfig } from "payload";
 
 export const Events: CollectionConfig = {
@@ -33,11 +33,11 @@ export const Events: CollectionConfig = {
 	},
 	hooks: {
 		afterChange: [({doc})=>{
-			revalidatePath('/unveiler');
+			safeRevalidatePath('/unveiler');
 			return doc;
 		}],
 		afterDelete: [({doc})=>{
-			revalidatePath('/unveiler');
+			safeRevalidatePath('/unveiler');
 			return doc;
 		}]
 	},
