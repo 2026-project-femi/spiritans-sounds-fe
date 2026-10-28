@@ -1,4 +1,4 @@
-import { authenticated } from '@/access/authenticated'
+import { adminOrPublishingAdminField, authenticatedField } from '@/access/fieldAccess'
 import { isAdmin, isAdminOrPublishingAdmin } from '@/access/roles'
 import { sendYcnAdminNotification } from '@/lib/emails/ycn'
 import type { CollectionAfterChangeHook, CollectionConfig } from 'payload'
@@ -162,9 +162,9 @@ export const YcnOpportunities: CollectionConfig = {
       validate: (value: unknown) =>
         value === true ? true : 'Contact must confirm TUYDEF handles all creator contact.',
       access: {
-        read: authenticated,
-        create: isAdminOrPublishingAdmin,
-        update: isAdminOrPublishingAdmin,
+        read: authenticatedField,
+        create: adminOrPublishingAdminField,
+        update: adminOrPublishingAdminField,
       },
     },
     {
@@ -183,8 +183,8 @@ export const YcnOpportunities: CollectionConfig = {
         { label: 'Archived', value: 'archived' },
       ],
       access: {
-        create: isAdminOrPublishingAdmin,
-        update: isAdminOrPublishingAdmin,
+        create: adminOrPublishingAdminField,
+        update: adminOrPublishingAdminField,
       },
     },
     {
@@ -195,9 +195,9 @@ export const YcnOpportunities: CollectionConfig = {
         position: 'sidebar',
       },
       access: {
-        read: isAdminOrPublishingAdmin,
-        create: isAdminOrPublishingAdmin,
-        update: isAdminOrPublishingAdmin,
+        read: adminOrPublishingAdminField,
+        create: adminOrPublishingAdminField,
+        update: adminOrPublishingAdminField,
       },
     },
   ],

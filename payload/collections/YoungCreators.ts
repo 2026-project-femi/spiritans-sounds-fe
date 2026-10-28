@@ -1,5 +1,6 @@
 import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
+import { adminOrEditorField, authenticatedField } from '@/access/fieldAccess'
 import { isAdmin, isAdminOrEditor } from '@/access/roles'
 import { publishedAtField } from '@/payload/fields/statusField'
 import { revalidatePath } from 'next/cache'
@@ -361,7 +362,6 @@ export const YoungCreators: CollectionConfig = {
     publishedAtField,
     // ── Safeguarding: admin-only fields ─────────────────────────────────────
     {
-      name: 'safeguarding',
       type: 'collapsible',
       label: 'Safeguarding & Consent (Admin Only)',
       admin: {
@@ -379,9 +379,9 @@ export const YoungCreators: CollectionConfig = {
             { label: 'Alias', value: 'alias' },
           ],
           access: {
-            read: authenticated,
-            create: isAdminOrEditor,
-            update: isAdminOrEditor,
+            read: authenticatedField,
+            create: adminOrEditorField,
+            update: adminOrEditorField,
           },
         },
         {
@@ -389,9 +389,9 @@ export const YoungCreators: CollectionConfig = {
           type: 'text',
           label: 'Legal Name',
           access: {
-            read: authenticated,
-            create: isAdminOrEditor,
-            update: isAdminOrEditor,
+            read: authenticatedField,
+            create: adminOrEditorField,
+            update: adminOrEditorField,
           },
         },
         {
@@ -400,9 +400,9 @@ export const YoungCreators: CollectionConfig = {
           label: 'Creator is under 18',
           defaultValue: false,
           access: {
-            read: authenticated,
-            create: isAdminOrEditor,
-            update: isAdminOrEditor,
+            read: authenticatedField,
+            create: adminOrEditorField,
+            update: adminOrEditorField,
           },
         },
         {
@@ -411,9 +411,9 @@ export const YoungCreators: CollectionConfig = {
           label: 'Guardian / parental consent on file',
           defaultValue: false,
           access: {
-            read: authenticated,
-            create: isAdminOrEditor,
-            update: isAdminOrEditor,
+            read: authenticatedField,
+            create: adminOrEditorField,
+            update: adminOrEditorField,
           },
         },
         {
@@ -424,9 +424,9 @@ export const YoungCreators: CollectionConfig = {
             date: { pickerAppearance: 'dayOnly' },
           },
           access: {
-            read: authenticated,
-            create: isAdminOrEditor,
-            update: isAdminOrEditor,
+            read: authenticatedField,
+            create: adminOrEditorField,
+            update: adminOrEditorField,
           },
         },
         {
@@ -434,9 +434,9 @@ export const YoungCreators: CollectionConfig = {
           type: 'textarea',
           label: 'Internal Notes',
           access: {
-            read: authenticated,
-            create: isAdminOrEditor,
-            update: isAdminOrEditor,
+            read: authenticatedField,
+            create: adminOrEditorField,
+            update: adminOrEditorField,
           },
         },
       ],

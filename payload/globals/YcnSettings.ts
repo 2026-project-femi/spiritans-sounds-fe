@@ -1,6 +1,6 @@
 import { anyoneExceptAuthor } from '@/access/anyoneExceptAuthor'
 import { isAdminOrPublishingAdmin } from '@/access/roles'
-import type { GlobalConfig } from 'payload'
+import type { GlobalConfig, TextFieldSingleValidation } from 'payload'
 
 export const YcnSettings: GlobalConfig = {
   slug: 'ycn-settings',
@@ -91,17 +91,16 @@ export const YcnSettings: GlobalConfig = {
               name: 'contactHref',
               type: 'text',
               label: 'Contact Link URL',
-              validate: (value: unknown) => {
+              validate: ((value) => {
                 if (!value) return true
-                if (typeof value !== 'string') return false
                 if (value.startsWith('mailto:')) return true
                 try {
                   const url = new URL(value)
-                  return url.protocol === 'https:' || url.protocol === 'http:'
+                  return url.protocol === 'https:' || url.protocol === 'http:' || 'Enter a valid https URL or mailto: address.'
                 } catch {
                   return 'Enter a valid https URL or mailto: address.'
                 }
-              },
+              }) as TextFieldSingleValidation,
               admin: {
                 description: 'Leave blank to hide the contact link in the footer.',
               },

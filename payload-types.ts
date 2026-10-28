@@ -94,6 +94,10 @@ export interface Config {
     'book-launch-registrations': BookLaunchRegistration;
     payouts: Payout;
     pageViews: PageView;
+    'young-creators': YoungCreator;
+    'ycn-updates': YcnUpdate;
+    'ycn-mentor-applications': YcnMentorApplication;
+    'ycn-opportunities': YcnOpportunity;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -138,6 +142,10 @@ export interface Config {
     'book-launch-registrations': BookLaunchRegistrationsSelect<false> | BookLaunchRegistrationsSelect<true>;
     payouts: PayoutsSelect<false> | PayoutsSelect<true>;
     pageViews: PageViewsSelect<false> | PageViewsSelect<true>;
+    'young-creators': YoungCreatorsSelect<false> | YoungCreatorsSelect<true>;
+    'ycn-updates': YcnUpdatesSelect<false> | YcnUpdatesSelect<true>;
+    'ycn-mentor-applications': YcnMentorApplicationsSelect<false> | YcnMentorApplicationsSelect<true>;
+    'ycn-opportunities': YcnOpportunitiesSelect<false> | YcnOpportunitiesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -158,12 +166,14 @@ export interface Config {
     header: Header;
     'commission-settings': CommissionSetting;
     'book-launch-settings': BookLaunchSetting;
+    'ycn-settings': YcnSetting;
   };
   globalsSelect: {
     footer: FooterSelect<false> | FooterSelect<true>;
     header: HeaderSelect<false> | HeaderSelect<true>;
     'commission-settings': CommissionSettingsSelect<false> | CommissionSettingsSelect<true>;
     'book-launch-settings': BookLaunchSettingsSelect<false> | BookLaunchSettingsSelect<true>;
+    'ycn-settings': YcnSettingsSelect<false> | YcnSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -1468,6 +1478,161 @@ export interface PageView {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "young-creators".
+ */
+export interface YoungCreator {
+  id: string;
+  /**
+   * The only name shown on the website. Set it according to consent (full name, first name + initial, or agreed alias).
+   */
+  publicDisplayName: string;
+  /**
+   * Public URL: /young-creators/creators/{slug}
+   */
+  slug: string;
+  /**
+   * Required. Add alt text on the Media item — it is used for accessibility and social previews.
+   */
+  portrait: string | Media;
+  classYear: number;
+  primaryCategory: 'writing' | 'music' | 'visual-art' | 'photography' | 'dance' | 'digital' | 'technology';
+  featured?: boolean | null;
+  /**
+   * City or region only — never a full address. Leave blank to hide.
+   */
+  location?: string | null;
+  talents?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  tagline: string;
+  bio?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  giftsAndTalents?: string | null;
+  discoveryStory?: string | null;
+  interview?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * YouTube or Vimeo embed URL. Leave blank to show “coming soon”.
+   */
+  videoUrl?: string | null;
+  videoPoster?: (string | null) | Media;
+  works?:
+    | {
+        title: string;
+        type: 'Writing' | 'Music' | 'Artwork' | 'Photo series' | 'Performance' | 'Video' | 'Project';
+        year: number;
+        description: string;
+        image?: (string | null) | Media;
+        href?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  achievements?:
+    | {
+        year: number;
+        title: string;
+        detail?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  gallery?:
+    | {
+        image: string | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  publishedAt?: string | null;
+  nameVisibility?: ('full-name' | 'first-name-initial' | 'alias') | null;
+  legalName?: string | null;
+  isMinor?: boolean | null;
+  guardianConsentOnFile?: boolean | null;
+  consentDate?: string | null;
+  internalNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ycn-updates".
+ */
+export interface YcnUpdate {
+  id: string;
+  title: string;
+  creator: string | YoungCreator;
+  kind: 'New work' | 'Performance' | 'Milestone' | 'Feature';
+  date: string;
+  excerpt: string;
+  /**
+   * Add alt text on the Media item — it is used for accessibility and social previews.
+   */
+  image: string | Media;
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Applications are submitted through the public Become a Mentor form.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ycn-mentor-applications".
+ */
+export interface YcnMentorApplication {
+  id: string;
+  fullName: string;
+  email: string;
+  phone?: string | null;
+  organisation?: string | null;
+  expertise: ('writing' | 'music' | 'visual-art' | 'photography' | 'dance' | 'digital' | 'technology')[];
+  experience: string;
+  availability: 'weekly' | 'fortnightly' | 'monthly' | 'project';
+  format: 'in-person' | 'online' | 'either';
+  safeguardingConsent: boolean;
+  status: 'new' | 'reviewing' | 'approved' | 'declined';
+  internalNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Offers are submitted through the public Offer an Opportunity form.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ycn-opportunities".
+ */
+export interface YcnOpportunity {
+  id: string;
+  contactName: string;
+  organisation: string;
+  email: string;
+  phone?: string | null;
+  type: 'internship' | 'commission' | 'performance' | 'exhibition' | 'scholarship' | 'workshop' | 'other';
+  title: string;
+  categories: ('writing' | 'music' | 'visual-art' | 'photography' | 'dance' | 'digital' | 'technology')[];
+  description: string;
+  location: string;
+  deadline?: string | null;
+  safeguardingConsent: boolean;
+  status: 'pending-review' | 'reviewing' | 'approved' | 'declined' | 'archived';
+  internalNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1763,6 +1928,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'pageViews';
         value: string | PageView;
+      } | null)
+    | ({
+        relationTo: 'young-creators';
+        value: string | YoungCreator;
+      } | null)
+    | ({
+        relationTo: 'ycn-updates';
+        value: string | YcnUpdate;
+      } | null)
+    | ({
+        relationTo: 'ycn-mentor-applications';
+        value: string | YcnMentorApplication;
+      } | null)
+    | ({
+        relationTo: 'ycn-opportunities';
+        value: string | YcnOpportunity;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2507,6 +2688,135 @@ export interface PageViewsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "young-creators_select".
+ */
+export interface YoungCreatorsSelect<T extends boolean = true> {
+  publicDisplayName?: T;
+  slug?: T;
+  portrait?: T;
+  classYear?: T;
+  primaryCategory?: T;
+  featured?: T;
+  location?: T;
+  talents?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  tagline?: T;
+  bio?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  giftsAndTalents?: T;
+  discoveryStory?: T;
+  interview?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  videoUrl?: T;
+  videoPoster?: T;
+  works?:
+    | T
+    | {
+        title?: T;
+        type?: T;
+        year?: T;
+        description?: T;
+        image?: T;
+        href?: T;
+        id?: T;
+      };
+  achievements?:
+    | T
+    | {
+        year?: T;
+        title?: T;
+        detail?: T;
+        id?: T;
+      };
+  gallery?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  publishedAt?: T;
+  nameVisibility?: T;
+  legalName?: T;
+  isMinor?: T;
+  guardianConsentOnFile?: T;
+  consentDate?: T;
+  internalNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ycn-updates_select".
+ */
+export interface YcnUpdatesSelect<T extends boolean = true> {
+  title?: T;
+  creator?: T;
+  kind?: T;
+  date?: T;
+  excerpt?: T;
+  image?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ycn-mentor-applications_select".
+ */
+export interface YcnMentorApplicationsSelect<T extends boolean = true> {
+  fullName?: T;
+  email?: T;
+  phone?: T;
+  organisation?: T;
+  expertise?: T;
+  experience?: T;
+  availability?: T;
+  format?: T;
+  safeguardingConsent?: T;
+  status?: T;
+  internalNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ycn-opportunities_select".
+ */
+export interface YcnOpportunitiesSelect<T extends boolean = true> {
+  contactName?: T;
+  organisation?: T;
+  email?: T;
+  phone?: T;
+  type?: T;
+  title?: T;
+  categories?: T;
+  description?: T;
+  location?: T;
+  deadline?: T;
+  safeguardingConsent?: T;
+  status?: T;
+  internalNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects_select".
  */
 export interface RedirectsSelect<T extends boolean = true> {
@@ -3003,6 +3313,40 @@ export interface BookLaunchSetting {
   createdAt?: string | null;
 }
 /**
+ * Programme-wide media, verified impact figures and contact details shown across the Young Creators Network.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ycn-settings".
+ */
+export interface YcnSetting {
+  id: string;
+  /**
+   * Wide photograph used behind the landing page hero. Add alt text on the Media item.
+   */
+  heroImage?: (string | null) | Media;
+  /**
+   * Photograph of mentoring, workshops or a showcase.
+   */
+  workshopImage?: (string | null) | Media;
+  /**
+   * Only add figures that can be verified. Leave empty to show the qualitative impact pillars without numbers.
+   */
+  impactStats?:
+    | {
+        value: string;
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  contactLabel?: string | null;
+  /**
+   * Leave blank to hide the contact link in the footer.
+   */
+  contactHref?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "footer_select".
  */
@@ -3135,6 +3479,26 @@ export interface BookLaunchSettingsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ycn-settings_select".
+ */
+export interface YcnSettingsSelect<T extends boolean = true> {
+  heroImage?: T;
+  workshopImage?: T;
+  impactStats?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  contactLabel?: T;
+  contactHref?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections_widget".
  */
 export interface CollectionsWidget {
@@ -3191,6 +3555,14 @@ export interface TaskSchedulePublish {
       | ({
           relationTo: 'lyrics-of-light';
           value: string | LyricsOfLight;
+        } | null)
+      | ({
+          relationTo: 'young-creators';
+          value: string | YoungCreator;
+        } | null)
+      | ({
+          relationTo: 'ycn-updates';
+          value: string | YcnUpdate;
         } | null);
     global?: string | null;
     user?: (string | null) | User;
