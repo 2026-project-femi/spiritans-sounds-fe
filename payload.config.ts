@@ -57,6 +57,16 @@ const dirname = path.dirname(filename);
 
 const isProduction = process.env.NODE_ENV === "production";
 
+const requireEnv = (name: string): string => {
+	const value = process.env[name];
+	if (!value) {
+		throw new Error(
+			`Missing required environment variable ${name}. Refusing to start with an insecure or local fallback.`,
+		);
+	}
+	return value;
+};
+
 export default buildConfig({
 	sharp,
 	admin: {
@@ -122,7 +132,7 @@ export default buildConfig({
 	],
 	globals: [Footer, Header, CommissionSettings, BookLaunchSettings, YcnSettings],
 	editor: defaultLexical,
-	secret: process.env.PAYLOAD_SECRET || "DEVELOPMENT_ONLY_SECRET_STRING_12345",
+	secret: requireEnv('PAYLOAD_SECRET'),
 	cookiePrefix: 'spiritans',
 	cors: [
 		getServerSideURL(),
@@ -141,7 +151,7 @@ export default buildConfig({
 	},
 	db: postgresAdapter({
 		pool: {
-			connectionString: process.env.POSTGRES_URL || "postgresql://postgres:local_dev_password@127.0.0.1:5432/spiritans_sound_dev",
+			connectionString: requireEnv('POSTGRES_URL'),
 		},
 		idType: "uuid",
 	}),
