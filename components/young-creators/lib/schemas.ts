@@ -25,7 +25,7 @@ export const opportunitySchema = z.object({
   title: z.string().trim().min(4, "Give the opportunity a title").max(120),
   description: z.string().trim().min(40, "Describe the opportunity (40+ characters)").max(2000),
   location: z.string().trim().min(2, "Location or 'Online'").max(120),
-  deadline: z.string().optional(),
+  deadline: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Enter a valid date").optional().or(z.literal("")),
   safeguardingConsent: z.boolean().refine((v) => v === true, { message: "Please confirm" }),
 });
 
