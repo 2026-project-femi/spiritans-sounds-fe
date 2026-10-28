@@ -23,6 +23,8 @@ export const YcnUpdates: CollectionConfig = {
     group: 'Young Creators',
     useAsTitle: 'title',
     defaultColumns: ['title', 'creator', 'kind', 'date', '_status'],
+    hidden: ({ user }) =>
+      user?.role === 'contributor' || user?.role === 'publishing_admin' || user?.role === 'author',
   },
   access: {
     read: authenticatedOrPublished,
