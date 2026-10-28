@@ -83,7 +83,7 @@ export const YoungCreators: CollectionConfig = {
     group: 'Young Creators',
     useAsTitle: 'publicDisplayName',
     defaultColumns: ['publicDisplayName', 'classYear', 'primaryCategory', 'featured', '_status', 'updatedAt'],
-    listSearchableFields: ['publicDisplayName', 'slug', 'location', 'talents.label'],
+    listSearchableFields: ['publicDisplayName', 'slug', 'location', 'tagline'],
     hidden: ({ user }) => user?.role === 'contributor' || user?.role === 'publishing_admin' || user?.role === 'author',
   },
   access: {
