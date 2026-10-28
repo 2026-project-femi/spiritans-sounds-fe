@@ -1,4 +1,3 @@
-import { anyone } from '@/access/anyone'
 import { isAdmin, isAdminOrEditor } from '@/access/roles'
 import { CollectionConfig } from 'payload'
 
@@ -12,7 +11,7 @@ export const Donations: CollectionConfig = {
     read: isAdminOrEditor,
     update: isAdminOrEditor,
     delete: isAdmin,
-    create: anyone,
+    create: isAdminOrEditor,
   },
   fields: [
     {

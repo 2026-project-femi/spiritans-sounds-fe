@@ -1,5 +1,4 @@
-import { anyone } from '@/access/anyone'
-import { isAdmin, isAdminOrEditor, isAdminOrPublishingAdmin } from '@/access/roles'
+import { isAdmin, isAdminOrPublishingAdmin } from '@/access/roles'
 import { CollectionConfig } from 'payload'
 
 export const Orders: CollectionConfig = {
@@ -22,7 +21,7 @@ export const Orders: CollectionConfig = {
       read: isAdminOrPublishingAdmin,
       update: isAdminOrPublishingAdmin,
       delete: isAdmin,
-      create: anyone,
+      create: isAdminOrPublishingAdmin,
   },
   fields: [
     {
