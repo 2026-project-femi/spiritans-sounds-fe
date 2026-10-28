@@ -6,7 +6,11 @@ import { revalidatePath } from 'next/cache'
 import type { CollectionConfig } from 'payload'
 
 const revalidateUpdates = () => {
-  revalidatePath('/young-creators')
+  try {
+    revalidatePath('/young-creators')
+  } catch {
+    // revalidatePath is only available inside a Next.js request context.
+  }
 }
 
 export const YcnUpdates: CollectionConfig = {

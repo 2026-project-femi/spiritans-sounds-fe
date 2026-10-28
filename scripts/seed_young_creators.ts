@@ -6,13 +6,15 @@
  */
 import path from 'node:path'
 import { getPayload } from 'payload'
-import configPromise from '../payload.config'
+import { loadEnv } from './loadEnv'
 import { DEMO_CREATORS, DEMO_LATEST } from '../components/young-creators/data/demo-creators'
 import type { MediaItem } from '../components/young-creators/types'
 
 const publicDir = path.resolve(process.cwd(), 'public')
 
 async function main() {
+  loadEnv()
+  const { default: configPromise } = await import('../payload.config')
   const payload = await getPayload({ config: configPromise })
 
   const mediaCache = new Map<string, string>()

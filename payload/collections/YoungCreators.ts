@@ -57,10 +57,19 @@ const slugify: FieldHook = ({ value, data }) => {
     .slice(0, 96)
 }
 
+const safeRevalidate = (path: string) => {
+  try {
+    revalidatePath(path)
+  } catch {
+    // revalidatePath is only available inside a Next.js request context
+    // (for example, not when running seed scripts).
+  }
+}
+
 const revalidateCreator = ({ doc }: { doc?: { slug?: string } | null }) => {
-  revalidatePath('/young-creators')
-  revalidatePath('/young-creators/creators')
-  if (doc?.slug) revalidatePath(`/young-creators/creators/${doc.slug}`)
+  safeRevalidate('/young-creators')
+  safeRevalidate('/young-creators/creators')
+  if (doc?.slug) safeRevalidate(`/young-creators/creators/${doc.slug}`)
   return doc
 }
 
