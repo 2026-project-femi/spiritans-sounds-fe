@@ -49,5 +49,44 @@ export const Donations: CollectionConfig = {
       type: 'date',
       required: true,
     },
+    {
+      name: 'programme',
+      type: 'select',
+      defaultValue: 'general',
+      options: [
+        { label: 'General', value: 'general' },
+        { label: 'Young Creators Network', value: 'young-creators' },
+      ],
+      admin: {
+        position: 'sidebar',
+        description: 'Programme this gift belongs to.',
+      },
+    },
+    {
+      name: 'designation',
+      type: 'select',
+      options: [
+        { label: 'Where most needed', value: 'general' },
+        { label: 'Mentoring', value: 'mentorship' },
+        { label: 'Tools & materials', value: 'equipment' },
+        { label: 'Showcases & events', value: 'showcase' },
+      ],
+      admin: {
+        position: 'sidebar',
+        condition: (_data, siblingData) => siblingData?.programme === 'young-creators',
+      },
+    },
+    {
+      name: 'supportFrequency',
+      type: 'select',
+      options: [
+        { label: 'One-off', value: 'one-off' },
+        { label: 'Monthly', value: 'monthly' },
+      ],
+      admin: {
+        position: 'sidebar',
+        condition: (_data, siblingData) => siblingData?.programme === 'young-creators',
+      },
+    },
   ],
 }

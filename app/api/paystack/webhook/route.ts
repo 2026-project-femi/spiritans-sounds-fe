@@ -108,6 +108,13 @@ async function handleSuccessfulCharge(data: any, payloadCms: any) {
                 donorName,
                 message: metadata?.message,
                 paidAt: new Date(paid_at).toISOString(),
+                programme: metadata?.programme === 'young-creators' ? 'young-creators' : 'general',
+                designation: ['general', 'mentorship', 'equipment', 'showcase'].includes(metadata?.designation)
+                    ? metadata.designation
+                    : undefined,
+                supportFrequency: ['one-off', 'monthly'].includes(metadata?.frequency)
+                    ? metadata.frequency
+                    : undefined,
             },
         });
 
