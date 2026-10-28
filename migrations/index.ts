@@ -11,6 +11,7 @@ import * as migration_20260917_134725_add_book_launch_settings from './20260917_
 import * as migration_20260923_163116_add_book_launch_fields_and_order_fulfillment from './20260923_163116_add_book_launch_fields_and_order_fulfillment';
 import * as migration_20260924_082531_add_views_and_page_views from './20260924_082531_add_views_and_page_views';
 import * as migration_20261005_122033_launch_date_time_and_platform_text from './20261005_122033_launch_date_time_and_platform_text';
+import * as migration_20261028_212625_add_young_creators from './20261028_212625_add_young_creators';
 
 export const migrations = [
   {
@@ -76,6 +77,11 @@ export const migrations = [
   {
     up: migration_20261005_122033_launch_date_time_and_platform_text.up,
     down: migration_20261005_122033_launch_date_time_and_platform_text.down,
-    name: '20261005_122033_launch_date_time_and_platform_text'
+    name: '20261005_122033_launch_date_time_and_platform_text',
+  },
+  {
+    up: migration_20261028_212625_add_young_creators.up,
+    down: migration_20261028_212625_add_young_creators.down,
+    name: '20261028_212625_add_young_creators'
   },
 ];

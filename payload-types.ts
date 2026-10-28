@@ -771,6 +771,12 @@ export interface Donation {
   donorName?: string | null;
   message?: string | null;
   paidAt: string;
+  /**
+   * Programme this gift belongs to.
+   */
+  programme?: ('general' | 'young-creators') | null;
+  designation?: ('general' | 'mentorship' | 'equipment' | 'showcase') | null;
+  supportFrequency?: ('one-off' | 'monthly') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2317,6 +2323,9 @@ export interface DonationsSelect<T extends boolean = true> {
   donorName?: T;
   message?: T;
   paidAt?: T;
+  programme?: T;
+  designation?: T;
+  supportFrequency?: T;
   updatedAt?: T;
   createdAt?: T;
 }
