@@ -175,25 +175,25 @@ const toMediaWithFallback = (value: unknown, fallbackSrc: string, fallbackAlt: s
 
 export async function getYcnSettings(): Promise<YcnSiteSettings> {
   const payload = await getClient()
-  const settings = await payload.findGlobal({
+  const settings: YcnSetting | null = await payload.findGlobal({
     slug: 'ycn-settings',
     depth: 1,
   })
 
   return {
     heroImage: toMediaWithFallback(
-      settings.heroImage,
+      settings?.heroImage,
       FALLBACK_HERO,
       'Young creators laughing together in an art studio',
     ),
     workshopImage: toMediaWithFallback(
-      settings.workshopImage,
+      settings?.workshopImage,
       FALLBACK_WORKSHOP,
       'Mentor guiding young creators at a workshop',
     ),
     impactStats: mapImpactStats(settings),
     contact:
-      settings.contactHref && settings.contactLabel
+      settings?.contactHref && settings?.contactLabel
         ? { label: settings.contactLabel, href: settings.contactHref }
         : null,
   }
