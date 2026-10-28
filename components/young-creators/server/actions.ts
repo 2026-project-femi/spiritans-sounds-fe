@@ -93,6 +93,10 @@ export async function startSupportCheckoutAction(intent: SupportIntent): Promise
     return { ok: false, error: 'Too many attempts. Please try again later.' }
   }
 
+  if (intent.currency === 'NGN' && intent.frequency === 'monthly') {
+    return { ok: false, error: 'Monthly gifts are only available in GBP or USD.' }
+  }
+
   try {
     const headerList = await headers()
     const protocol = headerList.get('x-forwarded-proto') || 'http'

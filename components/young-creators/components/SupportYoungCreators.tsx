@@ -30,7 +30,11 @@ export function SupportYoungCreators({ onCheckout }: { onCheckout: (intent: Supp
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState<string | null>(null);
 
-  const switchCurrency = (c: SupportCurrency) => { setCurrency(c); setAmount(PRESETS[c][1] ?? ""); };
+  const switchCurrency = (c: SupportCurrency) => {
+    setCurrency(c);
+    setAmount(PRESETS[c][1] ?? "");
+    if (c === "NGN") setFrequency("one-off");
+  };
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -63,8 +67,26 @@ export function SupportYoungCreators({ onCheckout }: { onCheckout: (intent: Supp
 
   return (
     <form onSubmit={submit} noValidate className="space-y-7 rounded-3xl bg-card p-6 ring-1 ring-border md:p-10">
-      <div className="flex rounded-full bg-secondary p-1">
-        {(["one-off", "monthly"] as const).map((f) => <button type="button" key={f} aria-pressed={frequency === f} className={seg(frequency === f)} onClick={() => setFrequency(f)}>{f === "one-off" ? "Give once" : "Give monthly"}</button>)}
+      <div>
+        <div className="flex rounded-full bg-secondary p-1">
+          {(["one-off", "monthly"] as const).map((f) => {
+            const disabled = f === "monthly" && currency === "NGN";
+            return (
+              <button
+                type="button"
+                key={f}
+                aria-pressed={frequency === f}
+                disabled={disabled}
+                title={disabled ? "Monthly giving is available in GBP or USD" : undefined}
+                className={`${seg(frequency === f)} ${disabled ? "cursor-not-allowed opacity-40" : ""}`}
+                onClick={() => { if (!disabled) setFrequency(f); }}
+              >
+                {f === "one-off" ? "Give once" : "Give monthly"}
+              </button>
+            );
+          })}
+        </div>
+        {currency === "NGN" && <p className="mt-2 text-xs text-muted-foreground">Monthly giving is available in GBP or USD. NGN gifts are one-off.</p>}
       </div>
       <div>
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">

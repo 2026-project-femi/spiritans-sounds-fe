@@ -54,6 +54,9 @@ export async function startYoungCreatorsCheckout(
   }
 
   if (intent.currency === 'NGN') {
+    if (intent.frequency === 'monthly') {
+      throw new Error('Monthly NGN gifts are not supported')
+    }
     if (!process.env.PAYSTACK_SECRET_KEY) {
       throw new Error('Paystack is not configured')
     }
