@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getYcnSettings } from "@/components/young-creators/api";
 import { ImpactSection } from "@/components/young-creators/components/ImpactSection";
 import { SupportYoungCreators } from "@/components/young-creators/components/SupportYoungCreators";
+import { startSupportCheckoutAction } from "@/components/young-creators/server/actions";
 import { SectionHeading } from "@/components/young-creators/components/primitives";
 
 const title = "Support Young Creators";
@@ -38,7 +39,7 @@ export default async function SupportPage() {
 						))}
 					</ul>
 				</div>
-				<SupportYoungCreators />
+				<SupportYoungCreators onCheckout={startSupportCheckoutAction} />
 			</section>
 			<ImpactSection stats={settings.impactStats} image={settings.workshopImage.src} />
 		</>

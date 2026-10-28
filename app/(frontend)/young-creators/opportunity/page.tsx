@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { OpportunityForm } from "@/components/young-creators/components/OpportunityForm";
+import { submitOpportunityAction } from "@/components/young-creators/server/actions";
 import { SectionHeading } from "@/components/young-creators/components/primitives";
 
 const title = "Offer an Opportunity";
@@ -24,7 +25,7 @@ export default function OpportunityPage() {
 					For safeguarding, all contact with creators goes through TUYDEF. Parents or guardians are involved for anyone under 18.
 				</p>
 			</div>
-			<OpportunityForm />
+			<OpportunityForm onSubmit={submitOpportunityAction} />
 		</section>
 	);
 }

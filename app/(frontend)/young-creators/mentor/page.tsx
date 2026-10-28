@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { MentorForm } from "@/components/young-creators/components/MentorForm";
+import { submitMentorApplicationAction } from "@/components/young-creators/server/actions";
 import { SectionHeading } from "@/components/young-creators/components/primitives";
 
 const title = "Become a Mentor";
@@ -31,7 +32,7 @@ export default function MentorPage() {
 					</ol>
 				</div>
 			</div>
-			<MentorForm />
+			<MentorForm onSubmit={submitMentorApplicationAction} />
 		</section>
 	);
 }
