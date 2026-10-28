@@ -5,15 +5,14 @@ import { Loader2 } from "lucide-react";
 import type { MentorApplication } from "../types";
 import { CATEGORIES } from "../constants";
 import { mentorSchema, toFieldErrors, type FieldErrors } from "../lib/schemas";
-import { submitMentorApplication, type SubmitResult } from "../api/actions";
+import { type SubmitResult } from "../api/actions";
 import { btn } from "./primitives";
 import { ChipMulti, Consent, Field, SuccessPanel, inputCls } from "./form-fields";
 
 type Draft = Omit<MentorApplication, "safeguardingConsent"> & { safeguardingConsent: boolean };
 const EMPTY: Draft = { fullName: "", email: "", phone: "", organisation: "", expertise: [], experience: "", availability: "monthly", format: "either", safeguardingConsent: false };
 
-/** `onSubmit` defaults to the demo adapter; pass the real server action when integrating. */
-export function MentorForm({ onSubmit = submitMentorApplication }: { onSubmit?: (d: MentorApplication) => Promise<SubmitResult> }) {
+export function MentorForm({ onSubmit }: { onSubmit: (d: MentorApplication) => Promise<SubmitResult> }) {
   const [d, setD] = useState<Draft>(EMPTY);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [busy, setBusy] = useState(false);

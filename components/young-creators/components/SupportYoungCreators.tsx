@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react";
 import { Loader2, Lock } from "lucide-react";
 import type { SupportCurrency, SupportIntent } from "../types";
 import { supportSchema, toFieldErrors, type FieldErrors } from "../lib/schemas";
-import { startSupportCheckout, type CheckoutResult } from "../api/actions";
+import { type CheckoutResult } from "../api/actions";
 import { btn } from "./primitives";
 import { YCN_DEMO_MODE } from "../demo";
 import { Field, SuccessPanel, inputCls } from "./form-fields";
@@ -18,11 +18,8 @@ const DESIGNATIONS = [
 
 const seg = (on: boolean) => `flex-1 rounded-full px-4 py-2 text-sm font-semibold transition-colors ${on ? "bg-ink text-ink-foreground" : "text-foreground/70 hover:text-foreground"}`;
 
-/**
- * UI + validation only. On submit calls `onCheckout` (default: demo adapter),
- * which the developer points at the EXISTING Paystack/Stripe initialiser.
- */
-export function SupportYoungCreators({ onCheckout = startSupportCheckout }: { onCheckout?: (intent: SupportIntent) => Promise<CheckoutResult> }) {
+/** UI + validation only. The page passes the real Paystack/Stripe checkout action. */
+export function SupportYoungCreators({ onCheckout }: { onCheckout: (intent: SupportIntent) => Promise<CheckoutResult> }) {
   const [currency, setCurrency] = useState<SupportCurrency>("NGN");
   const [frequency, setFrequency] = useState<SupportIntent["frequency"]>("one-off");
   const [amount, setAmount] = useState<number | "">(25000);

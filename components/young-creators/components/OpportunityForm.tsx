@@ -5,14 +5,14 @@ import { Loader2 } from "lucide-react";
 import type { OpportunityOffer } from "../types";
 import { CATEGORIES } from "../constants";
 import { opportunitySchema, toFieldErrors, type FieldErrors } from "../lib/schemas";
-import { submitOpportunity, type SubmitResult } from "../api/actions";
+import { type SubmitResult } from "../api/actions";
 import { btn } from "./primitives";
 import { ChipMulti, Consent, Field, SuccessPanel, inputCls } from "./form-fields";
 
 type Draft = Omit<OpportunityOffer, "safeguardingConsent"> & { safeguardingConsent: boolean };
 const EMPTY: Draft = { contactName: "", organisation: "", email: "", phone: "", type: "commission", categories: [], title: "", description: "", location: "", deadline: "", safeguardingConsent: false };
 
-export function OpportunityForm({ onSubmit = submitOpportunity }: { onSubmit?: (d: OpportunityOffer) => Promise<SubmitResult> }) {
+export function OpportunityForm({ onSubmit }: { onSubmit: (d: OpportunityOffer) => Promise<SubmitResult> }) {
   const [d, setD] = useState<Draft>(EMPTY);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [busy, setBusy] = useState(false);
