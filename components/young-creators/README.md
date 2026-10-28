@@ -6,8 +6,10 @@ A self-contained frontend module for the **Young Creators Network**, a programme
 This module is integrated into the existing Spiritans Sound site (Next.js 16, Payload CMS,
 PostgreSQL/Drizzle, Tailwind v4, Paystack, Stripe) as a self-contained section with its own
 layout, palette, typography and sub-navigation.
-**It adds no backend, auth, CMS, database or payment system.** Every form and the checkout
-currently use **demo adapters** that you will swap for the site's existing infrastructure.
+
+Content is managed in Payload under the **Young Creators** admin group. Reads go through
+`api/index.ts`; form submissions and checkout go through validated server actions in
+`server/actions.ts`. There is no demo adapter left in the form path.
 
 ---
 
@@ -21,12 +23,13 @@ components/young-creators/
 ├── constants.ts              categories, journey steps, ORG names, contact destination
 ├── demo.ts                   YCN_DEMO_MODE — single switch for all demo labels
 ├── api/
-│   ├── index.ts              server-side reads (creators, updates, impact stats)
-│   └── actions.ts            client-safe form submits + checkout hand-off
+│   ├── index.ts              server-side Payload reads (creators, updates, settings)
+│   └── actions.ts            shared SubmitResult / CheckoutResult types
+├── server/actions.ts         "use server" actions: validate, write to Payload, start checkout
 ├── lib/
 │   ├── schemas.ts            zod validation (mentor, opportunity, support)
 │   └── filter.ts             pure creator filter (talent / class year / search)
-├── data/demo-creators.ts     ⚠ TEMPORARY sample creators + latest posts
+├── data/demo-creators.ts     seed source for scripts/seed_young_creators.ts
 └── components/
     ├── primitives.tsx        YCN_PATHS, YcnLink (next/link), btn styles,
     │                         Eyebrow, SectionHeading, DemoBadge
@@ -65,60 +68,62 @@ The section identity is applied by `app/(frontend)/young-creators/layout.tsx`:
 4. `components/layout/SiteChrome.tsx` omits the mother Spiritans Sound Header/Footer on `/young-creators` (and `/unveiler`), so each brand renders as its own website.
 5. `components/layout/NetworkBar.tsx` sits above every brand header (and inside the mother header) to switch cleanly between Spiritans Sound, Treasures Unveiler and Young Creators.
 
-To go live, replace the read bodies in `api/index.ts` and the write bodies in `api/actions.ts`
-(see §4), and remove demo content (see §3). Components don't need to change.
+## 3. Content sources
 
-## 3. Demo content and how to remove it
-
-| Item | Location | Status |
+| Content | Managed in | Notes |
 |---|---|---|
-| 8 sample creators, latest posts | `data/demo-creators.ts` | ⚠ DEMO |
-| Sample photos | `public/young-creators/*.jpg` | ⚠ DEMO (AI-generated) |
-| "Demo" badges | `DemoBadge` in `primitives.tsx` | controlled by `demo.ts` |
-| Form submissions (mentor, opportunity) | `api/actions.ts` | ⚠ DEMO — logs to console and returns a fake reference |
-| Checkout | `api/actions.ts → startSupportCheckout` | ⚠ DEMO — no payment, no redirect |
-| Contact destination | `constants.ts → ORG.contact.href` | `null` = not connected; the footer shows "link to be connected" |
-| Impact figures | `api/index.ts → getImpactStats` | returns `[]`, so no numbers are shown |
+| Creators | `young-creators` collection | Drafts, published-only public reads, safeguarding fields hidden from the public API |
+| Latest updates | `ycn-updates` collection | Linked to a creator; latest three published items appear on the landing page |
+| Hero / workshop images | `ycn-settings` global | Upload media in Payload; add alt text on each Media item |
+| Impact figures | `ycn-settings → impactStats` | Verified figures only. Empty = the qualitative pillars are shown without numbers |
+| Footer contact link | `ycn-settings → contactLabel / contactHref` | Hidden when blank |
+| Mentor applications | `ycn-mentor-applications` collection | Submitted through the server action; reviewed by admins |
+| Opportunity offers | `ycn-opportunities` collection | Submitted through the server action; default status `pending-review` |
 
-**To remove:** set `YCN_DEMO_MODE = false` in `demo.ts` (hides every banner/badge/"demo" suffix),
-delete `data/` and the images in `public/young-creators/`, and remove the demo imports from `api/index.ts`. The only other file that imports
-`data/` directly is the landing and support route (for `heroImage`/`workshopImage`), so pass CMS media there instead.
+The original prototype content can be imported once with `pnpm seed:ycn`. The seed is
+idempotent (matched by slug/title/filename) and refuses to touch existing records. The
+sample photos remain in `public/young-creators/`; replace them with consented real photos
+before launch. `YCN_DEMO_MODE` is `false` now that Payload is the source of truth.
 
-## 4. Integration points
+## 4. Payload collections and security model
 
-| Function | Connect to |
-|---|---|
-| `listCreators(query)` | `payload.find({ collection: "young-creators", where, sort: "-classYear" })`, filtering `status = published`. `lib/filter.ts` shows the where-logic (talent, classYear, search). |
-| `getCreatorBySlug(slug)` | `payload.find({ where: { slug: { equals } }, limit: 1 })` |
-| `listClassYears()` | distinct `classYear` of published creators |
-| `getFeaturedCreators()` | `where: { featured: { equals: true } }` |
-| `getLatestPosts()` | new `ycn-updates` collection or the existing posts collection, filtered by tag |
-| `getImpactStats()` | `ycn-settings` global → array of `{ value, label }`. **Verified figures only.** Empty = the Impact section shows the four qualitative pillars. |
-| `submitMentorApplication(data)` | Server action → `payload.create({ collection: "ycn-mentor-applications" })` + notify the TUYDEF safeguarding lead with the existing mailer |
-| `submitOpportunity(data)` | Server action → `payload.create({ collection: "ycn-opportunities" })`, status `pending-review` |
-| `startSupportCheckout(intent)` | The site's **existing** checkout initialiser (see §5) |
+| Collection / global | Public read | Create | Update | Delete |
+|---|---|---|---|---|
+| `young-creators` | Published only | Admin, Editor | Admin, Editor | Admin |
+| `ycn-updates` | Published only | Admin, Editor | Admin, Editor | Admin |
+| `ycn-mentor-applications` | No | Admin, Publishing Admin (public form uses a server action) | Admin, Publishing Admin | Admin |
+| `ycn-opportunities` | No | Admin, Publishing Admin (public form uses a server action) | Admin, Publishing Admin | Admin |
+| `ycn-settings` (global) | Yes (except authors) | — | Admin, Publishing Admin | — |
 
-Forms also accept an override prop: `<MentorForm onSubmit={serverAction} />`,
-`<OpportunityForm onSubmit={…} />`, `<SupportYoungCreators onCheckout={…} />`.
-Each must return `{ ok: true, reference } | { ok: false, error }`. Checkout returns `{ ok: true; provider; redirectUrl } | { ok: false; error }`; only a non-demo result with a `redirectUrl` should count as live success.
-Validate again on the server with the same zod schemas from `lib/schemas.ts`.
+Key points:
 
-**PostgreSQL / Drizzle relationships (suggested):**
-- `young_creators` ↔ `media` (portrait, gallery, work images; Payload upload relation)
-- `young_creators` ↔ `ycn_works` (one-to-many) and `ycn_achievements` (one-to-many), or Payload arrays
-- `ycn_updates.creator_id` → `young_creators.id`
-- `ycn_mentor_applications.expertise` / `ycn_opportunities.categories` → talent enum
-- Support payments: reuse the existing orders/payments table with `metadata.programme = "young-creators"`
-  and `metadata.designation`. **Keep it separate from book/e-book order handling**, so donations never trigger e-book delivery.
+- Public REST writes to the application collections are **blocked**. The public forms call
+  server actions, which validate with the zod schemas from `lib/schemas.ts` and then use the
+  Payload Local API with `overrideAccess: true`. This keeps the REST endpoints private while
+  still allowing unauthenticated submissions.
+- The server actions rate-limit by IP using Upstash Redis (`lib/rateLimit.ts`) and fail open if
+  Redis is unavailable. The clients cannot set `status` or `internalNotes`; these are admin-only
+  fields.
+- `young-creators` has a safeguarding collapsible: `legalName`, `isMinor`,
+  `guardianConsentOnFile`, `consentDate`, `nameVisibility` and `internalNotes` are readable only
+  by authenticated staff. Only `publicDisplayName` is rendered publicly.
+- Minors' profile pages are `noindex, follow` in `generateMetadata`.
+- Collection hooks revalidate `/young-creators` and `/young-creators/creators` after changes.
+  Revalidation is wrapped so seed scripts and other non-request contexts do not crash.
 
 ## 5. Payments (Support page)
 
-- UI rule: **NGN → Paystack**, **GBP/USD → Stripe** (`startSupportCheckout` + the label under the button).
-- One-off vs monthly: `intent.frequency`. Monthly needs a Paystack Plan / Stripe subscription price. Check that the existing setup supports recurring payments, otherwise hide the monthly toggle.
-- **Paystack:** call the existing initialise endpoint with `amount * 100` (kobo), `email`, `metadata: { programme, designation, frequency }` and return `authorization_url` as `redirectUrl`.
-- **Stripe:** create a Checkout Session with the existing Stripe client (`mode: "payment"` or `"subscription"`), with the same metadata, and return `session.url`.
-- Confirmation goes through the **existing webhooks**. Branch on `metadata.programme === "young-creators"` so book fulfilment is skipped.
-- Preset amounts live in `SupportYoungCreators.tsx → PRESETS` (they are suggestions, not invented impact claims).
+- **NGN → Paystack**, **GBP/USD → Stripe** (`lib/payments/youngCreators.ts`).
+- Metadata sent to both providers: `programme: "young-creators"`, `designation`,
+  `frequency`, `donor_name`. Stripe also sends `type: "donation"` so the existing webhook
+  routes it to the donation handler rather than book fulfilment.
+- Paystack callbacks and Stripe success URLs return to
+  `/young-creators/support/complete`.
+- The existing Paystack and Stripe webhooks store the payment in `donations` with the new
+  `programme`, `designation` and `supportFrequency` fields. Book/e-book fulfilment is never
+  triggered by a Young Creators gift.
+- Monthly gifts use a Stripe subscription (`mode: "subscription"`). Paystack recurring plans
+  are not configured here; keep the monthly option only if the Paystack account supports it.
 
 ## 6. Creator data structure (`types.ts → Creator`)
 
@@ -126,18 +131,28 @@ Validate again on the server with the same zod schemas from `lib/schemas.ts`.
 tagline, portrait, bio[], giftsAndTalents, discoveryStory, interview[{question, answer}], videoUrl?, videoPoster?,
 works[{title, type, year, description, image?, href?}], achievements[{year, title, detail?}], gallery[], featured?, isDemo?`
 
-Suggested admin-only fields, never rendered: `status` (draft/published), `guardianConsentOnFile`,
-`consentDate`, `internalNotes`, `legalName`.
+Admin-only fields (implemented on the collection, never rendered publicly): `_status`
+(draft/published), `guardianConsentOnFile`, `consentDate`, `internalNotes`, `legalName`, `isMinor`.
 
 ## 7. Safeguarding fields
 
 - **`publicDisplayName`** is the only name rendered. An administrator sets it according to consent:
   full name (with consent, e.g. an adult creator promoting their work), first name + initial, or an alias.
-  `nameVisibility` records which basis was approved. The demo includes both full-name and initial examples.
-- **`location`** is optional; leave it empty to hide it (e.g. demo creator Funke B.). City/region only.
+  `nameVisibility` records which basis was approved.
+- **`location`** is optional; leave it empty to hide it. City/region only.
 - The type has **no** phone, email, address or date-of-birth fields, so the frontend cannot expose them.
 - All contact is routed through TUYDEF (`ORG.contact`). Mentor/opportunity forms require safeguarding consent.
-- Restrict Payload access: public read only for `status = published`; applications are admin-only.
+- Payload access is enforced server-side: public read only for `_status = published`; applications are admin-only.
+
+### Admin workflow
+
+1. **Young Creators → Young Creators**: create a creator, upload a portrait, fill the profile,
+   interview, portfolio and safeguarding tabs, then publish.
+2. **Young Creators → Young Creators Updates**: add a short update linked to a creator.
+3. **Young Creators → Young Creators Settings**: upload the hero and workshop images, add only
+   verified impact figures, and set the footer contact link.
+4. **Mentor Applications / Opportunity Offers**: review submissions, update `status`, and keep
+   notes in `internalNotes`. All contact with creators goes through TUYDEF.
 
 ## 8. Media requirements
 
