@@ -35,6 +35,8 @@ import { LyricsOfLight } from "./payload/collections/LyricsOfLight";
 import { PageViews } from "./payload/collections/PageViews";
 import { YoungCreators } from "./payload/collections/YoungCreators";
 import { YcnUpdates } from "./payload/collections/YcnUpdates";
+import { YcnMentorApplications } from "./payload/collections/YcnMentorApplications";
+import { YcnOpportunities } from "./payload/collections/YcnOpportunities";
 import { s3Storage } from "@payloadcms/storage-s3";
 
 import { Posts } from "./payload/collections/Posts";
@@ -114,6 +116,8 @@ export default buildConfig({
 		PageViews,
 		YoungCreators,
 		YcnUpdates,
+		YcnMentorApplications,
+		YcnOpportunities,
 	],
 	globals: [Footer, Header, CommissionSettings, BookLaunchSettings],
 	editor: defaultLexical,
