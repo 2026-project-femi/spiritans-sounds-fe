@@ -25,6 +25,7 @@ import { BookLaunchRegistrations } from "./payload/collections/BookLaunchRegistr
 import { Payouts } from "./payload/collections/Payouts";
 import { CommissionSettings } from "./payload/globals/CommissionSettings";
 import { BookLaunchSettings } from "./payload/globals/BookLaunchSettings";
+import { YcnSettings } from "./payload/globals/YcnSettings";
 
 import { HomePage } from "./payload/collections/Home";
 import { DonationPage } from "./payload/collections/DonationPage";
@@ -119,7 +120,7 @@ export default buildConfig({
 		YcnMentorApplications,
 		YcnOpportunities,
 	],
-	globals: [Footer, Header, CommissionSettings, BookLaunchSettings],
+	globals: [Footer, Header, CommissionSettings, BookLaunchSettings, YcnSettings],
 	editor: defaultLexical,
 	secret: process.env.PAYLOAD_SECRET || "DEVELOPMENT_ONLY_SECRET_STRING_12345",
 	cookiePrefix: 'spiritans',
