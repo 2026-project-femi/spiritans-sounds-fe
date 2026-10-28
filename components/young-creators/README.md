@@ -122,8 +122,15 @@ Key points:
 - The existing Paystack and Stripe webhooks store the payment in `donations` with the new
   `programme`, `designation` and `supportFrequency` fields. Book/e-book fulfilment is never
   triggered by a Young Creators gift.
-- Monthly gifts use a Stripe subscription (`mode: "subscription"`). Paystack recurring plans
-  are not configured here; keep the monthly option only if the Paystack account supports it.
+- Monthly gifts use a Stripe subscription (`mode: "subscription"`). The initial payment and
+  every renewal are recorded from the `invoice.paid` webhook (`lib/payments/stripeSubscription.ts`).
+  `checkout.session.completed` deliberately skips subscription-mode donations so the first
+  invoice is not counted twice.
+- Paystack recurring plans are not configured here; monthly NGN is blocked in the UI and server
+  action. Keep the monthly option only if the Paystack account supports recurring plans.
+- Stripe Dashboard → Developers → Webhooks → your endpoint must subscribe to `invoice.paid`
+  (and ideally `invoice.payment_failed`). No Products/Prices need to be created in the Dashboard:
+  the app sends inline `price_data` with `recurring: { interval: "month" }`.
 
 ## 6. Creator data structure (`types.ts → Creator`)
 
