@@ -169,6 +169,7 @@ export async function POST(request: Request) {
     // Create the Payload Order with format and shipping fields
     const order = await payloadCms.create({
       collection: 'orders',
+      overrideAccess: true,
       data: {
         customerName: sanitizedName,
         customerEmail: email,

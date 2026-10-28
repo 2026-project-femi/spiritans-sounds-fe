@@ -109,6 +109,7 @@ async function handleSuccessfulCharge(session: Stripe.Checkout.Session, payloadC
         // Save donation directly into a Payload 'donations' collection
         await payloadCms.create({
             collection: 'donations',
+            overrideAccess: true,
             data: {
                 reference,
                 amount: formattedAmount,

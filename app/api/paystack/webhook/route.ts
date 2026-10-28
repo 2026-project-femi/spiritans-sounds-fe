@@ -100,6 +100,7 @@ async function handleSuccessfulCharge(data: any, payloadCms: any) {
         // Save donation directly into a Payload 'donations' collection
         await payloadCms.create({
             collection: 'donations',
+            overrideAccess: true,
             data: {
                 reference,
                 amount: formattedAmount,
