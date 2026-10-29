@@ -68,18 +68,29 @@ export function YcnSubNav() {
         </button>
       </div>
       {open && (
-        <nav className="flex flex-col gap-1 border-t border-border px-5 py-3 md:hidden">
-          {[...NAV, { href: YCN_PATHS.support, label: "Support Young Creators" }].map((n) => (
-            <YcnLink
-              key={n.href}
-              href={n.href}
-              onClick={() => setOpen(false)}
-              aria-current={isActive(pathname, n.href) ? "page" : undefined}
-              className={`rounded-lg px-3 py-2 text-sm font-medium ${isActive(pathname, n.href) ? "bg-secondary text-foreground" : "hover:bg-secondary"}`}
-            >
-              {n.label}
-            </YcnLink>
-          ))}
+        <nav className="flex flex-col gap-1.5 border-t border-border bg-background px-4 pb-5 pt-3 shadow-lg md:hidden">
+          {[...NAV, { href: YCN_PATHS.support, label: "Support Young Creators" }].map((n) => {
+            const active = isActive(pathname, n.href);
+            const support = n.href === YCN_PATHS.support;
+            return (
+              <YcnLink
+                key={n.href}
+                href={n.href}
+                onClick={() => setOpen(false)}
+                aria-current={active ? "page" : undefined}
+                className={
+                  support
+                    ? `${btn.primary} w-full justify-between px-5 py-4 text-base`
+                    : `flex min-h-12 items-center justify-between rounded-xl px-5 py-4 text-base font-semibold transition-colors ${
+                        active ? "bg-ink text-ink-foreground" : "text-foreground hover:bg-secondary"
+                      }`
+                }
+              >
+                <span>{n.label}</span>
+                <ChevronRight className={`h-5 w-5 shrink-0 ${support ? "" : "opacity-45"}`} />
+              </YcnLink>
+            );
+          })}
         </nav>
       )}
     </div>

@@ -14,7 +14,7 @@ export type NetworkBrand = (typeof BRANDS)[number]["id"];
  */
 export default function NetworkBar({ current }: { current: NetworkBrand }) {
 	return (
-		<div className="border-b border-white/10 bg-[#0c0c0e] text-[9px] sm:text-[11px]">
+		<div className="border-b border-white/10 bg-[#0c0c0e] text-[11px] sm:text-xs">
 			<div className="mx-auto flex max-w-7xl items-center justify-center gap-3 px-4 py-1.5 sm:justify-between sm:px-6 md:px-12">
 				<span className="hidden uppercase tracking-[0.2em] text-white/40 sm:block">
 					Spiritans Sound Network
@@ -26,7 +26,7 @@ export default function NetworkBar({ current }: { current: NetworkBrand }) {
 							<Link
 								href={brand.href}
 								aria-current={current === brand.id ? "page" : undefined}
-								className={`inline-flex min-h-[30px] items-center rounded-full px-1 py-1 font-semibold uppercase tracking-[0.08em] transition-colors sm:px-2 sm:tracking-[0.12em] ${
+								className={`inline-flex min-h-[34px] items-center rounded-full px-1 py-1 font-semibold uppercase tracking-[0.08em] transition-colors sm:px-2 sm:tracking-[0.12em] ${
 									current === brand.id
 										? "bg-white/10 text-white"
 										: "text-white/55 hover:bg-white/5 hover:text-white"
