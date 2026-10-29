@@ -96,7 +96,7 @@ export const YcnUpdates: CollectionConfig = {
       label: 'YouTube Video URL (optional)',
       admin: {
         description:
-          'Optional. When set, the update card shows a play button and embeds the YouTube video.',
+          'Optional. When set, the update card renders the YouTube video in place of the image.',
       },
       validate: ((value) => {
         if (!value) return true
