@@ -34,7 +34,7 @@ export function YcnSubNav() {
     <div className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3">
         <YcnLink href={YCN_PATHS.home} className="flex items-center gap-2.5">
-          <YcnLogo className="h-11 w-11 rounded-xl mix-blend-multiply" />
+          <YcnLogo className="h-12 w-12 rounded-xl mix-blend-multiply" />
           <span className="leading-tight">
             <span className="block font-display text-base font-bold text-foreground">Young Creators</span>
             <span className="block text-[11px] text-muted-foreground">a {ORG.foundationShort} programme</span>
@@ -128,7 +128,7 @@ export function YcnFooter({ contact }: { contact?: { label: string; href: string
       <div className="mx-auto grid max-w-7xl gap-8 px-5 py-14 md:grid-cols-3">
         <div>
           <span className="mb-4 inline-flex rounded-2xl bg-white p-2">
-            <YcnLogo className="h-16 w-16" />
+            <YcnLogo className="h-24 w-24" />
           </span>
           <p className="font-display text-xl font-bold">Young Creators Network</p>
           <p className="mt-2 text-sm text-ink-foreground/70">
