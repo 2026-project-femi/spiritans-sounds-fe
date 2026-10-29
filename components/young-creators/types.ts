@@ -72,6 +72,8 @@ export interface Creator {
   interview: InterviewQA[];
   /** YouTube/Vimeo embed URL. Optional. */
   videoUrl?: string | undefined;
+  /** Latest published update video, used when the creator has no interview video. */
+  latestUpdateVideo?: { url: string; title: string } | undefined;
   videoPoster?: MediaItem | undefined;
   works: CreativeWork[];
   achievements: Achievement[];

@@ -39,6 +39,15 @@ export function getYouTubeId(url: string): string | null {
   }
 }
 
+export function isYouTubeUrl(url: string): boolean {
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, '')
+    return YOUTUBE_HOSTS.has(host)
+  } catch {
+    return false
+  }
+}
+
 export function getYouTubeEmbedUrl(
   url: string,
   options: { autoplay?: boolean; noCookie?: boolean } = {},

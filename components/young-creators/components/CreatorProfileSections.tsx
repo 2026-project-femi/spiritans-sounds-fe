@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, ExternalLink, Play, Trophy, X } from "lucide-react";
 import type { Achievement, CreativeWork, InterviewQA, MediaItem } from "../types";
 import { Eyebrow } from "./primitives";
+import { getYouTubeEmbedUrl, isYouTubeUrl } from "@/lib/youtube";
 
 export function ProfileBlock({ id, eyebrow, title, children }: { id?: string; eyebrow: string; title: string; children: React.ReactNode }) {
   return (
@@ -31,20 +32,27 @@ export function CreatorInterview({ items, name }: { items: InterviewQA[]; name: 
   );
 }
 
-/** Pass `videoUrl` (YouTube/Vimeo embed URL) to render a real player. */
-export function VideoInterview({ videoUrl, poster, name }: { videoUrl?: string | undefined; poster?: MediaItem | undefined; name: string }) {
+/** Pass a YouTube/Vimeo URL to render a real player. */
+export function VideoInterview({ videoUrl, poster, name, label }: { videoUrl?: string | undefined; poster?: MediaItem | undefined; name: string; label?: string | undefined }) {
   const [playing, setPlaying] = useState(false);
-  if (videoUrl && playing) {
-    return <div className="aspect-video overflow-hidden rounded-3xl bg-ink"><iframe src={videoUrl} title={`Interview with ${name}`} className="h-full w-full" allow="autoplay; encrypted-media" allowFullScreen /></div>;
+  const embedUrl = videoUrl
+    ? isYouTubeUrl(videoUrl)
+      ? getYouTubeEmbedUrl(videoUrl) ?? undefined
+      : videoUrl
+    : undefined;
+  const heading = label ?? (embedUrl ? `Watch: Meet ${name}` : "Video interview coming soon");
+
+  if (embedUrl && playing) {
+    return <div className="aspect-video overflow-hidden rounded-3xl bg-ink"><iframe src={embedUrl} title={`Video: ${name}`} className="h-full w-full" allow="autoplay; encrypted-media" allowFullScreen /></div>;
   }
-  const Tag = videoUrl ? "button" : "div";
+  const Tag = embedUrl ? "button" : "div";
   return (
-    <Tag {...(videoUrl ? { type: "button" as const, onClick: () => setPlaying(true), "aria-label": `Play video interview with ${name}` } : {})} className="group relative block aspect-video w-full overflow-hidden rounded-3xl bg-ink text-left">
+    <Tag {...(embedUrl ? { type: "button" as const, onClick: () => setPlaying(true), "aria-label": `Play video for ${name}` } : {})} className="group relative block aspect-video w-full overflow-hidden rounded-3xl bg-ink text-left">
       {poster && <img src={poster.src} alt={poster.alt} loading="lazy" className="h-full w-full object-cover opacity-60 transition-transform duration-500 group-hover:scale-105" />}
       <div className="absolute inset-0 grid place-items-center">
-        <span className={`grid h-16 w-16 place-items-center rounded-full md:h-20 md:w-20 ${videoUrl ? "bg-primary" : "bg-muted-foreground/60"} text-primary-foreground shadow-2xl transition-transform group-hover:scale-110`}><Play className="ml-1 h-7 w-7" /></span>
+        <span className={`grid h-16 w-16 place-items-center rounded-full md:h-20 md:w-20 ${embedUrl ? "bg-primary" : "bg-muted-foreground/60"} text-primary-foreground shadow-2xl transition-transform group-hover:scale-110`}><Play className="ml-1 h-7 w-7" /></span>
       </div>
-      <p className="absolute bottom-5 left-6 right-6 text-sm font-medium text-ink-foreground">{videoUrl ? `Watch: Meet ${name}` : "Video interview coming soon"}</p>
+      <p className="absolute bottom-5 left-6 right-6 text-sm font-medium text-ink-foreground">{heading}</p>
     </Tag>
   );
 }

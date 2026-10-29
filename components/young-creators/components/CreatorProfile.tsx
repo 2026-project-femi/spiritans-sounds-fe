@@ -59,7 +59,18 @@ export function CreatorProfile({ creator }: { creator: Creator }) {
             <p className="text-lg leading-relaxed text-foreground/85">{creator.discoveryStory}</p>
           </ProfileBlock>
           <ProfileBlock id="interview" eyebrow="Meet the Creator" title="In their own words">
-            <VideoInterview videoUrl={creator.videoUrl} poster={creator.videoPoster ?? creator.portrait} name={first} />
+            <VideoInterview
+              videoUrl={creator.videoUrl ?? creator.latestUpdateVideo?.url}
+              poster={creator.videoPoster ?? creator.portrait}
+              name={first}
+              label={
+                creator.videoUrl
+                  ? `Watch: Meet ${first}`
+                  : creator.latestUpdateVideo
+                    ? `Watch: ${creator.latestUpdateVideo.title}`
+                    : undefined
+              }
+            />
             <div className="mt-8"><CreatorInterview items={creator.interview} name={first} /></div>
           </ProfileBlock>
           <ProfileBlock id="works" eyebrow="Portfolio" title="Creative works"><CreativeWorks works={creator.works} /></ProfileBlock>

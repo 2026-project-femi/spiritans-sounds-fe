@@ -112,7 +112,31 @@ export async function getCreatorBySlug(slug: string): Promise<Creator | null> {
     depth: 2,
   })
 
-  return result.docs[0] ? mapCreator(result.docs[0]) : null
+  const doc = result.docs[0]
+  const creator = doc ? mapCreator(doc) : null
+  if (!doc || !creator) return null
+
+  const updates = await payload.find({
+    collection: 'ycn-updates',
+    where: {
+      creator: { equals: doc.id },
+      _status: { equals: 'published' },
+      youtubeUrl: { exists: true },
+    },
+    sort: '-date',
+    limit: 1,
+    depth: 0,
+  })
+
+  const latestVideo = updates.docs[0]
+  if (latestVideo?.youtubeUrl) {
+    creator.latestUpdateVideo = {
+      url: latestVideo.youtubeUrl,
+      title: latestVideo.title,
+    }
+  }
+
+  return creator
 }
 
 export async function listClassYears(): Promise<number[]> {
