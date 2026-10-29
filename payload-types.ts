@@ -1587,7 +1587,7 @@ export interface YcnUpdate {
    */
   image: string | Media;
   /**
-   * Optional. When set, the update card shows a play button and embeds the YouTube video.
+   * Optional. When set, the update card renders the YouTube video in place of the image.
    */
   youtubeUrl?: string | null;
   publishedAt?: string | null;
