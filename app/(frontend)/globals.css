@@ -20,6 +20,7 @@
   --primary-foreground: oklch(0.985 0 0);
 
   --accent: oklch(0.97 0 0);
+  --accent-foreground: 12 15 17;
   --muted: oklch(0.97 0 0);
 
   --surface: 243 244 246;
@@ -42,6 +43,7 @@
   --color-primary-foreground: rgb(var(--primary-foreground));
 
   --color-accent: rgb(var(--accent));
+  --color-accent-foreground: rgb(var(--accent-foreground));
   --color-muted: rgb(var(--muted));
   --color-muted-foreground: rgb(var(--muted-foreground));
   --color-surface: rgb(var(--surface));
