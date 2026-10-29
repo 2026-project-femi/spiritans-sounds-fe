@@ -7,7 +7,12 @@
 import path from 'node:path'
 import { getPayload } from 'payload'
 import { loadEnv } from './loadEnv'
-import { DEMO_CREATORS, DEMO_LATEST } from '../components/young-creators/data/demo-creators'
+import {
+  DEMO_CREATORS,
+  DEMO_LATEST,
+  heroImage as demoHeroImage,
+  workshopImage as demoWorkshopImage,
+} from '../components/young-creators/data/demo-creators'
 import type { MediaItem } from '../components/young-creators/types'
 
 const publicDir = path.resolve(process.cwd(), 'public')
@@ -150,8 +155,14 @@ async function main() {
   await payload.updateGlobal({
     slug: 'ycn-settings',
     data: {
-      heroImage: await ensureMedia({ src: '/young-creators/hero.jpg', alt: 'Young creators laughing together in an art studio' }),
-      workshopImage: await ensureMedia({ src: '/young-creators/workshop.jpg', alt: 'Mentor guiding young creators at a workshop' }),
+      heroImage: await ensureMedia({
+        src: demoHeroImage,
+        alt: 'Young creators laughing together in an art studio',
+      }),
+      workshopImage: await ensureMedia({
+        src: demoWorkshopImage,
+        alt: 'Mentor guiding young creators at a workshop',
+      }),
     },
   })
 

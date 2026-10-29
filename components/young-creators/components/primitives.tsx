@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+
 /**
  * Small portable primitives. The ONLY router coupling in the module is YcnLink,
  * which uses Next.js `next/link`.
@@ -17,6 +19,19 @@ export const YCN_PATHS = {
 
 export function YcnLink(props: ComponentProps<typeof Link>) {
   return <Link {...props} />;
+}
+
+/** Official Treasures Unveiler / Young Creators logo. */
+export function YcnLogo({ className = "h-11 w-11" }: { className?: string }) {
+  return (
+    <img
+      src="/young-creators/logo.jpeg"
+      alt="Treasures Unveiler Youth Development Foundation"
+      width={88}
+      height={88}
+      className={`shrink-0 object-contain ${className}`}
+    />
+  );
 }
 
 const base = "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60";
