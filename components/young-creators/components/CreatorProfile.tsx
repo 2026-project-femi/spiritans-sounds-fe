@@ -6,8 +6,9 @@ import { categoryLabel, ORG } from "../constants";
 import { DemoBadge, YcnLink, YCN_PATHS, btn } from "./primitives";
 import { TalentTags } from "./TalentTags";
 import { Achievements, CreativeWorks, CreatorGallery, CreatorInterview, ProfileBlock, VideoInterview } from "./CreatorProfileSections";
+import { ProfileNav } from "./ProfileNav";
 
-const SECTIONS = [
+const PROFILE_SECTIONS = [
   ["about", "About"], ["gifts", "Gifts & Talents"], ["discovery", "Discovery"], ["interview", "Meet the Creator"],
   ["works", "Creative Works"], ["achievements", "Achievements"], ["gallery", "Gallery"],
 ] as const;
@@ -37,15 +38,17 @@ export function CreatorProfile({ creator }: { creator: Creator }) {
         </div>
       </header>
 
-      <div className="mt-16 grid gap-12 lg:grid-cols-[220px_1fr]">
+      <ProfileNav items={PROFILE_SECTIONS} variant="mobile" />
+
+      <div className="mt-10 grid gap-12 lg:mt-16 lg:grid-cols-[220px_1fr]">
         <aside className="hidden lg:block">
-          <nav className="sticky top-24 space-y-1 text-sm">
-            {SECTIONS.map(([id, label]) => <a key={id} href={`#${id}`} className="block rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground">{label}</a>)}
+          <div className="sticky top-24">
+            <ProfileNav items={PROFILE_SECTIONS} />
             <div className="mt-6 rounded-2xl bg-accent p-4 text-xs text-accent-foreground">
               <ShieldCheck className="mb-2 h-5 w-5" />
               To contact {first} about opportunities, please go through {ORG.foundationShort}. We never share creators&apos; personal details.
             </div>
-          </nav>
+          </div>
         </aside>
 
         <div className="min-w-0">

@@ -109,12 +109,25 @@ export function CreatorGallery({ items }: { items: MediaItem[] }) {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-        {items.map((m, i) => (
-          <button type="button" key={i} aria-label={`Open photo ${i + 1}: ${m.alt}`} onClick={() => setIdx(i)} className={`group overflow-hidden rounded-2xl ${i === 0 ? "row-span-2" : ""}`}>
-            <img src={m.src} alt={m.alt} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-          </button>
-        ))}
+      <div className="grid grid-cols-2 items-start gap-5 md:grid-cols-3">
+        {items.map((m, i) => {
+          const rotations = ["-rotate-2", "rotate-1", "rotate-2", "-rotate-1"];
+          return (
+            <button
+              type="button"
+              key={i}
+              aria-label={`Open photo ${i + 1}: ${m.alt}`}
+              onClick={() => setIdx(i)}
+              className={`group relative bg-card p-2 pb-7 text-left shadow-[0_18px_35px_-22px_var(--yc-ink)] ring-1 ring-border transition-all duration-300 hover:z-10 hover:-translate-y-1 hover:rotate-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${rotations[i % rotations.length]}`}
+            >
+              <span aria-hidden="true" className="absolute -top-2 left-1/2 h-4 w-12 -translate-x-1/2 -rotate-3 bg-sun/70" />
+              <span className="block aspect-[4/5] overflow-hidden bg-secondary">
+                <img src={m.src} alt={m.alt} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              </span>
+              {m.caption && <span className="mt-2 block truncate text-center font-display text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">{m.caption}</span>}
+            </button>
+          );
+        })}
       </div>
       {idx !== null && items[idx] && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/95 p-4" role="dialog" aria-modal="true" aria-label="Photo viewer" onClick={() => setIdx(null)}>
