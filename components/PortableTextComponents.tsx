@@ -6,38 +6,8 @@ import {
 import { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 import Image from 'next/image'
 
-// ─── YouTube helpers (unchanged) ─────────────────────────────────────────────
-
-export function getYouTubeId(url: string): string | null {
-  try {
-    const u = new URL(url)
-    if (u.hostname === 'youtu.be') return u.pathname.slice(1)
-    if (u.hostname.includes('youtube.com')) {
-      const v = u.searchParams.get('v')
-      if (v) return v
-      const parts = u.pathname.split('/')
-      const embedIdx = parts.indexOf('embed')
-      if (embedIdx !== -1) return parts[embedIdx + 1]
-    }
-  } catch {}
-  return null
-}
-
-export function YouTubeEmbed({ url }: { url: string }) {
-  const videoId = getYouTubeId(url)
-  if (!videoId) return null
-  return (
-    <div className="aspect-video my-8 rounded-xl overflow-hidden shadow-lg">
-      <iframe
-        src={`https://www.youtube.com/embed/${videoId}`}
-        title="YouTube video"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-        className="w-full h-full"
-      />
-    </div>
-  )
-}
+export { YouTubeEmbed, getYouTubeId } from './YouTubeEmbed'
+import { YouTubeEmbed } from './YouTubeEmbed'
 
 // ─── Custom JSX converters ────────────────────────────────────────────────────
 
