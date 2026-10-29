@@ -21,9 +21,10 @@ export function CreatorSpotlight({ creators }: { creators: Creator[] }) {
 
   return (
     <section
+      id="spotlight"
       aria-roledescription="carousel"
       aria-label="Featured creators"
-      className="relative overflow-hidden bg-ink py-20 text-ink-foreground md:py-24"
+      className="relative scroll-mt-24 overflow-hidden bg-ink py-20 text-ink-foreground md:py-24"
     >
       <div aria-hidden="true" className="yc-float pointer-events-none absolute -left-28 top-10 h-72 w-72 rounded-full bg-cobalt/25 blur-3xl" />
       <div aria-hidden="true" className="pointer-events-none absolute -bottom-24 -right-20 h-80 w-80 rounded-full bg-lilac/20 blur-3xl" />
