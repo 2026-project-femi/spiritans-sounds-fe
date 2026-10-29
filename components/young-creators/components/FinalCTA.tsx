@@ -3,9 +3,10 @@ import { YcnLink, YCN_PATHS, btn } from "./primitives";
 export function FinalCTA() {
   return (
     <section className="mx-auto max-w-7xl px-5">
-      <div className="relative overflow-hidden rounded-[2rem] bg-ink px-7 py-20 text-center text-ink-foreground md:px-16 md:py-28">
+      <div className="yc-grain relative overflow-hidden rounded-[2rem] bg-ink px-7 py-20 text-center text-ink-foreground md:px-16 md:py-28">
         <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-primary/30 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-teal/40 blur-3xl" />
+        <div aria-hidden="true" className="yc-dot-grid pointer-events-none absolute inset-0 opacity-20" />
         <div className="relative mx-auto max-w-3xl">
           <h2 className="text-4xl font-extrabold md:text-6xl">Talent Needs <span className="text-sun">Opportunity</span></h2>
           <p className="mt-8 text-lg leading-relaxed text-ink-foreground/85 md:text-xl">

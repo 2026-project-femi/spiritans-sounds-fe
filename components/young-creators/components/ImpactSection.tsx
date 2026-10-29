@@ -41,7 +41,10 @@ export function ImpactSection({ stats = [], image }: { stats?: ImpactStat[] | un
             ))}
           </div>
         </div>
-        <img src={image} alt="Mentor guiding young creators at a workshop" loading="lazy" width={1200} height={800} className="aspect-[4/3] w-full rounded-[2rem] object-cover" />
+        <div className="relative">
+          <div aria-hidden="true" className="absolute -inset-3 rotate-2 rounded-[2.4rem] bg-gradient-to-br from-primary/25 via-sun/25 to-teal/25" />
+          <img src={image} alt="Mentor guiding young creators at a workshop" loading="lazy" width={1200} height={800} className="relative aspect-[4/3] w-full rounded-[2rem] object-cover shadow-2xl" />
+        </div>
       </div>
     </section>
   );
