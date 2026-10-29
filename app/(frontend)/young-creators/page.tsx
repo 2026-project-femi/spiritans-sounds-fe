@@ -50,9 +50,9 @@ export default async function YoungCreatorsPage() {
 			<Reveal>
 				<JourneySection />
 			</Reveal>
-			{featured[0] && (
+			{featured.length > 0 && (
 				<Reveal>
-					<CreatorSpotlight creator={featured[0]} />
+					<CreatorSpotlight creators={featured.slice(0, 5)} />
 				</Reveal>
 			)}
 			<div className="relative border-y border-border bg-secondary/35">

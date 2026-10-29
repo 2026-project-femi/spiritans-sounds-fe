@@ -3,6 +3,10 @@
 import { Award, Compass, GraduationCap, Sparkles } from "lucide-react";
 import type { ImpactStat } from "../types";
 import { SectionHeading } from "./primitives";
+import { CountUp } from "./CountUp";
+
+const STAT_BARS = ["bg-primary", "bg-teal", "bg-cobalt", "bg-lilac"];
+const STAT_TEXT = ["text-primary", "text-teal", "text-cobalt", "text-lilac"];
 
 const PILLARS = [
   { icon: Compass, title: "Young Talent Discovered", text: "Finding gifted young people in schools, parishes and communities." },
@@ -23,9 +27,10 @@ export function ImpactSection({ stats = [], image }: { stats?: ImpactStat[] | un
           <SectionHeading eyebrow="Your support at work" title="What your support makes possible." intro="Every gift funds mentoring sessions, creative materials, showcase stages and the next opportunity for a young person with something to say." />
           {stats.length > 0 && (
             <div className="mt-10 grid grid-cols-2 gap-4">
-              {stats.map((s) => (
-                <div key={s.label} className="rounded-2xl bg-card p-6 ring-1 ring-border">
-                  <p className="font-display text-4xl font-extrabold text-primary md:text-5xl">{s.value}</p>
+              {stats.map((s, index) => (
+                <div key={s.label} className="rounded-2xl bg-card p-6 ring-1 ring-border transition-transform hover:-translate-y-0.5">
+                  <span aria-hidden="true" className={`mb-4 block h-1.5 w-10 rounded-full ${STAT_BARS[index % STAT_BARS.length]}`} />
+                  <CountUp value={s.value} className={`font-display text-4xl font-extrabold md:text-5xl ${STAT_TEXT[index % STAT_TEXT.length]}`} />
                   <p className="mt-1 text-sm text-muted-foreground">{s.label}</p>
                 </div>
               ))}
