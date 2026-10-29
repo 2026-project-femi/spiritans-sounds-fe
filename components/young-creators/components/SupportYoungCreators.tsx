@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Loader2, Lock } from "lucide-react";
+import { Loader2, Lock, Mic2, Palette, Sparkles, Users } from "lucide-react";
 import type { SupportCurrency, SupportIntent } from "../types";
 import { supportSchema, toFieldErrors, type FieldErrors } from "../lib/schemas";
 import { type CheckoutResult } from "../api/actions";
@@ -9,7 +9,17 @@ import { btn } from "./primitives";
 import { YCN_DEMO_MODE } from "../demo";
 import { Field, SuccessPanel, inputCls } from "./form-fields";
 
-const PRESETS: Record<SupportCurrency, number[]> = { NGN: [10000, 25000, 60000, 150000], GBP: [10, 25, 50, 100], USD: [15, 30, 60, 120] };
+const PRESET_AMOUNTS: Record<SupportCurrency, number[]> = {
+  NGN: [10000, 25000, 60000, 150000],
+  GBP: [10, 25, 50, 100],
+  USD: [15, 30, 60, 120],
+};
+const IMPACT_PRESETS = [
+  { icon: Palette, label: "Art materials" },
+  { icon: Users, label: "Mentoring support" },
+  { icon: Sparkles, label: "Workshop access" },
+  { icon: Mic2, label: "Showcase stage" },
+] as const;
 const SYMBOL: Record<SupportCurrency, string> = { NGN: "₦", GBP: "£", USD: "$" };
 const DESIGNATIONS = [
   { value: "general", label: "Where most needed" }, { value: "mentorship", label: "Mentoring" },
@@ -29,10 +39,12 @@ export function SupportYoungCreators({ onCheckout }: { onCheckout: (intent: Supp
   const [errors, setErrors] = useState<FieldErrors>({});
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState<string | null>(null);
+  const selectedImpactIndex = PRESET_AMOUNTS[currency].indexOf(Number(amount));
+  const selectedImpact = selectedImpactIndex >= 0 ? IMPACT_PRESETS[selectedImpactIndex] : null;
 
   const switchCurrency = (c: SupportCurrency) => {
     setCurrency(c);
-    setAmount(PRESETS[c][1] ?? "");
+    setAmount(PRESET_AMOUNTS[c][1] ?? "");
     if (c === "NGN") setFrequency("one-off");
   };
 
@@ -66,7 +78,16 @@ export function SupportYoungCreators({ onCheckout }: { onCheckout: (intent: Supp
   if (done) return <SuccessPanel title={YCN_DEMO_MODE ? "Demo checkout complete" : "Thank you"}>{YCN_DEMO_MODE ? <>In the live site you would now be taken to secure <strong>{done}</strong> checkout. No payment was taken.</> : "Your gift is being processed."}</SuccessPanel>;
 
   return (
-    <form onSubmit={submit} noValidate className="space-y-7 rounded-3xl bg-card p-6 ring-1 ring-border md:p-10">
+    <form onSubmit={submit} noValidate className="space-y-7 rounded-3xl border-t-4 border-t-primary bg-card p-6 shadow-xl ring-1 ring-border md:p-10">
+      <div className="flex flex-col gap-3 border-b border-border pb-5 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="font-display text-2xl font-extrabold tracking-tight">Make a gift</p>
+          <p className="mt-1 text-sm text-muted-foreground">Choose an amount and see the difference it could make.</p>
+        </div>
+        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-teal/15 px-3 py-1 text-xs font-semibold text-teal">
+          <Lock className="h-3.5 w-3.5" /> Secure
+        </span>
+      </div>
       <div>
         <div className="flex rounded-full bg-secondary p-1">
           {(["one-off", "monthly"] as const).map((f) => {
@@ -92,20 +113,47 @@ export function SupportYoungCreators({ onCheckout }: { onCheckout: (intent: Supp
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <span className="text-sm font-semibold">Amount</span>
           <div className="flex gap-1 rounded-full bg-secondary p-1 text-xs">
-            {(["NGN", "GBP", "USD"] as const).map((c) => <button type="button" key={c} aria-pressed={currency === c} onClick={() => switchCurrency(c)} className={`rounded-full px-3 py-1 font-semibold ${currency === c ? "bg-card shadow" : "text-muted-foreground"}`}>{c}</button>)}
+            {(["NGN", "GBP", "USD"] as const).map((c) => <button type="button" key={c} aria-pressed={currency === c} onClick={() => switchCurrency(c)} className={`rounded-full px-3 py-1 font-semibold transition-colors ${currency === c ? "bg-ink text-ink-foreground shadow" : "text-muted-foreground hover:text-foreground"}`}>{c}</button>)}
           </div>
         </div>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {PRESETS[currency].map((p) => (
-            <button type="button" key={p} aria-pressed={amount === p} onClick={() => setAmount(p)} className={`rounded-2xl border-2 py-4 font-display text-lg font-bold transition-all ${amount === p ? "border-primary bg-primary/10 text-primary" : "border-border hover:border-foreground/30"}`}>
-              {SYMBOL[currency]}{p.toLocaleString()}
-            </button>
-          ))}
+          {PRESET_AMOUNTS[currency].map((p, index) => {
+            const impact = IMPACT_PRESETS[index] ?? IMPACT_PRESETS[0];
+            const Icon = impact.icon;
+            const on = amount === p;
+            return (
+              <button
+                type="button"
+                key={p}
+                aria-pressed={on}
+                onClick={() => setAmount(p)}
+                className={`group flex min-h-[132px] flex-col items-start justify-between rounded-2xl border-2 p-4 text-left transition-all ${
+                  on
+                    ? "border-primary bg-primary/10 shadow-[0_12px_30px_-18px_var(--yc-tangerine)]"
+                    : "border-border bg-background hover:-translate-y-0.5 hover:border-foreground/30"
+                }`}
+              >
+                <span className={`grid h-9 w-9 place-items-center rounded-xl ${on ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground/70"}`}>
+                  <Icon className="h-4 w-4" />
+                </span>
+                <span>
+                  <span className={`block font-display text-xl font-extrabold ${on ? "text-primary" : ""}`}>{SYMBOL[currency]}{p.toLocaleString()}</span>
+                  <span className="mt-1 block text-xs leading-snug text-muted-foreground">{impact.label}</span>
+                </span>
+              </button>
+            );
+          })}
         </div>
         <div className="relative mt-3">
           <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">{SYMBOL[currency]}</span>
           <input type="number" min={1} inputMode="numeric" placeholder="Other amount" value={amount} onChange={(e) => setAmount(e.target.value === "" ? "" : Number(e.target.value))} className={`${inputCls} pl-9`} aria-label="Custom amount" />
         </div>
+        <p aria-live="polite" className="mt-3 flex items-start gap-2 rounded-2xl bg-accent/60 p-3 text-xs text-foreground/80">
+          <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+          {selectedImpact
+            ? <>Your gift could help fund <strong className="font-semibold text-foreground">{selectedImpact.label.toLowerCase()}</strong>.</>
+            : "Your gift will be directed to where it is needed most."}
+        </p>
         {errors.amount && <p className="mt-1 text-xs text-destructive">{errors.amount}</p>}
       </div>
       <Field label="Direct my gift to">

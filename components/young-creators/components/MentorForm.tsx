@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, ShieldCheck, Users } from "lucide-react";
 import type { MentorApplication } from "../types";
 import { CATEGORIES } from "../constants";
 import { mentorSchema, toFieldErrors, type FieldErrors } from "../lib/schemas";
@@ -38,7 +38,16 @@ export function MentorForm({ onSubmit }: { onSubmit: (d: MentorApplication) => P
   if (done) return <SuccessPanel title="Thank you for offering to mentor" reference={done}>Our team will be in touch within two weeks to talk through next steps, including safeguarding checks.</SuccessPanel>;
 
   return (
-    <form onSubmit={submit} noValidate className="space-y-6 rounded-3xl bg-card p-6 ring-1 ring-border md:p-10">
+    <form onSubmit={submit} noValidate className="space-y-6 rounded-3xl border-t-4 border-t-teal bg-card p-6 shadow-xl ring-1 ring-border md:p-10">
+      <div className="flex flex-col gap-3 border-b border-border pb-5 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="font-display text-2xl font-extrabold tracking-tight">Tell us about you</p>
+          <p className="mt-1 text-sm text-muted-foreground">We reply within two weeks and never share your details.</p>
+        </div>
+        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-teal/15 px-3 py-1 text-xs font-semibold text-teal">
+          <Users className="h-3.5 w-3.5" /> Mentor
+        </span>
+      </div>
       <div className="grid gap-5 md:grid-cols-2">
         <Field label="Full name" required error={errors.fullName}><input className={inputCls} value={d.fullName} onChange={(e) => set("fullName", e.target.value)} aria-invalid={!!errors.fullName} /></Field>
         <Field label="Email" required error={errors.email}><input type="email" className={inputCls} value={d.email} onChange={(e) => set("email", e.target.value)} aria-invalid={!!errors.email} /></Field>
@@ -61,7 +70,11 @@ export function MentorForm({ onSubmit }: { onSubmit: (d: MentorApplication) => P
         I understand some creators are under 18. I agree to TUYDEF safeguarding checks and that all mentoring contact is arranged through TUYDEF.
       </Consent>
       {errors.form && <p className="text-sm text-destructive">{errors.form}</p>}
-      <button type="submit" disabled={busy} className={btn.primary}>{busy && <Loader2 className="h-4 w-4 animate-spin" />} Submit application</button>
+      <button type="submit" disabled={busy} className={`${btn.primary} w-full py-3.5 text-base sm:w-auto`}>{busy && <Loader2 className="h-4 w-4 animate-spin" />} Submit application</button>
+      <p className="flex items-start gap-2 text-xs text-muted-foreground">
+        <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
+        Your details are only used to review this application and arrange safeguarding checks.
+      </p>
     </form>
   );
 }

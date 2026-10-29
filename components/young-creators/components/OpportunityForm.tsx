@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Loader2 } from "lucide-react";
+import { Briefcase, Loader2, ShieldCheck } from "lucide-react";
 import type { OpportunityOffer } from "../types";
 import { CATEGORIES } from "../constants";
 import { opportunitySchema, toFieldErrors, type FieldErrors } from "../lib/schemas";
@@ -38,7 +38,16 @@ export function OpportunityForm({ onSubmit }: { onSubmit: (d: OpportunityOffer) 
   if (done) return <SuccessPanel title="Opportunity received" reference={done}>TUYDEF will review it and match it with suitable creators. We&apos;ll contact you before sharing anything with a young person.</SuccessPanel>;
 
   return (
-    <form onSubmit={submit} noValidate className="space-y-6 rounded-3xl bg-card p-6 ring-1 ring-border md:p-10">
+    <form onSubmit={submit} noValidate className="space-y-6 rounded-3xl border-t-4 border-t-cobalt bg-card p-6 shadow-xl ring-1 ring-border md:p-10">
+      <div className="flex flex-col gap-3 border-b border-border pb-5 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="font-display text-2xl font-extrabold tracking-tight">Tell us about the opportunity</p>
+          <p className="mt-1 text-sm text-muted-foreground">TUYDEF reviews every offer and handles the introduction.</p>
+        </div>
+        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-cobalt/10 px-3 py-1 text-xs font-semibold text-cobalt">
+          <Briefcase className="h-3.5 w-3.5" /> Partner
+        </span>
+      </div>
       <div className="grid gap-5 md:grid-cols-2">
         <Field label="Your name" required error={errors.contactName}><input className={inputCls} value={d.contactName} onChange={(e) => set("contactName", e.target.value)} aria-invalid={!!errors.contactName} /></Field>
         <Field label="Organisation" required error={errors.organisation}><input className={inputCls} value={d.organisation} onChange={(e) => set("organisation", e.target.value)} aria-invalid={!!errors.organisation} /></Field>
@@ -63,7 +72,11 @@ export function OpportunityForm({ onSubmit }: { onSubmit: (d: OpportunityOffer) 
         I understand TUYDEF will review this opportunity and handle all contact with creators, including parents/guardians for under-18s.
       </Consent>
       {errors.form && <p className="text-sm text-destructive">{errors.form}</p>}
-      <button type="submit" disabled={busy} className={btn.primary}>{busy && <Loader2 className="h-4 w-4 animate-spin" />} Submit opportunity</button>
+      <button type="submit" disabled={busy} className={`${btn.primary} w-full py-3.5 text-base sm:w-auto`}>{busy && <Loader2 className="h-4 w-4 animate-spin" />} Submit opportunity</button>
+      <p className="flex items-start gap-2 text-xs text-muted-foreground">
+        <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
+        Your details are used only to review this offer. All creator contact stays with TUYDEF.
+      </p>
     </form>
   );
 }
