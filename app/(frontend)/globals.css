@@ -250,6 +250,8 @@
   --color-teal: var(--yc-teal);
   --color-sun: var(--yc-sun);
   --color-cream: var(--yc-cream);
+  --color-cobalt: var(--yc-cobalt);
+  --color-lilac: var(--yc-lilac);
 
   --font-display: var(--ycn-font-display);
 }
@@ -261,6 +263,8 @@
   --yc-teal: oklch(0.58 0.1 195);
   --yc-sun: oklch(0.86 0.14 88);
   --yc-cream: oklch(0.975 0.015 85);
+  --yc-cobalt: oklch(0.56 0.22 265);
+  --yc-lilac: oklch(0.68 0.2 330);
 
   --ycn-font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
   --ycn-font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
@@ -327,4 +331,115 @@
 
 .ycn-theme .yc-rise {
   animation: yc-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+
+/* ===============================
+   Young Creators Network — motion & surface utilities
+   =============================== */
+
+@keyframes yc-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes yc-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(var(--yc-rotate, 0deg));
+  }
+  50% {
+    transform: translate3d(0, -14px, 0) rotate(var(--yc-rotate, 0deg));
+  }
+}
+
+@keyframes yc-pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--yc-tangerine) 45%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 14px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.ycn-theme .yc-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+.ycn-theme .yc-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (scripting: none) {
+  .ycn-theme .yc-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.ycn-theme .yc-marquee {
+  overflow: hidden;
+  user-select: none;
+}
+
+.ycn-theme .yc-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: yc-marquee 34s linear infinite;
+}
+
+.ycn-theme .yc-marquee:hover .yc-marquee-track {
+  animation-play-state: paused;
+}
+
+.ycn-theme .yc-float {
+  animation: yc-float 7s ease-in-out infinite;
+}
+
+.ycn-theme .yc-pulse {
+  animation: yc-pulse-ring 2.8s ease-out infinite;
+}
+
+.ycn-theme .yc-dot-grid {
+  background-image: radial-gradient(color-mix(in oklab, var(--yc-ink) 14%, transparent) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.ycn-theme .yc-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ycn-theme .yc-reveal,
+  .ycn-theme .yc-reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .ycn-theme .yc-marquee-track,
+  .ycn-theme .yc-float,
+  .ycn-theme .yc-pulse,
+  .ycn-theme .yc-rise {
+    animation: none !important;
+  }
 }

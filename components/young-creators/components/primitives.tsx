@@ -36,24 +36,56 @@ export function YcnLogo({ className = "h-11 w-11" }: { className?: string }) {
 
 const base = "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60";
 export const btn = {
-  primary: `${base} bg-primary text-primary-foreground shadow-[0_10px_30px_-12px_var(--yc-tangerine)] hover:-translate-y-0.5 hover:brightness-105`,
-  ink: `${base} bg-ink text-ink-foreground hover:-translate-y-0.5 hover:opacity-90`,
+  primary: `${base} bg-primary text-primary-foreground shadow-[0_14px_36px_-14px_var(--yc-tangerine)] hover:-translate-y-0.5 hover:brightness-105 active:translate-y-0`,
+  ink: `${base} bg-ink text-ink-foreground hover:-translate-y-0.5 hover:opacity-90 active:translate-y-0`,
   outline: `${base} border border-foreground/20 text-foreground hover:border-foreground hover:bg-foreground/5`,
   light: `${base} border border-ink-foreground/30 text-ink-foreground hover:bg-ink-foreground/10`,
+  sun: `${base} bg-sun text-ink shadow-[0_14px_36px_-16px_var(--yc-sun)] hover:-translate-y-0.5 hover:brightness-105 active:translate-y-0`,
+  teal: `${base} bg-teal text-ink-foreground shadow-[0_14px_36px_-16px_var(--yc-teal)] hover:-translate-y-0.5 hover:brightness-105 active:translate-y-0`,
 };
 
-export function Eyebrow({ children, tone = "tangerine" }: { children: ReactNode; tone?: "tangerine" | "teal" | "sun" | undefined }) {
-  const color = tone === "teal" ? "text-teal" : tone === "sun" ? "text-sun" : "text-primary";
-  return <p className={`mb-3 text-xs font-bold uppercase tracking-[0.2em] ${color}`}>{children}</p>;
+const eyebrowTone = {
+  tangerine: "text-primary",
+  teal: "text-teal",
+  sun: "text-sun",
+  cobalt: "text-cobalt",
+  lilac: "text-lilac",
+} as const;
+
+export type EyebrowTone = keyof typeof eyebrowTone;
+
+export function Eyebrow({ children, tone = "tangerine" }: { children: ReactNode; tone?: EyebrowTone | undefined }) {
+  return (
+    <p className={`mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.22em] md:text-xs ${eyebrowTone[tone]}`}>
+      <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-current" />
+      {children}
+    </p>
+  );
 }
 
-export function SectionHeading({ eyebrow, title, intro, tone, light }: { eyebrow?: string; title: ReactNode; intro?: ReactNode; tone?: "tangerine" | "teal" | "sun" | undefined; light?: boolean }) {
+export function SectionHeading({ eyebrow, title, intro, tone, light }: { eyebrow?: string; title: ReactNode; intro?: ReactNode; tone?: EyebrowTone | undefined; light?: boolean }) {
   return (
     <div className="max-w-2xl">
       {eyebrow && <Eyebrow tone={tone}>{eyebrow}</Eyebrow>}
-      <h2 className={`text-3xl font-bold leading-tight md:text-5xl ${light ? "text-ink-foreground" : "text-foreground"}`}>{title}</h2>
-      {intro && <p className={`mt-4 text-lg ${light ? "text-ink-foreground/75" : "text-muted-foreground"}`}>{intro}</p>}
+      <h2 className={`text-4xl font-extrabold leading-[1.02] tracking-[-0.035em] [text-wrap:balance] md:text-6xl ${light ? "text-ink-foreground" : "text-foreground"}`}>{title}</h2>
+      {intro && <p className={`mt-5 max-w-xl text-lg leading-relaxed ${light ? "text-ink-foreground/75" : "text-muted-foreground"}`}>{intro}</p>}
     </div>
+  );
+}
+
+/** Small rotated label for editorial accents. */
+export function Sticker({ children, className = "", tone = "sun" }: { children: ReactNode; className?: string; tone?: "sun" | "primary" | "teal" | "cobalt" | "lilac" | undefined }) {
+  const tones = {
+    sun: "bg-sun text-ink",
+    primary: "bg-primary text-primary-foreground",
+    teal: "bg-teal text-ink-foreground",
+    cobalt: "bg-cobalt text-white",
+    lilac: "bg-lilac text-ink",
+  } as const;
+  return (
+    <span className={`inline-flex -rotate-2 items-center rounded-full px-3 py-1.5 font-display text-xs font-bold uppercase tracking-[0.12em] shadow-lg ${tones[tone]} ${className}`}>
+      {children}
+    </span>
   );
 }
 
