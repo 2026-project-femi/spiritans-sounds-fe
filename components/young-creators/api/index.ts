@@ -160,6 +160,7 @@ export async function getLatestPosts(): Promise<LatestPost[]> {
         date: doc.date,
         excerpt: doc.excerpt,
         image,
+        ...(doc.youtubeUrl ? { youtubeUrl: doc.youtubeUrl } : {}),
       }
     })
     .filter((post): post is LatestPost => post !== null)

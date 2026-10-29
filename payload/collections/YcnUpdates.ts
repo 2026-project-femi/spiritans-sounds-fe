@@ -3,7 +3,8 @@ import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { isAdmin, isAdminOrEditor } from '@/access/roles'
 import { publishedAtField } from '@/payload/fields/statusField'
 import { safeRevalidatePath } from '@/lib/revalidate'
-import type { CollectionConfig } from 'payload'
+import { getYouTubeId } from '@/lib/youtube'
+import type { CollectionConfig, TextFieldSingleValidation } from 'payload'
 
 const revalidateUpdates = () => {
   safeRevalidatePath('/young-creators')
@@ -88,6 +89,19 @@ export const YcnUpdates: CollectionConfig = {
       admin: {
         description: 'Add alt text on the Media item — it is used for accessibility and social previews.',
       },
+    },
+    {
+      name: 'youtubeUrl',
+      type: 'text',
+      label: 'YouTube Video URL (optional)',
+      admin: {
+        description:
+          'Optional. When set, the update card shows a play button and embeds the YouTube video.',
+      },
+      validate: ((value) => {
+        if (!value) return true
+        return getYouTubeId(value) ? true : 'Enter a valid YouTube video URL.'
+      }) as TextFieldSingleValidation,
     },
     publishedAtField,
   ],

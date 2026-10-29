@@ -1586,6 +1586,10 @@ export interface YcnUpdate {
    * Add alt text on the Media item — it is used for accessibility and social previews.
    */
   image: string | Media;
+  /**
+   * Optional. When set, the update card shows a play button and embeds the YouTube video.
+   */
+  youtubeUrl?: string | null;
   publishedAt?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -2779,6 +2783,7 @@ export interface YcnUpdatesSelect<T extends boolean = true> {
   date?: T;
   excerpt?: T;
   image?: T;
+  youtubeUrl?: T;
   publishedAt?: T;
   updatedAt?: T;
   createdAt?: T;

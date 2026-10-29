@@ -89,6 +89,8 @@ export interface LatestPost {
   date: string; // ISO
   excerpt: string;
   image: MediaItem;
+  /** Optional YouTube video shown on the update card. */
+  youtubeUrl?: string | undefined;
 }
 
 export interface MentorApplication {
