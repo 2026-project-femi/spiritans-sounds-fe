@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { listClassYears, listCreators } from "@/components/young-creators/api";
 import { CreatorDirectory } from "@/components/young-creators/components/CreatorDirectory";
+import { CATEGORIES } from "@/components/young-creators/constants";
+import type { TalentCategory } from "@/components/young-creators/types";
 import { FinalCTA } from "@/components/young-creators/components/FinalCTA";
 import { Reveal } from "@/components/young-creators/components/Reveal";
 import { SectionHeading } from "@/components/young-creators/components/primitives";
@@ -15,8 +17,25 @@ export const metadata: Metadata = {
 	openGraph: { title, description },
 };
 
-export default async function CreatorDirectoryPage() {
-	const [creators, years] = await Promise.all([listCreators(), listClassYears()]);
+interface Props {
+	searchParams: Promise<{ q?: string | string[]; talent?: string | string[]; year?: string | string[] }>;
+}
+
+const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value);
+
+export default async function CreatorDirectoryPage({ searchParams }: Props) {
+	const [creators, years, params] = await Promise.all([
+		listCreators(),
+		listClassYears(),
+		searchParams,
+	]);
+	const search = first(params.q)?.slice(0, 80) ?? "";
+	const talent = first(params.talent);
+	const category = CATEGORIES.some((item) => item.value === talent)
+		? (talent as TalentCategory)
+		: "all";
+	const yearParam = Number(first(params.year));
+	const classYear = years.includes(yearParam) ? yearParam : "all";
 
 	return (
 		<>
@@ -29,7 +48,11 @@ export default async function CreatorDirectoryPage() {
 						tone="cobalt"
 					/>
 					<div className="mt-10">
-						<CreatorDirectory creators={creators} classYears={years} />
+						<CreatorDirectory
+							creators={creators}
+							classYears={years}
+							initial={{ search, category, classYear }}
+						/>
 					</div>
 				</section>
 			</Reveal>
