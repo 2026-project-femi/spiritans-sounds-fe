@@ -48,9 +48,11 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
     const mimeType = uploadDoc.mimeType || '';
     const url = uploadDoc.url || '';
     const isImage = mimeType ? mimeType.startsWith('image') : (url ? /\.(jpg|jpeg|png|webp|gif|svg)/i.test(url) : true);
+    const nodeFields = (node as any).fields || {};
+    const linkUrl = typeof nodeFields.linkUrl === 'string' ? nodeFields.linkUrl.trim() : '';
 
     if (isImage) {
-      const caption = (node as any).fields?.caption || (node as any).caption || uploadDoc.caption;
+      const caption = nodeFields.caption || (node as any).caption || uploadDoc.caption;
       return (
         <MediaBlock
           blockType="mediaBlock"
@@ -59,6 +61,9 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
           media={uploadDoc}
           caption={caption}
           enableGutter={false}
+          enableLightbox={true}
+          linkUrl={linkUrl || null}
+          openInNewTab={Boolean(nodeFields.openInNewTab)}
           disableInnerContainer={true}
         />
       );
@@ -79,6 +84,7 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
         {...node.fields}
         captionClassName="mx-auto max-w-[48rem]"
         enableGutter={false}
+        enableLightbox={true}
         disableInnerContainer={true}
       />
     ),

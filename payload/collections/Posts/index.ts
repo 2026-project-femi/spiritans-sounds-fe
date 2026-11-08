@@ -7,8 +7,8 @@ import {
   HorizontalRuleFeature,
   InlineToolbarFeature,
   lexicalEditor,
-  UploadFeature,
 } from '@payloadcms/richtext-lexical'
+import { mediaUploadFeature } from '@/payload/fields/mediaUpload'
 
 import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
@@ -99,19 +99,7 @@ export const Posts: CollectionConfig<'posts'> = {
                 features: ({ rootFeatures }) => {
                   return [
                     ...rootFeatures,
-                    UploadFeature({
-                      collections: {
-                        media: {
-                          fields: [
-                            {
-                              name: 'caption',
-                              type: 'text',
-                              label: 'Caption (Optional)',
-                            },
-                          ],
-                        },
-                      },
-                    }),
+                    mediaUploadFeature(),
                     HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
                     BlocksFeature({ blocks: [Banner, Code, MediaBlock] }),
                     FixedToolbarFeature(),

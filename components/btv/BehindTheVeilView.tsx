@@ -1113,7 +1113,7 @@ export default function BehindTheVeilView({
             </p>
             {launchData?.previewChapter ? (
               <div className="mt-6 text-left prose prose-stone max-w-none prose-headings:font-serif prose-p:font-serif prose-p:text-lg sm:prose-p:text-xl prose-p:leading-[1.75] prose-p:text-gray-800 prose-li:text-gray-800 prose-strong:text-gray-900">
-                <LexicalRichText data={launchData.previewChapter} />
+                <LexicalRichText className="payload-richtext" data={launchData.previewChapter} />
               </div>
             ) : (
               <div className="mt-6 space-y-5">

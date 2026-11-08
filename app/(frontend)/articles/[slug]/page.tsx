@@ -7,6 +7,7 @@ import { Sidebar } from "@/components/common/Sidebar";
 import Comments from "@/components/Comments";
 import { ShareButtons } from "@/components/common/ShareButtons";
 import { MediaCaption } from "@/components/common/MediaCaption";
+import { ImageLink } from "@/components/common/ImageLink";
 import { Comment } from "@/lib/types";
 import type { Metadata } from "next";
 import { getOgImageUrl } from '@/lib/getOgImageUrl'
@@ -148,14 +149,16 @@ export default async function SingleArticlePage({ params }: { params: Promise<{ 
                             // Image Section
                             <figure className="mb-12">
                                 <div className="aspect-[16/9] bg-gray-100 overflow-hidden rounded-lg">
-                                    <Image
-                                        src={article.imageUrl}
-                                        alt={featuredImageDoc?.alt || article.title}
-                                        width={800} // Explicit width
-                                        height={450} // Explicit height
-                                        className="object-cover transition-opacity duration-300 w-full h-full"
-                                        priority
-                                    />
+                                    <ImageLink href={rawDoc.linkUrl} newTab={rawDoc.openInNewTab}>
+                                        <Image
+                                            src={article.imageUrl}
+                                            alt={featuredImageDoc?.alt || article.title}
+                                            width={800} // Explicit width
+                                            height={450} // Explicit height
+                                            className="object-cover transition-opacity duration-300 w-full h-full"
+                                            priority
+                                        />
+                                    </ImageLink>
                                 </div>
                                 <MediaCaption caption={featuredCaption} />
                             </figure>

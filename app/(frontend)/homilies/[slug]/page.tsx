@@ -8,6 +8,7 @@ import { Sidebar } from '@/components/common/Sidebar'
 import Comments from '@/components/Comments'
 import { ShareButtons } from '@/components/common/ShareButtons'
 import { MediaCaption } from '@/components/common/MediaCaption'
+import { ImageLink } from '@/components/common/ImageLink'
 import { Comment } from '@/lib/types'
 import { getSidebarData } from '@/lib/payload'
 import { notFound } from 'next/navigation'
@@ -142,14 +143,16 @@ export default async function SingleHomilyPage({
             {imageUrl && (
               <figure className="mb-12">
                 <div className="aspect-[16/9] bg-gray-100 overflow-hidden rounded-lg">
-                  <Image
-                    src={imageUrl}
-                    alt={featuredImageDoc?.alt || doc.title}
-                    width={800}
-                    height={450}
-                    className="object-cover transition-opacity duration-300 w-full h-full"
-                    priority
-                  />
+                  <ImageLink href={doc.linkUrl} newTab={doc.openInNewTab}>
+                    <Image
+                      src={imageUrl}
+                      alt={featuredImageDoc?.alt || doc.title}
+                      width={800}
+                      height={450}
+                      className="object-cover transition-opacity duration-300 w-full h-full"
+                      priority
+                    />
+                  </ImageLink>
                 </div>
                 <MediaCaption caption={featuredImageDoc?.caption} />
               </figure>

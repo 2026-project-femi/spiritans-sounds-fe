@@ -5,7 +5,9 @@ import { Banner } from '@/blocks/Banner/config'
 import { Code } from '@/blocks/Code/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
 import { publishedAtField } from '@/payload/fields/statusField'
-import { BlocksFeature, FixedToolbarFeature, HeadingFeature, HorizontalRuleFeature, InlineToolbarFeature, lexicalEditor, UploadFeature } from '@payloadcms/richtext-lexical'
+import { BlocksFeature, FixedToolbarFeature, HeadingFeature, HorizontalRuleFeature, InlineToolbarFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
+import { mediaUploadFeature } from '@/payload/fields/mediaUpload'
+import { imageLinkFields } from '@/payload/fields/imageLinkFields'
 import { safeRevalidatePath } from '@/lib/revalidate'
 import { CollectionConfig } from 'payload'
 
@@ -79,6 +81,7 @@ export const Homilies: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
     },
+    ...imageLinkFields(),
     {
       name: 'excerpt',
       type: 'textarea',
@@ -90,19 +93,7 @@ export const Homilies: CollectionConfig = {
                 features: ({ rootFeatures }) => {
                   return [
                     ...rootFeatures,
-                    UploadFeature({
-                      collections: {
-                        media: {
-                          fields: [
-                            {
-                              name: 'caption',
-                              type: 'text',
-                              label: 'Caption (Optional)',
-                            },
-                          ],
-                        },
-                      },
-                    }),
+                    mediaUploadFeature(),
                     HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
                     BlocksFeature({ blocks: [Banner, Code, MediaBlock] }),
                     FixedToolbarFeature(),

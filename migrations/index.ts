@@ -13,6 +13,7 @@ import * as migration_20260924_082531_add_views_and_page_views from './20260924_
 import * as migration_20261005_122033_launch_date_time_and_platform_text from './20261005_122033_launch_date_time_and_platform_text';
 import * as migration_20261028_212625_add_young_creators from './20261028_212625_add_young_creators';
 import * as migration_20261029_135055_add_ycn_update_youtube_url from './20261029_135055_add_ycn_update_youtube_url';
+import * as migration_20261108_012823_add_image_links from './20261108_012823_add_image_links';
 
 export const migrations = [
   {
@@ -88,6 +89,11 @@ export const migrations = [
   {
     up: migration_20261029_135055_add_ycn_update_youtube_url.up,
     down: migration_20261029_135055_add_ycn_update_youtube_url.down,
-    name: '20261029_135055_add_ycn_update_youtube_url'
+    name: '20261029_135055_add_ycn_update_youtube_url',
+  },
+  {
+    up: migration_20261108_012823_add_image_links.up,
+    down: migration_20261108_012823_add_image_links.down,
+    name: '20261108_012823_add_image_links'
   },
 ];

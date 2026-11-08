@@ -179,6 +179,24 @@
   .btn-brand:hover {
     @apply opacity-90;
   }
+
+  /*
+   * Rich-text inline links.
+   * The typography plugin is not installed, so the `prose` classes used by
+   * RichText do not provide link styling on their own. Keep this scoped to
+   * `.payload-richtext` so navigation, buttons and cards are unaffected.
+   */
+  .payload-richtext a {
+    @apply font-medium text-brand-primary underline underline-offset-2 decoration-brand-primary/60 transition-colors;
+  }
+
+  .payload-richtext a:hover {
+    @apply decoration-brand-primary;
+  }
+
+  .payload-richtext a:focus-visible {
+    @apply rounded-sm outline-2 outline-offset-2 outline-brand-primary;
+  }
 }
 
 /* ===============================

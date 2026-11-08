@@ -354,6 +354,8 @@ export interface Article {
   } | null;
   youtubeUrl?: string | null;
   featuredImage?: (string | null) | Media;
+  linkUrl?: string | null;
+  openInNewTab?: boolean | null;
   slug: string;
   excerpt?: string | null;
   publishedAt?: string | null;
@@ -397,6 +399,8 @@ export interface Event {
   isFeatured?: boolean | null;
   isPopular?: boolean | null;
   featuredImage?: (string | null) | Media;
+  linkUrl?: string | null;
+  openInNewTab?: boolean | null;
   publishedAt?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -420,6 +424,8 @@ export interface Homily {
    */
   category?: ('Sunday' | 'Feast Day' | 'Special' | 'Weekday' | 'Memorial' | 'Solemnity') | null;
   featuredImage?: (string | null) | Media;
+  linkUrl?: string | null;
+  openInNewTab?: boolean | null;
   excerpt?: string | null;
   content?: {
     root: {
@@ -458,6 +464,8 @@ export interface Prayer {
   slug: string;
   category?: string | null;
   featuredImage?: (string | null) | Media;
+  linkUrl?: string | null;
+  openInNewTab?: boolean | null;
   excerpt?: string | null;
   content?: {
     root: {
@@ -495,6 +503,8 @@ export interface Music {
   audio?: (string | null) | Media;
   lyrics?: string | null;
   featuredImage?: (string | null) | Media;
+  linkUrl?: string | null;
+  openInNewTab?: boolean | null;
   excerpt?: string | null;
   content?: {
     root: {
@@ -1007,6 +1017,8 @@ export interface ContentBlock {
  */
 export interface MediaBlock {
   media: string | Media;
+  linkUrl?: string | null;
+  openInNewTab?: boolean | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaBlock';
@@ -2108,6 +2120,8 @@ export interface ArticleSelect<T extends boolean = true> {
   content?: T;
   youtubeUrl?: T;
   featuredImage?: T;
+  linkUrl?: T;
+  openInNewTab?: T;
   slug?: T;
   excerpt?: T;
   publishedAt?: T;
@@ -2133,6 +2147,8 @@ export interface EventsSelect<T extends boolean = true> {
   isFeatured?: T;
   isPopular?: T;
   featuredImage?: T;
+  linkUrl?: T;
+  openInNewTab?: T;
   publishedAt?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -2149,6 +2165,8 @@ export interface HomilySelect<T extends boolean = true> {
   scripture?: T;
   category?: T;
   featuredImage?: T;
+  linkUrl?: T;
+  openInNewTab?: T;
   excerpt?: T;
   content?: T;
   audio?: T;
@@ -2169,6 +2187,8 @@ export interface PrayerSelect<T extends boolean = true> {
   slug?: T;
   category?: T;
   featuredImage?: T;
+  linkUrl?: T;
+  openInNewTab?: T;
   excerpt?: T;
   content?: T;
   publishedAt?: T;
@@ -2188,6 +2208,8 @@ export interface MusicSelect<T extends boolean = true> {
   audio?: T;
   lyrics?: T;
   featuredImage?: T;
+  linkUrl?: T;
+  openInNewTab?: T;
   excerpt?: T;
   content?: T;
   publishedAt?: T;
@@ -2472,6 +2494,8 @@ export interface ContentBlockSelect<T extends boolean = true> {
  */
 export interface MediaBlockSelect<T extends boolean = true> {
   media?: T;
+  linkUrl?: T;
+  openInNewTab?: T;
   id?: T;
   blockName?: T;
 }

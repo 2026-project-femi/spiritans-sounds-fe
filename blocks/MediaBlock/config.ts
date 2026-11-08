@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { imageLinkFields } from '@/payload/fields/imageLinkFields'
 
 export const MediaBlock: Block = {
   slug: 'mediaBlock',
@@ -10,5 +11,6 @@ export const MediaBlock: Block = {
       relationTo: 'media',
       required: true,
     },
+    ...imageLinkFields(),
   ],
 }

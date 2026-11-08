@@ -7,6 +7,7 @@ import { YouTubeEmbed } from "@/components/PortableTextComponents";
 import { ArrowLeft, CalendarDays, MapPin, Clock } from "lucide-react";
 import { ShareButtons } from "@/components/common/ShareButtons";
 import { MediaCaption } from "@/components/common/MediaCaption";
+import { ImageLink } from "@/components/common/ImageLink";
 import { TrackContentRead } from "@/components/analytics/TrackContentRead";
 import type { Metadata } from "next";
 import { getOgImageUrl } from '@/lib/getOgImageUrl'
@@ -56,6 +57,8 @@ interface Event {
   youtubeUrl?: string;
   excerpt?: string;
   imageUrl?: string;
+  linkUrl?: string | null;
+  openInNewTab?: boolean | null;
   featuredImage?: { url?: string | null; alt?: string | null; caption?: unknown } | null;
 }
 
@@ -157,7 +160,9 @@ All are welcome. Come and celebrate the treasures in our midst.`,
       {displayEvent.imageUrl && (
         <figure className="max-w-4xl mx-auto px-6 mt-6">
           <div className="aspect-video relative rounded-2xl overflow-hidden">
-            <Image src={displayEvent.imageUrl} alt={featuredImageDoc?.alt || displayEvent.title} fill className="object-cover" />
+            <ImageLink className="absolute inset-0" href={displayEvent.linkUrl} newTab={displayEvent.openInNewTab}>
+              <Image src={displayEvent.imageUrl} alt={featuredImageDoc?.alt || displayEvent.title} fill className="object-cover" />
+            </ImageLink>
           </div>
           <MediaCaption caption={featuredImageDoc?.caption} theme="dark" />
         </figure>

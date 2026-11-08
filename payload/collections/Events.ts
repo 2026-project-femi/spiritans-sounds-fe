@@ -8,8 +8,9 @@ import {
 	HorizontalRuleFeature,
 	InlineToolbarFeature,
 	lexicalEditor,
-	UploadFeature,
 } from "@payloadcms/richtext-lexical";
+import { mediaUploadFeature } from "@/payload/fields/mediaUpload";
+import { imageLinkFields } from "@/payload/fields/imageLinkFields";
 import { authenticated } from "@/access/authenticated";
 import { authenticatedOrPublished } from "@/access/authenticatedOrPublished";
 import { isAdmin, isAdminOrEditor } from "@/access/roles";
@@ -121,28 +122,7 @@ export const Events: CollectionConfig = {
 				features: ({ rootFeatures }) => {
 					return [
 						...rootFeatures,
-						UploadFeature({
-							collections: {
-								media: {
-									fields: [
-										{
-											name: "linkUrl",
-											type: "text",
-											label: "Clickable Link URL (Optional)",
-											admin: {
-												placeholder: "https://... or /relative-path",
-											},
-										},
-										{
-											name: "openInNewTab",
-											type: "checkbox",
-											label: "Open link in new tab",
-											defaultValue: false,
-										},
-									],
-								},
-							},
-						}),
+						mediaUploadFeature(),
 						HeadingFeature({ enabledHeadingSizes: ["h1", "h2", "h3", "h4"] }),
 						BlocksFeature({ blocks: [Banner, Code, MediaBlock] }),
 						FixedToolbarFeature(),
@@ -168,6 +148,7 @@ export const Events: CollectionConfig = {
 			type: "upload",
 			relationTo: "media",
 		},
+		...imageLinkFields(),
 		publishedAtField,
 	],
 	versions: {

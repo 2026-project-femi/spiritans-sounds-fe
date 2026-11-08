@@ -4,6 +4,7 @@ import { isAdmin, isAdminOrEditor } from '@/access/roles';
 import { publishedAtField } from '@/payload/fields/statusField';
 import { safeRevalidatePath } from '@/lib/revalidate';
 import { CollectionConfig } from 'payload'
+import { imageLinkFields } from '@/payload/fields/imageLinkFields'
 
 export const Music: CollectionConfig = {
   slug: 'music',
@@ -82,6 +83,7 @@ export const Music: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
     },
+    ...imageLinkFields(),
     {
       name: 'excerpt',
       type: 'textarea',

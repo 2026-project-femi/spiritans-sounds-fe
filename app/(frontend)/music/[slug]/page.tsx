@@ -4,6 +4,7 @@ import configPromise from "@/payload.config";
 import RichText from '@/components/RichText';
 import { Sidebar } from "@/components/common/Sidebar"; // Import the new Sidebar component
 import { MediaCaption } from "@/components/common/MediaCaption";
+import { ImageLink } from "@/components/common/ImageLink";
 import { TrackContentRead } from "@/components/analytics/TrackContentRead";
 import type { Metadata } from "next";
 import { getOgImageUrl } from '@/lib/getOgImageUrl'
@@ -113,14 +114,16 @@ export default async function SingleMusicPage({ params }: { params: Promise<{ sl
                             // Image Section
                             <figure className="mb-12">
                                 <div className="aspect-[16/9] bg-gray-100 overflow-hidden rounded-lg">
-                                    <Image
-                                        src={music.imageUrl}
-                                        alt={featuredImageDoc?.alt || music.title}
-                                        width={800} // Explicit width
-                                        height={450} // Explicit height
-                                        className="object-cover transition-opacity duration-300 w-full h-full"
-                                        priority
-                                    />
+                                    <ImageLink href={rawDoc.linkUrl} newTab={rawDoc.openInNewTab}>
+                                        <Image
+                                            src={music.imageUrl}
+                                            alt={featuredImageDoc?.alt || music.title}
+                                            width={800} // Explicit width
+                                            height={450} // Explicit height
+                                            className="object-cover transition-opacity duration-300 w-full h-full"
+                                            priority
+                                        />
+                                    </ImageLink>
                                 </div>
                                 <MediaCaption caption={featuredImageDoc?.caption} />
                             </figure>
