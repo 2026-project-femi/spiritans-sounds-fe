@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
     },
   ],
   },
-  experimental: { turbopackFileSystemCacheForDev: false },
+  experimental: { cpus: 1, turbopackFileSystemCacheForDev: false },
   serverExternalPackages: ['drizzle-kit'],
 };
 

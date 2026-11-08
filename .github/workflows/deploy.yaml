@@ -37,6 +37,8 @@ jobs:
             /usr/local/bin/pnpm payload migrate
 
             echo "── Building ──"
+            free -h
+            rm -rf .next/cache
             /usr/local/bin/pnpm build
 
             
