@@ -19,6 +19,9 @@ const DOT: Record<TalentCategory, string> = {
   dance: "bg-primary",
   digital: "bg-cobalt",
   technology: "bg-teal",
+  fashion: 'bg-teal-500',
+  sports: 'bg-teal-700',
+  others: 'bg-primary'
 };
 
 const chip = (active: boolean) =>
