@@ -1541,7 +1541,7 @@ export interface YoungCreator {
    */
   portrait: string | Media;
   classYear: number;
-  primaryCategory: 'writing' | 'music' | 'visual-art' | 'photography' | 'dance' | 'digital' | 'technology';
+  primaryCategory: 'writing' | 'music' | 'visual-art' | 'photography' | 'dance' | 'digital' | 'technology' | 'fashion' | 'sports'|'others';
   featured?: boolean | null;
   /**
    * City or region only — never a full address. Leave blank to hide.
