@@ -18,7 +18,10 @@ export type TalentCategory =
   | "photography"
   | "dance"
   | "digital"
-  | "technology";
+  | "technology"
+  | "fashion"
+  | "sports"
+  | "others"
 
 export interface MediaItem {
   src: string;

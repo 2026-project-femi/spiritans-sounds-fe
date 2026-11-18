@@ -8,6 +8,9 @@ export const CATEGORIES: { value: TalentCategory; label: string }[] = [
   { value: "dance", label: "Dancer" },
   { value: "digital", label: "Digital Creator" },
   { value: "technology", label: "Technology & Innovation" },
+  {value: "fashion", label: "Fashion"},
+  {value: "sports",label: "Sports"},
+  {value: "others", label: "Others"}
 ];
 
 export const categoryLabel = (c: TalentCategory) =>
