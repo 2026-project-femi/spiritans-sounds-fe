@@ -699,16 +699,44 @@ export interface EmailCampaign {
     };
     [k: string]: unknown;
   } | null;
-  status?: ('draft' | 'paused' | 'sent') | null;
+  /**
+   * Who receives this campaign. Book launch greetings use the registration's full name.
+   */
+  audience: 'subscribers' | 'book-launch' | 'book-launch-unreminded' | 'all';
+  /**
+   * Sets “Reminder Email Sent” on book launch registrations that receive this campaign.
+   */
+  markReminderSent?: boolean | null;
+  status?: ('draft' | 'paused' | 'partial' | 'sent') | null;
   sentAt?: string | null;
   /**
-   * Total subscribers at time of send.
+   * Total recipients for the selected audience at time of send.
    */
   recipientCount?: number | null;
   /**
-   * Used as the resume offset if rate-limited.
+   * Successful deliveries so far.
    */
   sentCount?: number | null;
+  /**
+   * Recipients whose last send failed. They are retried on resume.
+   */
+  failedCount?: number | null;
+  /**
+   * Offset into the subscriber list. Used to resume without re-sending.
+   */
+  attemptedCount?: number | null;
+  /**
+   * Retried first on the next send/resume. Managed by the send API.
+   */
+  failedEmails?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2298,10 +2326,15 @@ export interface EmailCampaignsSelect<T extends boolean = true> {
   subject?: T;
   preheader?: T;
   body?: T;
+  audience?: T;
+  markReminderSent?: T;
   status?: T;
   sentAt?: T;
   recipientCount?: T;
   sentCount?: T;
+  failedCount?: T;
+  attemptedCount?: T;
+  failedEmails?: T;
   updatedAt?: T;
   createdAt?: T;
 }

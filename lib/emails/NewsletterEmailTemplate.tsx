@@ -1,7 +1,7 @@
 import * as React from "react";
 
 interface NewsletterEmailProps {
-  firstName: string;
+  recipientName: string;
   subject: string;
   preheader?: string;
   bodyHtml: string;     // pre-rendered HTML from blockContent
@@ -10,7 +10,7 @@ interface NewsletterEmailProps {
 }
 
 export const NewsletterEmailTemplate: React.FC<Readonly<NewsletterEmailProps>> = ({
-  firstName,
+  recipientName,
   subject,
   preheader,
   bodyHtml,
@@ -89,7 +89,7 @@ export const NewsletterEmailTemplate: React.FC<Readonly<NewsletterEmailProps>> =
 
                     {/* Personalised greeting */}
                     <p style={{ fontSize: "18px", fontWeight: 600, color: "#1e293b", margin: "0 0 24px 0" }}>
-                      Hi {firstName},
+                      Hi {recipientName},
                     </p>
 
                     {/* Rich text body (blockContent rendered to HTML) */}

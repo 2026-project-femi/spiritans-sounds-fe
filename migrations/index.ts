@@ -14,6 +14,8 @@ import * as migration_20261005_122033_launch_date_time_and_platform_text from '.
 import * as migration_20261028_212625_add_young_creators from './20261028_212625_add_young_creators';
 import * as migration_20261029_135055_add_ycn_update_youtube_url from './20261029_135055_add_ycn_update_youtube_url';
 import * as migration_20261108_012823_add_image_links from './20261108_012823_add_image_links';
+import * as migration_20261118_140111_add_email_campaign_progress from './20261118_140111_add_email_campaign_progress';
+import * as migration_20261118_142124_add_campaign_audience from './20261118_142124_add_campaign_audience';
 
 export const migrations = [
   {
@@ -94,6 +96,16 @@ export const migrations = [
   {
     up: migration_20261108_012823_add_image_links.up,
     down: migration_20261108_012823_add_image_links.down,
-    name: '20261108_012823_add_image_links'
+    name: '20261108_012823_add_image_links',
+  },
+  {
+    up: migration_20261118_140111_add_email_campaign_progress.up,
+    down: migration_20261118_140111_add_email_campaign_progress.down,
+    name: '20261118_140111_add_email_campaign_progress',
+  },
+  {
+    up: migration_20261118_142124_add_campaign_audience.up,
+    down: migration_20261118_142124_add_campaign_audience.down,
+    name: '20261118_142124_add_campaign_audience'
   },
 ];

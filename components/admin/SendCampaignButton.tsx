@@ -1,134 +1,195 @@
 "use client";
 // components/admin/SendCampaignButton.tsx
 //
-// Replaces Payload's default Save button with a smart button that:
-//   - Saves the document first (via Payload's built-in save)
-//   - Then calls POST /api/send-campaign
-//   - Shows live status feedback inline
-//   - Handles rate-limit pauses and lets you resume
+// Injected next to Payload's default Save button (beforeDocumentControls).
+// It saves the document, then asks the send API to deliver the campaign.
+// The API owns resume state, so the browser never decides who gets resent.
 
-import React, { useState, useTransition } from "react";
+import React, { useState } from "react";
 import { useDocumentInfo, useForm } from "@payloadcms/ui";
+import { useRouter } from "next/navigation";
+
+type SendResponse = {
+	status?: "draft" | "paused" | "partial" | "sent";
+	sent?: number;
+	failed?: number;
+	totalSentSoFar?: number;
+	totalAttempted?: number;
+	paused?: boolean;
+	message?: string;
+};
 
 type SendState =
 	| { type: "idle" }
 	| { type: "saving" }
 	| { type: "sending" }
-	| { type: "paused"; sent: number; message: string }
+	| { type: "paused"; message: string }
 	| { type: "done"; sent: number; failed: number }
 	| { type: "error"; message: string };
 
 export function SendCampaignButton() {
 	const { id, savedDocumentData } = useDocumentInfo();
 	const { submit } = useForm();
+	const router = useRouter();
 	const [state, setState] = useState<SendState>({ type: "idle" });
-	const [, startTransition] = useTransition();
+	const [localStatus, setLocalStatus] = useState<string | undefined>();
 
-	const status = savedDocumentData?.status;
+	const savedStatus = (savedDocumentData as { status?: string } | undefined)?.status;
+	const status = localStatus ?? savedStatus;
 	const isSent = status === "sent";
 	const isPaused = status === "paused";
+	const isPartial = status === "partial";
+	const isCreateView = !id;
 	const isBusy = state.type === "saving" || state.type === "sending";
 
-	// ── Send handler ────────────────────────────────────────────────────────────
-	async function handleSend(resumeFrom = 0) {
-		if (!id) return;
+	async function handleSend() {
+		if (!id) {
+			setState({
+				type: "error",
+				message: "Save the campaign first, then send it.",
+			});
+			return;
+		}
 
-		// 1. Save the document first so the API works with latest content
+		// 1. Persist the latest edits before the API reads the campaign.
 		setState({ type: "saving" });
+		let submitResult: unknown;
 		try {
-			await submit();
+			submitResult = await submit();
 		} catch {
 			setState({ type: "error", message: "Failed to save before sending." });
 			return;
 		}
 
-		// 2. Call the send API
+		if (!submitResult) {
+			setState({
+				type: "error",
+				message: "Fix the validation errors before sending.",
+			});
+			return;
+		}
+
+		// 2. Ask the API to send. Resume state lives on the campaign document.
 		setState({ type: "sending" });
 		try {
 			const res = await fetch("/api/newsletter/send-campaign", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				credentials: "same-origin", // sends the Payload session cookie automatically
-				body: JSON.stringify({ campaignId: id, resumeFrom }),
+				credentials: "same-origin",
+				body: JSON.stringify({ campaignId: id }),
 			});
-			const data = await res.json();
+			const data = (await res.json()) as SendResponse;
 
 			if (!res.ok) {
 				setState({ type: "error", message: data.message ?? `HTTP ${res.status}` });
 				return;
 			}
 
+			if (data.status) setLocalStatus(data.status);
+
 			if (data.paused) {
 				setState({
 					type: "paused",
-					sent: data.totalSentSoFar ?? data.sent,
-					message: data.message ?? "Rate limit reached — resume when the limit resets.",
+					message:
+						data.message ??
+						`Rate limit reached after ${data.totalSentSoFar ?? 0} sends — resume when the limit resets.`,
 				});
-				return;
+			} else {
+				setState({
+					type: "done",
+					sent: data.sent ?? 0,
+					failed: data.failed ?? 0,
+				});
 			}
 
-			setState({ type: "done", sent: data.sent, failed: data.failed ?? 0 });
-		} catch (e: any) {
-			setState({ type: "error", message: e?.message ?? "Unknown error" });
+			router.refresh();
+		} catch (error) {
+			setState({
+				type: "error",
+				message: error instanceof Error ? error.message : "Unknown error",
+			});
 		}
 	}
 
-	// ── Labels ──────────────────────────────────────────────────────────────────
-	function buttonLabel() {
-		if (state.type === "saving") return "Saving…";
-		if (state.type === "sending") return "Sending…";
+	function buttonLabel(): string {
+		if (isBusy) return state.type === "saving" ? "Saving…" : "Sending…";
 		if (isSent) return "✓ Already Sent";
+		if (isPartial) return "Retry Failed Sends";
 		if (isPaused) return "Resume Sending";
+		if (isCreateView) return "Save Campaign First";
 		return "Send Campaign";
 	}
 
-	// ── Render ──────────────────────────────────────────────────────────────────
+	const background = isSent
+		? "#6b7280"
+		: isBusy
+			? "#4b5563"
+			: isPartial
+				? "#b45309"
+				: isPaused
+					? "#d97706"
+					: "#16a34a";
+
 	return (
-		<div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-			{/* Primary button */}
+		<div
+			style={{
+				display: "flex",
+				flexDirection: "column",
+				gap: "0.35rem",
+				marginRight: "0.5rem",
+			}}>
 			<button
 				type="button"
-				onClick={() => {
-					startTransition(() => {
-						const resumeFrom =
-							isPaused && state.type === "paused"
-								? state.sent
-								: isPaused && savedDocumentData?.sentCount
-									? savedDocumentData.sentCount
-									: 0;
-						handleSend(resumeFrom);
-					});
-				}}
-				disabled={isBusy || isSent}
+				onClick={handleSend}
+				disabled={isBusy || isSent || isCreateView}
+				title={isCreateView ? "Save the campaign before sending it" : undefined}
 				style={{
-					padding: "0.6rem 1.2rem",
-					background: isSent ? "#6b7280" : isBusy ? "#4b5563" : isPaused ? "#d97706" : "#16a34a",
+					padding: "0.55rem 1rem",
+					background,
 					color: "#fff",
 					border: "none",
 					borderRadius: "4px",
-					cursor: isBusy || isSent ? "not-allowed" : "pointer",
+					cursor: isBusy || isSent || isCreateView ? "not-allowed" : "pointer",
 					fontWeight: 600,
-					fontSize: "0.875rem",
+					fontSize: "0.8125rem",
 					transition: "background 0.15s",
-					width: "100%",
+					whiteSpace: "nowrap",
 				}}>
 				{buttonLabel()}
 			</button>
 
-			{/* Inline feedback */}
-			{state.type === "done" && (
-				<p style={{ color: "#16a34a", fontSize: "0.8rem", margin: 0 }}>
-					✓ Sent to {state.sent} subscriber{state.sent !== 1 ? "s" : ""}.
-					{state.failed > 0 && ` (${state.failed} failed)`}
+			{isCreateView && (
+				<p style={{ color: "#6b7280", fontSize: "0.75rem", margin: 0, maxWidth: "15rem" }}>
+					Save the campaign first, then this button sends it.
 				</p>
 			)}
 
-			{state.type === "paused" && <p style={{ color: "#d97706", fontSize: "0.8rem", margin: 0 }}>⏸ {state.message}</p>}
+			{state.type === "done" && state.failed > 0 && (
+				<p style={{ color: "#b45309", fontSize: "0.75rem", margin: 0, maxWidth: "16rem" }}>
+					Sent to {state.sent} · {state.failed} failed. Use “Retry Failed Sends”.
+				</p>
+			)}
 
-			{state.type === "error" && <p style={{ color: "#dc2626", fontSize: "0.8rem", margin: 0 }}>✗ {state.message}</p>}
+			{state.type === "done" && state.failed === 0 && (
+				<p style={{ color: "#16a34a", fontSize: "0.75rem", margin: 0 }}>
+					✓ Sent to {state.sent} recipient{state.sent !== 1 ? "s" : ""}.
+				</p>
+			)}
+
+			{state.type === "paused" && (
+				<p style={{ color: "#b45309", fontSize: "0.75rem", margin: 0, maxWidth: "16rem" }}>
+					⏸ {state.message}
+				</p>
+			)}
+
+			{state.type === "error" && (
+				<p style={{ color: "#dc2626", fontSize: "0.75rem", margin: 0, maxWidth: "16rem" }}>
+					✗ {state.message}
+				</p>
+			)}
 
 			{(state.type === "saving" || state.type === "sending") && (
-				<p style={{ color: "#9ca3af", fontSize: "0.8rem", margin: 0 }}>
+				<p style={{ color: "#9ca3af", fontSize: "0.75rem", margin: 0 }}>
 					{state.type === "saving" ? "Saving document…" : "Sending emails…"}
 				</p>
 			)}
