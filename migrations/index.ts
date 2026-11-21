@@ -16,6 +16,8 @@ import * as migration_20261029_135055_add_ycn_update_youtube_url from './2026102
 import * as migration_20261108_012823_add_image_links from './20261108_012823_add_image_links';
 import * as migration_20261118_140111_add_email_campaign_progress from './20261118_140111_add_email_campaign_progress';
 import * as migration_20261118_142124_add_campaign_audience from './20261118_142124_add_campaign_audience';
+import * as migration_20261121_121916_add_btv_retailer_links from './20261121_121916_add_btv_retailer_links';
+import * as migration_20261121_122124_add_ycn_talent_categories from './20261121_122124_add_ycn_talent_categories';
 
 export const migrations = [
   {
@@ -106,6 +108,16 @@ export const migrations = [
   {
     up: migration_20261118_142124_add_campaign_audience.up,
     down: migration_20261118_142124_add_campaign_audience.down,
-    name: '20261118_142124_add_campaign_audience'
+    name: '20261118_142124_add_campaign_audience',
+  },
+  {
+    up: migration_20261121_121916_add_btv_retailer_links.up,
+    down: migration_20261121_121916_add_btv_retailer_links.down,
+    name: '20261121_121916_add_btv_retailer_links',
+  },
+  {
+    up: migration_20261121_122124_add_ycn_talent_categories.up,
+    down: migration_20261121_122124_add_ycn_talent_categories.down,
+    name: '20261121_122124_add_ycn_talent_categories'
   },
 ];

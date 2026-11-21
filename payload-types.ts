@@ -1541,7 +1541,17 @@ export interface YoungCreator {
    */
   portrait: string | Media;
   classYear: number;
-  primaryCategory: 'writing' | 'music' | 'visual-art' | 'photography' | 'dance' | 'digital' | 'technology' | 'fashion' | 'sports'|'others';
+  primaryCategory:
+    | 'writing'
+    | 'music'
+    | 'visual-art'
+    | 'photography'
+    | 'dance'
+    | 'digital'
+    | 'technology'
+    | 'fashion'
+    | 'sports'
+    | 'others';
   featured?: boolean | null;
   /**
    * City or region only — never a full address. Leave blank to hide.
@@ -1647,7 +1657,18 @@ export interface YcnMentorApplication {
   email: string;
   phone?: string | null;
   organisation?: string | null;
-  expertise: ('writing' | 'music' | 'visual-art' | 'photography' | 'dance' | 'digital' | 'technology')[];
+  expertise: (
+    | 'writing'
+    | 'music'
+    | 'visual-art'
+    | 'photography'
+    | 'dance'
+    | 'digital'
+    | 'technology'
+    | 'fashion'
+    | 'sports'
+    | 'others'
+  )[];
   experience: string;
   availability: 'weekly' | 'fortnightly' | 'monthly' | 'project';
   format: 'in-person' | 'online' | 'either';
@@ -1671,7 +1692,18 @@ export interface YcnOpportunity {
   phone?: string | null;
   type: 'internship' | 'commission' | 'performance' | 'exhibition' | 'scholarship' | 'workshop' | 'other';
   title: string;
-  categories: ('writing' | 'music' | 'visual-art' | 'photography' | 'dance' | 'digital' | 'technology')[];
+  categories: (
+    | 'writing'
+    | 'music'
+    | 'visual-art'
+    | 'photography'
+    | 'dance'
+    | 'digital'
+    | 'technology'
+    | 'fashion'
+    | 'sports'
+    | 'others'
+  )[];
   description: string;
   location: string;
   deadline?: string | null;
@@ -3325,6 +3357,18 @@ export interface BookLaunchSetting {
   paperbackPriceUSD: number;
   paperbackPriceGBP: number;
   /**
+   * Direct link to the Kindle edition on Amazon.
+   */
+  amazonKindleUrl?: string | null;
+  /**
+   * Direct link to the paperback edition on Amazon.
+   */
+  amazonPaperbackUrl?: string | null;
+  /**
+   * Link to the book on Selar.
+   */
+  selarUrl?: string | null;
+  /**
    * Small caption shown above the preview chapter.
    */
   previewChapterTitle?: string | null;
@@ -3508,6 +3552,9 @@ export interface BookLaunchSettingsSelect<T extends boolean = true> {
   paperbackPriceNGN?: T;
   paperbackPriceUSD?: T;
   paperbackPriceGBP?: T;
+  amazonKindleUrl?: T;
+  amazonPaperbackUrl?: T;
+  selarUrl?: T;
   previewChapterTitle?: T;
   previewChapter?: T;
   videos?:

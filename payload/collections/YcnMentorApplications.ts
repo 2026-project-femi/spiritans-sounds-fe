@@ -11,6 +11,9 @@ const TALENT_CATEGORIES = [
   { label: 'Dancer', value: 'dance' },
   { label: 'Digital Creator', value: 'digital' },
   { label: 'Technology & Innovation', value: 'technology' },
+  { label: 'Fashion', value: 'fashion' },
+  { label: 'Sports', value: 'sports' },
+  { label: 'Others', value: 'others' },
 ]
 
 const notifyAdmin: CollectionAfterChangeHook = async ({ doc, operation, req }) => {

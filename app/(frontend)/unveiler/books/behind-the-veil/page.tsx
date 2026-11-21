@@ -147,6 +147,10 @@ export default async function BehindTheVeilPage() {
     paperbackPriceNGN: launchSettings?.paperbackPriceNGN ?? 12000,
     paperbackPriceUSD: launchSettings?.paperbackPriceUSD ?? 25,
     paperbackPriceGBP: launchSettings?.paperbackPriceGBP ?? 20,
+    // External retailer links
+    amazonKindleUrl: normalizeExternalUrl(launchSettings?.amazonKindleUrl) || "",
+    amazonPaperbackUrl: normalizeExternalUrl(launchSettings?.amazonPaperbackUrl) || "",
+    selarUrl: normalizeExternalUrl(launchSettings?.selarUrl) || "",
     // Preview
     previewChapterTitle:
       launchSettings?.previewChapterTitle || btvConfig.book.excerptTitle,

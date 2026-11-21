@@ -19,9 +19,15 @@ export const BookLaunchSettings: GlobalConfig = {
       ({ data }) => {
         // Normalise stream URLs on save so a bare "zoom.com" is stored (and
         // later linked/embedded) as an absolute https URL.
-        data.meetingLink = normalizeExternalUrl(data?.meetingLink)
-        data.youtubeStreamUrl = normalizeExternalUrl(data?.youtubeStreamUrl)
-        data.facebookStreamUrl = normalizeExternalUrl(data?.facebookStreamUrl)
+        // `?? null` (not undefined) is important: undefined is treated as "leave
+        // unchanged", which would make it impossible to clear a URL in the admin.
+        data.meetingLink = normalizeExternalUrl(data?.meetingLink) ?? null
+        data.youtubeStreamUrl = normalizeExternalUrl(data?.youtubeStreamUrl) ?? null
+        data.facebookStreamUrl = normalizeExternalUrl(data?.facebookStreamUrl) ?? null
+        // External retailer links (Amazon / Selar) accept bare domains too.
+        data.amazonKindleUrl = normalizeExternalUrl(data?.amazonKindleUrl) ?? null
+        data.amazonPaperbackUrl = normalizeExternalUrl(data?.amazonPaperbackUrl) ?? null
+        data.selarUrl = normalizeExternalUrl(data?.selarUrl) ?? null
         return data
       },
     ],
@@ -229,7 +235,7 @@ export const BookLaunchSettings: GlobalConfig = {
         },
         {
           label: 'Pricing & Formats',
-          description: 'Prices for the eBook and physical Paperback editions.',
+          description: 'Prices for the eBook and physical Paperback editions, plus external retailer links.',
           fields: [
             {
               name: 'isPreorder',
@@ -318,6 +324,45 @@ export const BookLaunchSettings: GlobalConfig = {
                       required: true,
                     },
                   ],
+                },
+              ],
+            },
+            // External retailer links
+            {
+              type: 'collapsible',
+              label: 'Buy from Amazon or Selar',
+              admin: {
+                initCollapsed: false,
+                description:
+                  'These links appear as "Also available from" buttons under the purchase cards. Leave a field empty to hide that button.',
+              },
+              fields: [
+                {
+                  name: 'amazonKindleUrl',
+                  type: 'text',
+                  label: 'Amazon Kindle Link',
+                  admin: {
+                    placeholder: 'https://www.amazon.com/dp/B0XXXXXXXX',
+                    description: 'Direct link to the Kindle edition on Amazon.',
+                  },
+                },
+                {
+                  name: 'amazonPaperbackUrl',
+                  type: 'text',
+                  label: 'Amazon Paperback Link',
+                  admin: {
+                    placeholder: 'https://www.amazon.com/dp/XXXXXXXXXX',
+                    description: 'Direct link to the paperback edition on Amazon.',
+                  },
+                },
+                {
+                  name: 'selarUrl',
+                  type: 'text',
+                  label: 'Selar Link',
+                  admin: {
+                    placeholder: 'https://selar.co/behind-the-veil',
+                    description: 'Link to the book on Selar.',
+                  },
                 },
               ],
             },

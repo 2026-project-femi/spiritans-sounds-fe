@@ -29,6 +29,8 @@ import {
   Loader2,
   CheckCircle,
   ShoppingCart,
+  ShoppingBag,
+  ExternalLink,
   Truck,
   Globe,
 } from 'lucide-react';
@@ -76,6 +78,10 @@ export interface BehindTheVeilLaunchData {
   paperbackPriceNGN?: number;
   paperbackPriceUSD?: number;
   paperbackPriceGBP?: number;
+  // External retailer links
+  amazonKindleUrl?: string;
+  amazonPaperbackUrl?: string;
+  selarUrl?: string;
   // Preview
   previewChapterTitle?: string;
   previewChapter?: DefaultTypedEditorState | null;
@@ -295,13 +301,47 @@ export default function BehindTheVeilView({
             : 'USD · Shipping Available',
       priceNote: 'UK & international delivery · posted on purchase',
       description:
-        'A premium physical print edition to hold, underline, and share with others. Posted to your doorstep.',
+        'A premium physical print edition to hold, underline, and share with others. Posted to your doorstep, [UK readers]',
       details: ['Print edition', 'Delivered to your address', 'Signed copies on request'],
       featured: false,
     },
   ];
 
   const availableFormats = dynamicFormats;
+
+  // External retailers (Amazon / Selar). Only links configured in
+  // Book Launch Settings are rendered.
+  const retailerLinks: Array<{
+    label: string;
+    note: string;
+    href: string;
+    icon: typeof BookOpen;
+  }> = [];
+
+  if (launchData?.amazonKindleUrl) {
+    retailerLinks.push({
+      label: 'Amazon Kindle',
+      note: 'eBook',
+      href: launchData.amazonKindleUrl,
+      icon: BookOpen,
+    });
+  }
+  if (launchData?.amazonPaperbackUrl) {
+    retailerLinks.push({
+      label: 'Amazon Paperback',
+      note: 'Print',
+      href: launchData.amazonPaperbackUrl,
+      icon: Truck,
+    });
+  }
+  if (launchData?.selarUrl) {
+    retailerLinks.push({
+      label: 'Selar',
+      note: 'eBook & Print',
+      href: launchData.selarUrl,
+      icon: ShoppingBag,
+    });
+  }
 
   // Dynamic videos list
   const videoItems: ReadonlyArray<{
@@ -1023,6 +1063,38 @@ export default function BehindTheVeilView({
                 </article>
               ))}
             </div>
+
+            {retailerLinks.length > 0 && (
+              <div className="mt-12 rounded-xl border border-gray-200 bg-stone-50/70 p-6 sm:p-8">
+                <div className="flex flex-col items-center text-center">
+                  <span className="eyebrow justify-center">Also available from</span>
+                  <h3 className="display mt-2 text-xl sm:text-2xl text-gray-950">
+                    Buy from your preferred retailer
+                  </h3>
+                  <p className="mt-2 max-w-xl text-sm text-gray-600">
+                    Prefer Amazon or Selar? Choose the edition and retailer that suits you.
+                  </p>
+                  <div className="mt-6 flex flex-wrap justify-center gap-3">
+                    {retailerLinks.map(({ label, note, href, icon: Icon }) => (
+                      <a
+                        key={label}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2.5 rounded-md border border-gray-300 bg-white px-5 py-3 text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-gray-900 transition-colors hover:border-brand-primary hover:text-brand-primary"
+                      >
+                        <Icon className="size-4 text-brand-primary" strokeWidth={1.75} />
+                        <span>{label}</span>
+                        <span className="text-[0.6rem] font-medium normal-case tracking-normal text-gray-500">
+                          {note}
+                        </span>
+                        <ExternalLink className="size-3.5 text-gray-400" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </section>
 
