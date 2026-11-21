@@ -154,6 +154,8 @@ export async function completePurchase({
 
     const to = order.customerEmail || fallbackEmail
     const itemTitle = item?.title ?? 'Your purchased item'
+    // The order is the source of truth for customer details captured at checkout.
+    const customerName = order.customerName || buyerName
 
     let emailSent = false
     let retries = 3
@@ -163,7 +165,7 @@ export async function completePurchase({
         if (order.format === 'paperback') {
           emailSent = await sendPaperbackConfirmationEmail({
             to,
-            buyerName,
+            buyerName: customerName,
             itemTitle,
             amount: formattedAmount,
             currency,
@@ -178,7 +180,7 @@ export async function completePurchase({
 
           await sendPaperbackAdminNotification({
             to,
-            buyerName,
+            buyerName: customerName,
             itemTitle,
             amount: formattedAmount,
             currency,
@@ -194,7 +196,7 @@ export async function completePurchase({
           emailSent = await sendPreorderConfirmationEmail({
             to,
             subject: `Pre-order Confirmed: ${itemTitle}`,
-            buyerName,
+            buyerName: customerName,
             itemTitle,
             downloadUrl: '',
             amount: formattedAmount,
@@ -206,7 +208,7 @@ export async function completePurchase({
           emailSent = await sendPurchaseConfirmationEmail({
             to,
             subject: `Your Download is Ready — ${itemTitle}`,
-            buyerName,
+            buyerName: customerName,
             itemTitle,
             downloadUrl,
             amount: formattedAmount,

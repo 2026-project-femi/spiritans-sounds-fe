@@ -84,7 +84,17 @@ export async function POST(request: Request) {
     if (!email || !emailRegex.test(email)) {
       return NextResponse.json({ error: "Valid email is required" }, { status: 400 });
     }
-    if (!name?.trim()) {
+
+    const sanitizeField = (value: string | undefined, maxLength: number) =>
+      value ? String(value).replace(/[<>]/g, "").trim().slice(0, maxLength) : undefined;
+
+    const sanitizedName = sanitizeField(name, 100) || "";
+    const sanitizedAddress = sanitizeField(shippingAddress, 500);
+    const sanitizedCity = sanitizeField(shippingCity, 120);
+    const sanitizedCountry = sanitizeField(shippingCountry, 120);
+    const sanitizedPhone = sanitizeField(shippingPhone, 40);
+
+    if (!sanitizedName) {
       return NextResponse.json({ error: "Name is required" }, { status: 400 });
     }
     if (!itemId || !["publications", "magazineIssues"].includes(itemType)) {
@@ -92,15 +102,20 @@ export async function POST(request: Request) {
     }
 
     if (format === "paperback") {
-      if (!shippingAddress?.trim()) {
+      if (!sanitizedAddress) {
         return NextResponse.json({ error: "Delivery address is required for paperback orders." }, { status: 400 });
       }
-      if (!shippingPhone?.trim()) {
+      if (!sanitizedCity) {
+        return NextResponse.json({ error: "City / State is required for paperback delivery." }, { status: 400 });
+      }
+      if (!sanitizedCountry) {
+        return NextResponse.json({ error: "Delivery country is required for paperback orders." }, { status: 400 });
+      }
+      if (!sanitizedPhone) {
         return NextResponse.json({ error: "Contact phone number is required for delivery coordination." }, { status: 400 });
       }
     }
 
-    const sanitizedName = name.replace(/[<>]/g, "").trim().slice(0, 100);
     const payloadCms = await getPayload({ config: configPromise });
 
     // Find the item
@@ -179,10 +194,10 @@ export async function POST(request: Request) {
         paymentProvider,
         format: format || 'ebook',
         isPreorder,
-        shippingAddress: shippingAddress ? String(shippingAddress).trim() : undefined,
-        shippingCity: shippingCity ? String(shippingCity).trim() : undefined,
-        shippingCountry: shippingCountry ? String(shippingCountry).trim() : undefined,
-        shippingPhone: shippingPhone ? String(shippingPhone).trim() : undefined,
+        shippingAddress: sanitizedAddress,
+        shippingCity: sanitizedCity,
+        shippingCountry: sanitizedCountry,
+        shippingPhone: sanitizedPhone,
         paystackReference: paymentProvider === 'paystack' ? reference : undefined,
         items: [
           {
@@ -222,8 +237,10 @@ export async function POST(request: Request) {
             itemType,
             itemId,
             format,
-            shippingAddress,
-            shippingPhone,
+            shippingAddress: sanitizedAddress || "",
+            shippingCity: sanitizedCity || "",
+            shippingCountry: sanitizedCountry || "",
+            shippingPhone: sanitizedPhone || "",
             origin: cleanOrigin,
             original_currency: currency,
           },
@@ -266,7 +283,7 @@ export async function POST(request: Request) {
               product_data: {
                 name: itemTitleWithFormat,
                 description: format === "paperback"
-                  ? `Physical paperback edition posted to: ${shippingAddress || "Specified address"}`
+                  ? `Physical paperback edition posted to: ${sanitizedAddress || "Specified address"}`
                   : "Digital edition purchase from Spiritans Sound.",
               },
               unit_amount: amountSubUnits,
@@ -283,8 +300,10 @@ export async function POST(request: Request) {
           itemType,
           itemId,
           format,
-          shippingAddress: shippingAddress || "",
-          shippingPhone: shippingPhone || "",
+          shippingAddress: sanitizedAddress || "",
+          shippingCity: sanitizedCity || "",
+          shippingCountry: sanitizedCountry || "",
+          shippingPhone: sanitizedPhone || "",
           buyer_name: sanitizedName,
           origin: cleanOrigin,
           type: "purchase",
@@ -296,8 +315,10 @@ export async function POST(request: Request) {
             itemType,
             itemId,
             format,
-            shippingAddress: shippingAddress || "",
-            shippingPhone: shippingPhone || "",
+            shippingAddress: sanitizedAddress || "",
+            shippingCity: sanitizedCity || "",
+            shippingCountry: sanitizedCountry || "",
+            shippingPhone: sanitizedPhone || "",
             buyer_name: sanitizedName,
             origin: cleanOrigin,
             type: "purchase",

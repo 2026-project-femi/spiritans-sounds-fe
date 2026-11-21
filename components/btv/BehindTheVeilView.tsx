@@ -1583,10 +1583,11 @@ export default function BehindTheVeilView({
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-[11px] uppercase tracking-wider text-gray-400 font-bold mb-1">
-                        City / State
+                        City / State <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
+                        required
                         placeholder="e.g. Lagos or London"
                         value={purchaseForm.city}
                         onChange={(e) => setPurchaseForm((f) => ({ ...f, city: e.target.value }))}
@@ -1595,10 +1596,11 @@ export default function BehindTheVeilView({
                     </div>
                     <div>
                       <label className="block text-[11px] uppercase tracking-wider text-gray-400 font-bold mb-1">
-                        Country
+                        Country <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
+                        required
                         placeholder={
                           currency === 'NGN'
                             ? 'Nigeria'
