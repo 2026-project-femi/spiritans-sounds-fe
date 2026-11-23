@@ -85,7 +85,7 @@ export default async function BooksPage() {
         </p>
       </section>
 
-      {/* Featured Behind the Veil Launch Funnel Banner */}
+      {/* Featured Book Banner */}
       <section className="max-w-7xl mx-auto px-5 sm:px-6 mb-14">
         <div className="relative overflow-hidden rounded-3xl border border-brand-primary/40 bg-gradient-to-br from-[#1c080b] via-[#120a0d] to-[#0a0a0c] p-5 sm:p-10 text-white shadow-2xl">
           <div className="absolute top-0 right-0 -mr-20 -mt-20 size-80 rounded-full bg-brand-primary/15 blur-3xl pointer-events-none" />
@@ -102,7 +102,7 @@ export default async function BooksPage() {
               </div>
               <div className="max-w-xl">
                 <div className="inline-flex items-center gap-2 rounded-full border border-brand-primary/40 bg-brand-primary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-brand-primary mb-3">
-                  Featured Book Launch · 21 Nov 2026
+                  Featured Book
                 </div>
                 <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-black text-white leading-tight">
                   Behind the Veil
@@ -124,7 +124,7 @@ export default async function BooksPage() {
                 href="/unveiler/books/behind-the-veil"
                 className="inline-flex items-center justify-center px-6 py-3 text-[11px] sm:px-8 sm:py-4 sm:text-xs rounded-full bg-brand-primary text-white font-bold uppercase tracking-widest hover:bg-brand-primary/90 transition-all shadow-lg shadow-brand-primary/25 hover:scale-102"
               >
-                Join Online Launch & Register →
+                View Book →
               </Link>
               <Link
                 href="/unveiler/books/behind-the-veil#purchase"
