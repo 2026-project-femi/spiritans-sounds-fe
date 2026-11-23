@@ -3,6 +3,7 @@ export const MAIN_NAV = [
 	{ label: "About the Ministry", href: "/about" },
 	{ label: "Homilies & Reflections", href: "/homilies" },
 	{ label: "Prayers & Devotionals", href: "/prayers" },
+	{ label: "Prayer Room", href: "/prayer-room" },
 	{ label: "Music & Worship", href: "/music" },
 	{ label: "Online Radio", href: "/radio" },
 	{ label: "Publications", href: "/publications" },

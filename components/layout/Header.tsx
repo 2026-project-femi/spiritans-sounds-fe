@@ -10,6 +10,7 @@ const navLinks = [
 	{ href: "/", label: "Home" },
 	{ href: "/homilies", label: "Homilies" },
 	{ href: "/articles", label: "Articles" },
+	{ href: "/prayer-room", label: "Prayer Room" },
 	{ href: "/unveiler", label: "Treasures Unveiler" },
 	{ href: "/lyrics-of-light", label: "Lyrics of Light" },
 	{ href: "/about", label: "About" },
@@ -85,7 +86,7 @@ const Header: React.FC = () => {
 			className={`fixed top-0 left-0 right-0 z-50 transition-gentle ${
 				isScrolled ? "bg-white md:bg-white/80 md:backdrop-blur-md shadow-sm" : "bg-transparent"
 			}`}>
-			<NetworkBar current="spiritans" />
+			<NetworkBar current={pathname.startsWith("/prayer-room") ? "prayer-room" : "spiritans"} />
 			<div className={`px-4 sm:px-6 md:px-12 ${isScrolled ? "py-2.5 sm:py-3" : "py-3 sm:py-4"}`}>
 				<div className="max-w-7xl mx-auto flex items-center justify-between">
 					{/* Logo Section */}
@@ -103,7 +104,7 @@ const Header: React.FC = () => {
 					</Link>
 
 					{/* Desktop Navigation */}
-					<nav className="hidden lg:flex items-center space-x-8">
+					<nav className="hidden lg:flex items-center space-x-6">
 						{navLinks.map((item) => {
 							const active = isActiveLink(item.href);
 							return (

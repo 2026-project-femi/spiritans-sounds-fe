@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 
-const STANDALONE_PREFIXES = ["/unveiler", "/young-creators"];
+const STANDALONE_PREFIXES = ["/unveiler", "/young-creators", "/prayer-room"];
 const STANDALONE_EXACT = ["/behind-the-veil"];
 
 /**

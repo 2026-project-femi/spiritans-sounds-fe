@@ -4,6 +4,7 @@ const BRANDS = [
 	{ id: "spiritans", label: "Spiritans Sound", href: "/" },
 	{ id: "unveiler", label: "Treasures Unveiler", href: "/unveiler" },
 	{ id: "young-creators", label: "Young Creators", href: "/young-creators" },
+	{ id: "prayer-room", label: "Prayer Room", href: "/prayer-room" },
 ] as const;
 
 export type NetworkBrand = (typeof BRANDS)[number]["id"];

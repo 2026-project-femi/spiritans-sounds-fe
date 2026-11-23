@@ -98,6 +98,12 @@ export interface Config {
     'ycn-updates': YcnUpdate;
     'ycn-mentor-applications': YcnMentorApplication;
     'ycn-opportunities': YcnOpportunity;
+    'prayer-rooms': PrayerRoom;
+    'prayer-requests': PrayerRequest;
+    'prayer-videos': PrayerVideo;
+    'prayer-testimonies': PrayerTestimony;
+    'prayer-partner-requests': PrayerPartnerRequest;
+    'prayer-activities': PrayerActivity;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -146,6 +152,12 @@ export interface Config {
     'ycn-updates': YcnUpdatesSelect<false> | YcnUpdatesSelect<true>;
     'ycn-mentor-applications': YcnMentorApplicationsSelect<false> | YcnMentorApplicationsSelect<true>;
     'ycn-opportunities': YcnOpportunitiesSelect<false> | YcnOpportunitiesSelect<true>;
+    'prayer-rooms': PrayerRoomsSelect<false> | PrayerRoomsSelect<true>;
+    'prayer-requests': PrayerRequestsSelect<false> | PrayerRequestsSelect<true>;
+    'prayer-videos': PrayerVideosSelect<false> | PrayerVideosSelect<true>;
+    'prayer-testimonies': PrayerTestimoniesSelect<false> | PrayerTestimoniesSelect<true>;
+    'prayer-partner-requests': PrayerPartnerRequestsSelect<false> | PrayerPartnerRequestsSelect<true>;
+    'prayer-activities': PrayerActivitiesSelect<false> | PrayerActivitiesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -167,6 +179,7 @@ export interface Config {
     'commission-settings': CommissionSetting;
     'book-launch-settings': BookLaunchSetting;
     'ycn-settings': YcnSetting;
+    'prayer-room-settings': PrayerRoomSetting;
   };
   globalsSelect: {
     footer: FooterSelect<false> | FooterSelect<true>;
@@ -174,6 +187,7 @@ export interface Config {
     'commission-settings': CommissionSettingsSelect<false> | CommissionSettingsSelect<true>;
     'book-launch-settings': BookLaunchSettingsSelect<false> | BookLaunchSettingsSelect<true>;
     'ycn-settings': YcnSettingsSelect<false> | YcnSettingsSelect<true>;
+    'prayer-room-settings': PrayerRoomSettingsSelect<false> | PrayerRoomSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -1714,6 +1728,234 @@ export interface YcnOpportunity {
   createdAt: string;
 }
 /**
+ * Recurring prayer sessions shown on the Prayer Room page. Use the order field to control their position.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prayer-rooms".
+ */
+export interface PrayerRoom {
+  id: string;
+  title: string;
+  focus?: string | null;
+  dayOfWeek: 'daily' | 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
+  startTime: string;
+  /**
+   * Shown next to the time, e.g. WAT, GMT, EST.
+   */
+  timezone?: string | null;
+  durationMinutes?: number | null;
+  host?: string | null;
+  platform: 'zoom' | 'google-meet' | 'youtube' | 'in-person' | 'other';
+  /**
+   * Highlights this room as live on the page.
+   */
+  isLive?: boolean | null;
+  /**
+   * Featured rooms appear first in the schedule.
+   */
+  isFeatured?: boolean | null;
+  /**
+   * Required for online rooms. Leave blank for in-person gatherings.
+   */
+  meetingUrl?: string | null;
+  location?: string | null;
+  /**
+   * Optional background image for this session card.
+   */
+  image?: (string | null) | Media;
+  isActive?: boolean | null;
+  /**
+   * Lower numbers appear first.
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Intentions submitted through the public Prayer Room form. Approve and mark a request as shareable to display it on the prayer wall. Contact details are never shown publicly.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prayer-requests".
+ */
+export interface PrayerRequest {
+  id: string;
+  /**
+   * Private. Shown as “Anonymous” on the wall when the request is anonymous.
+   */
+  name?: string | null;
+  /**
+   * Optional. Never published.
+   */
+  email?: string | null;
+  /**
+   * Optional. Never published.
+   */
+  phone?: string | null;
+  category:
+    | 'family'
+    | 'healing'
+    | 'marriage'
+    | 'children'
+    | 'work'
+    | 'exams'
+    | 'discernment'
+    | 'bereavement'
+    | 'peace'
+    | 'forgiveness'
+    | 'protection'
+    | 'spiritual-growth'
+    | 'difficult-situations'
+    | 'thanksgiving'
+    | 'general-intention'
+    | 'vocation'
+    | 'grief'
+    | 'other';
+  /**
+   * Only public, approved intentions appear on the prayer board.
+   */
+  privacy: 'public' | 'partners' | 'private';
+  intention: string;
+  isAnonymous?: boolean | null;
+  consentToPublish?: boolean | null;
+  /**
+   * Only approved public requests appear on the prayer board.
+   */
+  status: 'pending' | 'approved' | 'archived';
+  /**
+   * Incremented when someone taps “I will pray” or lights a candle.
+   */
+  prayedCount?: number | null;
+  /**
+   * Incremented when someone lights a candle after praying.
+   */
+  candleCount?: number | null;
+  /**
+   * Visible to the prayer team only.
+   */
+  adminNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * YouTube videos shown in the Prayer Room video library.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prayer-videos".
+ */
+export interface PrayerVideo {
+  id: string;
+  title: string;
+  /**
+   * The ID from the YouTube URL, e.g. Sbr0cLkQgu8.
+   */
+  youtubeId: string;
+  description?: string | null;
+  type: 'prayer' | 'worship' | 'rosary' | 'novena' | 'scripture' | 'holy-spirit' | 'reflection';
+  duration?: string | null;
+  isFeatured?: boolean | null;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Thanksgivings and testimonies submitted through Give Thanks. Only published entries are shown publicly.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prayer-testimonies".
+ */
+export interface PrayerTestimony {
+  id: string;
+  /**
+   * Leave blank to show as “Anonymous”.
+   */
+  name?: string | null;
+  text: string;
+  relatedIntention?: string | null;
+  consentToPublish?: boolean | null;
+  status: 'pending' | 'published' | 'archived';
+  adminNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Requests for a Prayer Partner and applications to become one. Contact details are private.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prayer-partner-requests".
+ */
+export interface PrayerPartnerRequest {
+  id: string;
+  kind: 'request' | 'application';
+  name: string;
+  email: string;
+  phone?: string | null;
+  location?: string | null;
+  category?:
+    | (
+        | 'family'
+        | 'healing'
+        | 'marriage'
+        | 'children'
+        | 'work'
+        | 'exams'
+        | 'discernment'
+        | 'bereavement'
+        | 'peace'
+        | 'forgiveness'
+        | 'protection'
+        | 'spiritual-growth'
+        | 'difficult-situations'
+        | 'thanksgiving'
+        | 'general-intention'
+      )
+    | null;
+  message?: string | null;
+  areas?:
+    | (
+        | 'family'
+        | 'healing'
+        | 'marriage'
+        | 'children'
+        | 'work'
+        | 'exams'
+        | 'discernment'
+        | 'bereavement'
+        | 'peace'
+        | 'forgiveness'
+        | 'protection'
+        | 'spiritual-growth'
+        | 'difficult-situations'
+        | 'thanksgiving'
+        | 'general-intention'
+      )[]
+    | null;
+  supportType?: ('one-time' | 'ongoing') | null;
+  duration?: ('1-week' | '2-weeks' | '1-month' | 'ongoing') | null;
+  availability?: ('mornings' | 'evenings' | 'weekends' | 'flexible') | null;
+  frequency?: ('daily' | 'few-times-week' | 'weekly') | null;
+  privacy?: ('first-name' | 'anonymous') | null;
+  receiveMessages?: boolean | null;
+  confidentialityAgreed?: boolean | null;
+  safeguardingAgreed?: boolean | null;
+  status: 'new' | 'review' | 'active' | 'declined';
+  adminNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Automatic log of prayers and candles offered from the public pages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prayer-activities".
+ */
+export interface PrayerActivity {
+  id: string;
+  type: 'pray' | 'candle';
+  intention: string | PrayerRequest;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
@@ -2026,6 +2268,30 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'ycn-opportunities';
         value: string | YcnOpportunity;
+      } | null)
+    | ({
+        relationTo: 'prayer-rooms';
+        value: string | PrayerRoom;
+      } | null)
+    | ({
+        relationTo: 'prayer-requests';
+        value: string | PrayerRequest;
+      } | null)
+    | ({
+        relationTo: 'prayer-videos';
+        value: string | PrayerVideo;
+      } | null)
+    | ({
+        relationTo: 'prayer-testimonies';
+        value: string | PrayerTestimony;
+      } | null)
+    | ({
+        relationTo: 'prayer-partner-requests';
+        value: string | PrayerPartnerRequest;
+      } | null)
+    | ({
+        relationTo: 'prayer-activities';
+        value: string | PrayerActivity;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2920,6 +3186,114 @@ export interface YcnOpportunitiesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prayer-rooms_select".
+ */
+export interface PrayerRoomsSelect<T extends boolean = true> {
+  title?: T;
+  focus?: T;
+  dayOfWeek?: T;
+  startTime?: T;
+  timezone?: T;
+  durationMinutes?: T;
+  host?: T;
+  platform?: T;
+  isLive?: T;
+  isFeatured?: T;
+  meetingUrl?: T;
+  location?: T;
+  image?: T;
+  isActive?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prayer-requests_select".
+ */
+export interface PrayerRequestsSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  phone?: T;
+  category?: T;
+  privacy?: T;
+  intention?: T;
+  isAnonymous?: T;
+  consentToPublish?: T;
+  status?: T;
+  prayedCount?: T;
+  candleCount?: T;
+  adminNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prayer-videos_select".
+ */
+export interface PrayerVideosSelect<T extends boolean = true> {
+  title?: T;
+  youtubeId?: T;
+  description?: T;
+  type?: T;
+  duration?: T;
+  isFeatured?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prayer-testimonies_select".
+ */
+export interface PrayerTestimoniesSelect<T extends boolean = true> {
+  name?: T;
+  text?: T;
+  relatedIntention?: T;
+  consentToPublish?: T;
+  status?: T;
+  adminNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prayer-partner-requests_select".
+ */
+export interface PrayerPartnerRequestsSelect<T extends boolean = true> {
+  kind?: T;
+  name?: T;
+  email?: T;
+  phone?: T;
+  location?: T;
+  category?: T;
+  message?: T;
+  areas?: T;
+  supportType?: T;
+  duration?: T;
+  availability?: T;
+  frequency?: T;
+  privacy?: T;
+  receiveMessages?: T;
+  confidentialityAgreed?: T;
+  safeguardingAgreed?: T;
+  status?: T;
+  adminNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prayer-activities_select".
+ */
+export interface PrayerActivitiesSelect<T extends boolean = true> {
+  type?: T;
+  intention?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects_select".
  */
 export interface RedirectsSelect<T extends boolean = true> {
@@ -3462,6 +3836,76 @@ export interface YcnSetting {
   createdAt?: string | null;
 }
 /**
+ * Copy, live room details and section headings shown on the Prayer Room landing page. Prayer sessions and intentions are managed in their own collections.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prayer-room-settings".
+ */
+export interface PrayerRoomSetting {
+  id: string;
+  eyebrow?: string | null;
+  title: string;
+  description?: string | null;
+  heroQuote?: string | null;
+  /**
+   * Wide, calm photograph used behind the hero. Add alt text on the Media item.
+   */
+  heroImage?: (string | null) | Media;
+  /**
+   * Shows a live badge and makes the join button prominent.
+   */
+  isLive?: boolean | null;
+  meetingPlatform?: ('zoom' | 'google-meet' | 'youtube' | 'in-person' | 'other') | null;
+  /**
+   * Used by the “Join the live room” button when the room is live.
+   */
+  meetingUrl?: string | null;
+  liveTitle?: string | null;
+  liveDescription?: string | null;
+  liveNote?: string | null;
+  scheduleEyebrow?: string | null;
+  scheduleTitle?: string | null;
+  scheduleIntro?: string | null;
+  /**
+   * Only requests marked “approved” and “may be shared” appear on the wall.
+   */
+  showIntentions?: boolean | null;
+  intentionsEyebrow?: string | null;
+  intentionsTitle?: string | null;
+  intentionsIntro?: string | null;
+  intentionsPrivacyNote?: string | null;
+  requestFormTitle?: string | null;
+  requestFormIntro?: string | null;
+  requestSuccessMessage?: string | null;
+  resourcesEyebrow?: string | null;
+  resourcesTitle?: string | null;
+  resourcesIntro?: string | null;
+  scriptureQuote?: string | null;
+  scriptureReference?: string | null;
+  faq?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  contactLabel?: string | null;
+  /**
+   * An https URL or mailto: address. Leave blank to use the contact page.
+   */
+  contactHref?: string | null;
+  /**
+   * Optional. Defaults to the hero heading.
+   */
+  metaTitle?: string | null;
+  /**
+   * Optional. Defaults to the hero intro text.
+   */
+  metaDescription?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "footer_select".
  */
@@ -3611,6 +4055,53 @@ export interface YcnSettingsSelect<T extends boolean = true> {
       };
   contactLabel?: T;
   contactHref?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prayer-room-settings_select".
+ */
+export interface PrayerRoomSettingsSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  description?: T;
+  heroQuote?: T;
+  heroImage?: T;
+  isLive?: T;
+  meetingPlatform?: T;
+  meetingUrl?: T;
+  liveTitle?: T;
+  liveDescription?: T;
+  liveNote?: T;
+  scheduleEyebrow?: T;
+  scheduleTitle?: T;
+  scheduleIntro?: T;
+  showIntentions?: T;
+  intentionsEyebrow?: T;
+  intentionsTitle?: T;
+  intentionsIntro?: T;
+  intentionsPrivacyNote?: T;
+  requestFormTitle?: T;
+  requestFormIntro?: T;
+  requestSuccessMessage?: T;
+  resourcesEyebrow?: T;
+  resourcesTitle?: T;
+  resourcesIntro?: T;
+  scriptureQuote?: T;
+  scriptureReference?: T;
+  faq?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  contactLabel?: T;
+  contactHref?: T;
+  metaTitle?: T;
+  metaDescription?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

@@ -29,11 +29,15 @@ export const Prayers: CollectionConfig = {
   hooks: {
     afterChange: [({doc})=>{
       safeRevalidatePath('/prayers');
+      safeRevalidatePath('/prayer-room');
+      safeRevalidatePath('/prayer-room/library');
       safeRevalidatePath('/')
       return doc;
     }],
     afterDelete: [({doc})=>{
       safeRevalidatePath('/prayers');
+      safeRevalidatePath('/prayer-room');
+      safeRevalidatePath('/prayer-room/library');
       safeRevalidatePath('/')
       return doc;
     }], 

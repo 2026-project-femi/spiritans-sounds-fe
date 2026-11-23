@@ -18,6 +18,8 @@ import * as migration_20261118_140111_add_email_campaign_progress from './202611
 import * as migration_20261118_142124_add_campaign_audience from './20261118_142124_add_campaign_audience';
 import * as migration_20261121_121916_add_btv_retailer_links from './20261121_121916_add_btv_retailer_links';
 import * as migration_20261121_122124_add_ycn_talent_categories from './20261121_122124_add_ycn_talent_categories';
+import * as migration_20261121_140327_add_prayer_room from './20261121_140327_add_prayer_room';
+import * as migration_20261121_152240_add_prayer_room_experience from './20261121_152240_add_prayer_room_experience';
 
 export const migrations = [
   {
@@ -118,6 +120,16 @@ export const migrations = [
   {
     up: migration_20261121_122124_add_ycn_talent_categories.up,
     down: migration_20261121_122124_add_ycn_talent_categories.down,
-    name: '20261121_122124_add_ycn_talent_categories'
+    name: '20261121_122124_add_ycn_talent_categories',
+  },
+  {
+    up: migration_20261121_140327_add_prayer_room.up,
+    down: migration_20261121_140327_add_prayer_room.down,
+    name: '20261121_140327_add_prayer_room',
+  },
+  {
+    up: migration_20261121_152240_add_prayer_room_experience.up,
+    down: migration_20261121_152240_add_prayer_room_experience.down,
+    name: '20261121_152240_add_prayer_room_experience'
   },
 ];

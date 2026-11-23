@@ -10,6 +10,7 @@ const navLinks = [
 	{ href: "/homilies", label: "Homilies" },
 	{ href: "/unveiler", label: "Unveiler Magazine" },
 	{ href: "/young-creators", label: "Young Creators" },
+	{ href: "/prayer-room", label: "Prayer Room" },
 	{ href: "/about", label: "About" },
 	{ href: "/contact", label: "Contact" },
 ];

@@ -26,6 +26,13 @@ import { Payouts } from "./payload/collections/Payouts";
 import { CommissionSettings } from "./payload/globals/CommissionSettings";
 import { BookLaunchSettings } from "./payload/globals/BookLaunchSettings";
 import { YcnSettings } from "./payload/globals/YcnSettings";
+import { PrayerRoomSettings } from "./payload/globals/PrayerRoomSettings";
+import { PrayerRooms } from "./payload/collections/PrayerRooms";
+import { PrayerRequests } from "./payload/collections/PrayerRequests";
+import { PrayerVideos } from "./payload/collections/PrayerVideos";
+import { PrayerTestimonies } from "./payload/collections/PrayerTestimonies";
+import { PrayerPartnerRequests } from "./payload/collections/PrayerPartnerRequests";
+import { PrayerActivities } from "./payload/collections/PrayerActivities";
 
 import { HomePage } from "./payload/collections/Home";
 import { DonationPage } from "./payload/collections/DonationPage";
@@ -129,8 +136,14 @@ export default buildConfig({
 		YcnUpdates,
 		YcnMentorApplications,
 		YcnOpportunities,
+		PrayerRooms,
+		PrayerRequests,
+		PrayerVideos,
+		PrayerTestimonies,
+		PrayerPartnerRequests,
+		PrayerActivities,
 	],
-	globals: [Footer, Header, CommissionSettings, BookLaunchSettings, YcnSettings],
+	globals: [Footer, Header, CommissionSettings, BookLaunchSettings, YcnSettings, PrayerRoomSettings],
 	editor: defaultLexical,
 	secret: requireEnv('PAYLOAD_SECRET'),
 	cookiePrefix: 'spiritans',
