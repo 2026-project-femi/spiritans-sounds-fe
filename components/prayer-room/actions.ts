@@ -125,7 +125,12 @@ export async function recordPrayerAction(
       data: { type: kind, intention: intentionId },
     })
 
-    for (const path of ['/prayer-room', '/prayer-room/pray', '/prayer-room/chapel']) {
+    for (const path of [
+      '/prayer-room',
+      '/prayer-room/pray',
+      '/prayer-room/chapel',
+      '/prayer-room/notifications',
+    ]) {
       revalidatePath(path)
     }
 

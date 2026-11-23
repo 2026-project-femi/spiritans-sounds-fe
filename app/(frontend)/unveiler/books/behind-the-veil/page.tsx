@@ -130,6 +130,7 @@ export default async function BehindTheVeilPage() {
     meetingLink: normalizeExternalUrl(launchSettings?.meetingLink) || "",
     streamGoLive: launchSettings?.streamGoLive ?? false,
     youtubeStreamUrl: normalizeExternalUrl(launchSettings?.youtubeStreamUrl) || "",
+    launchReplayUrl: normalizeExternalUrl(launchSettings?.launchReplayUrl) || "",
     facebookStreamUrl: normalizeExternalUrl(launchSettings?.facebookStreamUrl) || "",
     publisher: launchSettings?.publisher || btvConfig.book.publication.publisher,
     imprint: launchSettings?.imprint || btvConfig.book.publication.imprint,

@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getPublicIntentions } from '@/components/prayer-room/api'
-import { NotificationToggles } from '@/components/prayer-room/NotificationToggles'
+// Notification preferences are hidden until user accounts/preferences exist.
+// import { NotificationToggles } from '@/components/prayer-room/NotificationToggles'
 import { PrayerRoomPageHeader } from '@/components/prayer-room/PrayerRoomPageHeader'
 
 export const metadata: Metadata = {
@@ -45,7 +46,9 @@ export default async function PrayerNotificationsPage() {
         )}
       </div>
 
+      {/* Hidden until account preferences are implemented.
       <NotificationToggles />
+      */}
 
       <div className="mx-auto mt-8 max-w-xl px-5 text-center">
         <Link href="/prayer-room/chapel" className="text-sm text-brand-primary">

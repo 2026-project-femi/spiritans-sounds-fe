@@ -29,7 +29,11 @@ export default async function LivePrayerPage() {
 
   return (
     <>
-      <PrayerRoomPageHeader eyebrow="Pray together" title="Live Prayer" />
+      <PrayerRoomPageHeader
+        eyebrow={settings.scheduleEyebrow}
+        title={settings.scheduleTitle}
+        intro={settings.scheduleIntro}
+      />
       <div className="mx-auto max-w-5xl px-5">
         <div className="grid overflow-hidden rounded-3xl bg-[#2b211a] text-[#f9f4e9] md:grid-cols-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}

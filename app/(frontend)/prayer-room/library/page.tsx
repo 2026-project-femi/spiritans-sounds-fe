@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { getPrayerLibrary } from '@/components/prayer-room/api'
+import { getPrayerLibrary, getPrayerRoomSettings } from '@/components/prayer-room/api'
 import { PrayerLibraryGrid } from '@/components/prayer-room/PrayerLibraryGrid'
 import { PrayerRoomPageHeader } from '@/components/prayer-room/PrayerRoomPageHeader'
 
@@ -10,13 +10,18 @@ export const metadata: Metadata = {
 }
 
 export default async function PrayerLibraryPage() {
-  const prayers = await getPrayerLibrary(60)
+  const [prayers, settings] = await Promise.all([
+    getPrayerLibrary(60),
+    getPrayerRoomSettings(),
+  ])
 
   return (
     <>
-      <PrayerRoomPageHeader eyebrow="Help me pray" title="Prayer Library">
-        When words are hard to find, pray with the Church.
-      </PrayerRoomPageHeader>
+      <PrayerRoomPageHeader
+        eyebrow={settings.resourcesEyebrow}
+        title={settings.resourcesTitle}
+        intro={settings.resourcesIntro}
+      />
       <PrayerLibraryGrid prayers={prayers} />
     </>
   )

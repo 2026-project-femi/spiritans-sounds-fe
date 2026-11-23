@@ -14,9 +14,11 @@ export default async function SubmitPrayerIntentionPage() {
 
   return (
     <>
-      <PrayerRoomPageHeader eyebrow="I need prayer" title="Submit a Prayer Intention">
-        You do not have to carry it alone. Every intention is gently reviewed before it is shared.
-      </PrayerRoomPageHeader>
+      <PrayerRoomPageHeader
+        eyebrow={settings.intentionsEyebrow}
+        title={settings.intentionsTitle}
+        intro={settings.intentionsIntro}
+      />
       <div className="mx-auto max-w-xl px-5">
         <PrayerRequestForm successMessage={settings.requestSuccessMessage} />
       </div>

@@ -23,6 +23,7 @@ export const BookLaunchSettings: GlobalConfig = {
         // unchanged", which would make it impossible to clear a URL in the admin.
         data.meetingLink = normalizeExternalUrl(data?.meetingLink) ?? null
         data.youtubeStreamUrl = normalizeExternalUrl(data?.youtubeStreamUrl) ?? null
+        data.launchReplayUrl = normalizeExternalUrl(data?.launchReplayUrl) ?? null
         data.facebookStreamUrl = normalizeExternalUrl(data?.facebookStreamUrl) ?? null
         // External retailer links (Amazon / Selar) accept bare domains too.
         data.amazonKindleUrl = normalizeExternalUrl(data?.amazonKindleUrl) ?? null
@@ -134,16 +135,28 @@ export const BookLaunchSettings: GlobalConfig = {
               label: 'Go Live — Show the Live Stream Section on the Landing Page',
               defaultValue: false,
               admin: {
-                description: 'Turn on while the launch stream is live. Visitors then see the Zoom, YouTube and Facebook stream links and the YouTube player.',
+                description:
+                  'Turn on while the launch stream is live. Visitors then see the Watch Live section and the buy buttons.',
               },
             },
             {
               name: 'youtubeStreamUrl',
               type: 'text',
-              label: 'YouTube Stream URL (Optional)',
+              label: 'Live YouTube Stream URL (Optional)',
               admin: {
                 placeholder: 'https://www.youtube.com/live/... or https://youtu.be/...',
-                description: 'Secondary stream. When set, it is embedded as a player in the live section.',
+                description:
+                  'The YouTube live stream. When set, it is embedded as the player in the Watch Live section.',
+              },
+            },
+            {
+              name: 'launchReplayUrl',
+              type: 'text',
+              label: 'Launch Replay — Edited YouTube URL',
+              admin: {
+                placeholder: 'https://www.youtube.com/watch?v=... or https://youtu.be/...',
+                description:
+                  'Paste the edited/final YouTube video of the launch. It plays in the Watch Live section, and the replay stays visible even when "Go Live" is switched off.',
               },
             },
             {

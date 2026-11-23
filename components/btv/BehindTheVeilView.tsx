@@ -15,8 +15,6 @@ import {
   Headphones,
   Heart,
   MapPin,
-  Video,
-  Youtube,
   Monitor,
   Phone,
   PlayCircle,
@@ -62,6 +60,7 @@ export interface BehindTheVeilLaunchData {
   meetingLink?: string;
   streamGoLive?: boolean;
   youtubeStreamUrl?: string;
+  launchReplayUrl?: string;
   facebookStreamUrl?: string;
   publisher?: string;
   imprint?: string;
@@ -214,12 +213,17 @@ export default function BehindTheVeilView({
   launchData?: BehindTheVeilLaunchData;
 }) {
   const launched = useLaunched(launchData?.launchDateISO);
-  // Purchase and preview CTAs stay hidden until the admin enables "Go Live" in
-  // the Book Launch Settings global. This lets the launch run as a register-first
-  // funnel, then reveal buying/previewing when the event goes live.
   const launchLive = Boolean(launchData?.streamGoLive);
+  // Buying and previewing stay hidden until the launch has taken place or the
+  // admin turns on "Go Live", so the pre-launch page stays a register-first funnel.
+  const purchaseOpen = launched || launchLive;
+  // The edited launch recording (replay) can stay visible after "Go Live" is
+  // switched off, so people can still watch the launch once it has ended.
+  const replayUrl = launchData?.launchReplayUrl?.trim() || '';
+  const liveVideoUrl = launchData?.youtubeStreamUrl?.trim() || '';
+  const videoUrl = launchLive ? liveVideoUrl || replayUrl : replayUrl || liveVideoUrl;
+  const showStream = launchLive || Boolean(videoUrl);
   const platformLabel = launchData?.meetingPlatform?.trim() || btvConfig.launch.platformLabel;
-  const hasPlatform = Boolean(launchData?.meetingPlatform?.trim());
   const { currency, setCurrency, symbol } = useCurrency();
 
   const [purchaseModalFormat, setPurchaseModalFormat] = useState<'ebook' | 'paperback' | null>(
@@ -462,16 +466,18 @@ export default function BehindTheVeilView({
               <Eye className="size-3.5 text-brand-primary" />
               <span>Preview</span>
             </button> */}
-            {launchLive && (
+            {showStream && (
               <Button
                 onClick={scrollTo('live')}
                 className="hidden sm:inline-flex h-9 sm:h-10 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.65rem] sm:text-[0.68rem] font-semibold uppercase tracking-[0.14em] px-3 sm:px-4 shadow-md shadow-brand-primary/25 cursor-pointer"
               >
-                <span className="relative flex size-2 mr-1.5">
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-white opacity-75" />
-                  <span className="relative inline-flex size-2 rounded-full bg-white" />
-                </span>
-                Watch Live
+                {launchLive && (
+                  <span className="relative flex size-2 mr-1.5">
+                    <span className="absolute inline-flex size-full animate-ping rounded-full bg-white opacity-75" />
+                    <span className="relative inline-flex size-2 rounded-full bg-white" />
+                  </span>
+                )}
+                {launchLive ? 'Watch Live' : cta.watchReplay}
               </Button>
             )}
             {!launched && (
@@ -483,7 +489,7 @@ export default function BehindTheVeilView({
                 {cta.registerShort}
               </Button>
             )}
-            {launchLive && (
+            {purchaseOpen && (
               <Button
                 onClick={scrollTo('purchase')}
                 className="h-9 sm:h-10 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.65rem] sm:text-[0.68rem] font-semibold uppercase tracking-[0.14em] px-3 sm:px-4 shadow-md shadow-brand-primary/25 cursor-pointer whitespace-nowrap"
@@ -557,7 +563,7 @@ export default function BehindTheVeilView({
               )}
 
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                {launchLive && (
+                {purchaseOpen && (
                   <Button
                     size="lg"
                     onClick={scrollTo('excerpt')}
@@ -576,7 +582,7 @@ export default function BehindTheVeilView({
                     {cta.register}
                   </Button>
                 )}
-                {launchLive && (
+                {purchaseOpen && (
                   <Button
                     size="lg"
                     onClick={scrollTo('purchase')}
@@ -608,8 +614,8 @@ export default function BehindTheVeilView({
           </div>
         </section>
 
-        {/* ---------------------------------------------- LIVE STREAM (admin toggle) */}
-        {launchLive && (
+        {/* ------------------------------------- LIVE STREAM / LAUNCH REPLAY */}
+        {showStream && (
           <section
             id="live"
             className="relative section-pad bg-[#0a0a0c] text-white overflow-hidden border-y border-brand-primary/30"
@@ -623,57 +629,40 @@ export default function BehindTheVeilView({
             />
             <div className="relative max-w-5xl mx-auto text-center">
               <span className="inline-flex items-center gap-2.5 rounded-full border border-brand-primary/50 bg-brand-primary/10 px-4 py-1.5">
-                <span className="relative flex size-2">
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-brand-primary opacity-75" />
-                  <span className="relative inline-flex size-2 rounded-full bg-brand-primary" />
-                </span>
+                {launchLive && (
+                  <span className="relative flex size-2">
+                    <span className="absolute inline-flex size-full animate-ping rounded-full bg-brand-primary opacity-75" />
+                    <span className="relative inline-flex size-2 rounded-full bg-brand-primary" />
+                  </span>
+                )}
                 <span className="text-[0.6rem] sm:text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-white/85">
-                  Live Now
+                  {launchLive ? 'Live Now' : 'Launch Replay'}
                 </span>
               </span>
               <h2 className="mt-5 font-serif text-3xl sm:text-4xl md:text-5xl text-white">
-                Watch the Launch Live
+                {launchLive ? 'Watch the Launch Live' : 'Watch the Launch'}
               </h2>
               <p className="mt-4 text-white/60 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
-                {hasPlatform
-                  ? `The ${platformLabel} room is the main event, with YouTube and Facebook as additional streams.`
-                  : 'The main stream is the primary way to watch, with YouTube and Facebook as additional streams.'}
+                {launchLive
+                  ? 'The launch is on now. Watch it live below.'
+                  : 'The launch has ended. Watch the full recording below.'}
               </p>
 
-              {launchData?.youtubeStreamUrl && (
+              {videoUrl && (
                 <div className="relative mt-8 aspect-video overflow-hidden rounded-2xl border border-white/10 bg-black shadow-2xl">
                   <VideoEmbed
-                    src={launchData.youtubeStreamUrl}
-                    title="Behind the Veil online launch — live stream"
+                    src={videoUrl}
+                    title={
+                      launchLive
+                        ? 'Behind the Veil online launch — live stream'
+                        : 'Behind the Veil online launch — replay'
+                    }
                   />
                 </div>
               )}
 
-              <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-                {launchData?.meetingLink && (
-                  <Button
-                    asChild
-                    className="h-14 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.7rem] font-semibold uppercase tracking-[0.18em] px-7 shadow-md shadow-brand-primary/25 cursor-pointer"
-                  >
-                    <a href={launchData.meetingLink} target="_blank" rel="noreferrer noopener">
-                      <Video className="size-4" />
-                      {hasPlatform ? `Join on ${platformLabel}` : 'Join the Stream'}
-                    </a>
-                  </Button>
-                )}
-                {launchData?.youtubeStreamUrl && (
-                  <Button
-                    asChild
-                    variant="outline"
-                    className="h-14 rounded-md border-white/25 bg-transparent text-white hover:bg-white hover:text-gray-950 text-[0.7rem] font-semibold uppercase tracking-[0.18em] px-7 cursor-pointer"
-                  >
-                    <a href={launchData.youtubeStreamUrl} target="_blank" rel="noreferrer noopener">
-                      <Youtube className="size-4" />
-                      Watch on YouTube
-                    </a>
-                  </Button>
-                )}
-                {launchData?.facebookStreamUrl && (
+              {launchData?.facebookStreamUrl && (
+                <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
                   <Button
                     asChild
                     variant="outline"
@@ -688,8 +677,8 @@ export default function BehindTheVeilView({
                       Watch on Facebook
                     </a>
                   </Button>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </section>
         )}
@@ -773,7 +762,7 @@ export default function BehindTheVeilView({
                     {availableFormats.map((f) => f.name).join(' / ')}
                   </p>
                   <div className="mt-5 flex flex-col gap-2.5">
-                    {launchLive && (
+                    {purchaseOpen && (
                       <Button
                         onClick={scrollTo('purchase')}
                         className="w-full h-12 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.68rem] font-semibold uppercase tracking-[0.16em] cursor-pointer"
@@ -961,7 +950,7 @@ export default function BehindTheVeilView({
                   <p className="text-white/70 text-base max-w-lg mx-auto">
                     {sections.launch.postLaunchThanks} {sections.launch.postLaunchNote}
                   </p>
-                  {launchLive && (
+                  {purchaseOpen && (
                     <Button
                       size="lg"
                       onClick={scrollTo('purchase')}
@@ -1051,7 +1040,7 @@ export default function BehindTheVeilView({
                     ))}
                   </ul>
 
-                  {launchLive && (
+                  {purchaseOpen && (
                     <Button
                       onClick={() => setPurchaseModalFormat(f.id)}
                       className="mt-7 h-14 rounded-md bg-brand-primary text-white hover:bg-brand-primary/90 text-[0.72rem] font-semibold uppercase tracking-[0.18em] shadow-md shadow-brand-primary/20 cursor-pointer flex items-center justify-center gap-2"
@@ -1199,7 +1188,7 @@ export default function BehindTheVeilView({
                 ))}
               </div>
             )}
-            {launchLive && (
+            {purchaseOpen && (
               <div className="mt-9 pt-8 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Button
                   size="lg"
@@ -1392,7 +1381,7 @@ export default function BehindTheVeilView({
                   {cta.registerFinal}
                 </Button>
               )}
-              {launchLive && (
+              {purchaseOpen && (
                 <Button
                   size="lg"
                   variant="outline"
@@ -1456,7 +1445,7 @@ export default function BehindTheVeilView({
       </footer>
 
       {/* ------------------------------------------- mobile sticky action bar */}
-      {launchLive && (
+      {purchaseOpen && (
         <>
           <div className="fixed bottom-0 inset-x-0 z-50 sm:hidden border-t border-white/10 bg-[#0c0c0e]/95 backdrop-blur-md p-2.5 sm:p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex gap-2">
             <Button

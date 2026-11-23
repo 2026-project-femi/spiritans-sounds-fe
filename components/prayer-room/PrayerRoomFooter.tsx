@@ -41,9 +41,11 @@ export function PrayerRoomFooter({ contactLabel, contactHref }: Props) {
           >
             Become a Prayer Partner
           </Link>
+          {/* Notifications hidden until account preferences are implemented.
           <Link href="/prayer-room/notifications" className="transition-colors hover:text-[#c9a25a]">
             Notifications
           </Link>
+          */}
           <Link href="/admin" className="transition-colors hover:text-[#c9a25a]">
             Administration
           </Link>

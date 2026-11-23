@@ -3681,13 +3681,17 @@ export interface BookLaunchSetting {
    */
   meetingPasscode?: string | null;
   /**
-   * Turn on while the launch stream is live. Visitors then see the Zoom, YouTube and Facebook stream links and the YouTube player.
+   * Turn on while the launch stream is live. Visitors then see the Watch Live section and the buy buttons.
    */
   streamGoLive?: boolean | null;
   /**
-   * Secondary stream. When set, it is embedded as a player in the live section.
+   * The YouTube live stream. When set, it is embedded as the player in the Watch Live section.
    */
   youtubeStreamUrl?: string | null;
+  /**
+   * Paste the edited/final YouTube video of the launch. It plays in the Watch Live section, and the replay stays visible even when "Go Live" is switched off.
+   */
+  launchReplayUrl?: string | null;
   /**
    * Secondary stream. When set, a "Watch on Facebook" button is shown.
    */
@@ -3978,6 +3982,7 @@ export interface BookLaunchSettingsSelect<T extends boolean = true> {
   meetingPasscode?: T;
   streamGoLive?: T;
   youtubeStreamUrl?: T;
+  launchReplayUrl?: T;
   facebookStreamUrl?: T;
   customNote?: T;
   sendConfirmationEmail?: T;

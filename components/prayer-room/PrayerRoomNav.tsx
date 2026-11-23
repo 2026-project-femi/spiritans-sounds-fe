@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Bell, Menu, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 
 const NAV = [
   { href: '/prayer-room', label: 'Prayer Room' },
@@ -58,14 +58,11 @@ export function PrayerRoomNav() {
         </nav>
 
         <div className="flex shrink-0 items-center gap-2">
-          <Link
-            href="/prayer-room/notifications"
-            aria-label="Notifications"
-            aria-current={isActive(pathname, '/prayer-room/notifications') ? 'page' : undefined}
-            className="rounded-full p-2 text-[#6b5f52] transition-colors hover:bg-[#efe6d6] hover:text-[#2b211a]"
-          >
+          {/* Notifications icon hidden until account preferences are implemented.
+          <Link href="/prayer-room/notifications" aria-label="Notifications" className="rounded-full p-2 text-[#6b5f52] hover:bg-[#efe6d6]">
             <Bell className="size-5" />
           </Link>
+          */}
           <button
             type="button"
             onClick={() => setOpen((value) => !value)}
