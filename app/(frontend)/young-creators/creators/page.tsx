@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { listClassYears, listCreators } from "@/components/young-creators/api";
+import { listDirectoryCreators } from "@/components/young-creators/api";
 import { CreatorDirectory } from "@/components/young-creators/components/CreatorDirectory";
 import { CATEGORIES } from "@/components/young-creators/constants";
 import type { TalentCategory } from "@/components/young-creators/types";
@@ -24,11 +24,11 @@ interface Props {
 const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value);
 
 export default async function CreatorDirectoryPage({ searchParams }: Props) {
-	const [creators, years, params] = await Promise.all([
-		listCreators(),
-		listClassYears(),
+	const [creators, params] = await Promise.all([
+		listDirectoryCreators(),
 		searchParams,
 	]);
+	const years = [...new Set(creators.map((creator) => creator.classYear))].sort((a, b) => b - a);
 	const search = first(params.q)?.slice(0, 80) ?? "";
 	const talent = first(params.talent);
 	const category = CATEGORIES.some((item) => item.value === talent)

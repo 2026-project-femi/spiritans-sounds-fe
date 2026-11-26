@@ -100,6 +100,36 @@ export async function listCreators(q: CreatorQuery = {}): Promise<Creator[]> {
   return filterCreators(toCreators(result.docs), q)
 }
 
+/**
+ * Lighter query for the directory grid: only the fields a card renders, with
+ * depth 1 for the portrait. Avoids loading every creator's bio, works and
+ * gallery just to show the listing.
+ */
+export async function listDirectoryCreators(): Promise<Creator[]> {
+  const payload = await getClient()
+  const result = await payload.find({
+    collection: 'young-creators',
+    where: { _status: { equals: 'published' } },
+    sort: '-classYear',
+    limit: 200,
+    depth: 1,
+    select: {
+      slug: true,
+      publicDisplayName: true,
+      nameVisibility: true,
+      isMinor: true,
+      classYear: true,
+      primaryCategory: true,
+      talents: true,
+      location: true,
+      tagline: true,
+      portrait: true,
+    },
+  })
+
+  return toCreators(result.docs as unknown as YoungCreator[])
+}
+
 export async function getCreatorBySlug(slug: string): Promise<Creator | null> {
   const payload = await getClient()
   const result = await payload.find({

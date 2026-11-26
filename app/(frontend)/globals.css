@@ -496,12 +496,15 @@
 }
 
 .ycn-theme .yc-reveal {
-  opacity: 0;
-  transform: translateY(20px);
   transition:
     opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
     transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
   will-change: opacity, transform;
+}
+
+.ycn-theme .yc-reveal.is-pending {
+  opacity: 0;
+  transform: translateY(20px);
 }
 
 .ycn-theme .yc-reveal.is-visible {
