@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { RichText } from '@payloadcms/richtext-lexical/react'
@@ -35,6 +36,19 @@ export default async function PrayerDetailPage({ params }: Props) {
         {prayer.category || 'Prayer'}
       </p>
       <h1 className="mt-2 text-5xl font-semibold">{prayer.title}</h1>
+
+      {prayer.imageUrl && (
+        <figure className="relative mt-6 aspect-[16/9] overflow-hidden rounded-2xl bg-[#efe6d6]">
+          <Image
+            src={prayer.imageUrl}
+            alt={prayer.imageAlt || prayer.title}
+            fill
+            sizes="(max-width: 768px) 100vw, 672px"
+            className="object-cover"
+            priority
+          />
+        </figure>
+      )}
 
       <div className="mt-8 space-y-6">
         {prayer.content ? (

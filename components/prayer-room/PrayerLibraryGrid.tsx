@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import type { PrayerLibraryItem } from './types'
 
@@ -60,13 +61,26 @@ export function PrayerLibraryGrid({ prayers }: Props) {
           <Link
             key={prayer.id}
             href={`/prayer-room/library/${prayer.slug}`}
-            className="rounded-2xl border border-[#e6ddcb] bg-[#fffdf8] p-6 transition hover:border-brand-primary"
+            className="group overflow-hidden rounded-2xl border border-[#e6ddcb] bg-[#fffdf8] transition hover:border-brand-primary"
           >
-            <p className="text-xs font-semibold uppercase tracking-widest text-brand-primary">
-              {prayer.category || 'Prayer'}
-            </p>
-            <h3 className="mt-2 text-2xl font-semibold">{prayer.title}</h3>
-            <p className="mt-2 line-clamp-2 text-sm text-[#6b5f52]">{prayer.excerpt}</p>
+            {prayer.imageUrl && (
+              <div className="relative aspect-[16/9] overflow-hidden bg-[#efe6d6]">
+                <Image
+                  src={prayer.imageUrl}
+                  alt={prayer.imageAlt || prayer.title}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              </div>
+            )}
+            <div className="p-6">
+              <p className="text-xs font-semibold uppercase tracking-widest text-brand-primary">
+                {prayer.category || 'Prayer'}
+              </p>
+              <h3 className="mt-2 text-2xl font-semibold">{prayer.title}</h3>
+              <p className="mt-2 line-clamp-2 text-sm text-[#6b5f52]">{prayer.excerpt}</p>
+            </div>
           </Link>
         ))}
       </div>
